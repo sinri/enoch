@@ -82,4 +82,63 @@ class LibSFTP
         //}
         return $done;
     }
+
+    public function downloadAndRemoveDir($remote_dir,$local_path,&$done_files=[],&$error=''){
+        $done=false;
+        try {
+            $resConnection = ssh2_connect($this->strServer, $this->strServerPort);
+            if(!$resConnection) {
+                throw new \Exception("Cound not connect: ".$this->strServer.":".$this->strServerPort);
+            }
+            if(ssh2_auth_password($resConnection, $this->strServerUsername, $this->strServerPassword))
+            {
+                $resSFTP = ssh2_sftp($resConnection);
+            }
+            else
+            {
+                throw new \Exception("ssh2_auth_password false");
+            }
+
+            $file_name = '';
+            $handler = opendir('ssh2.sftp://'.$resSFTP.$remote_dir);
+
+            $i = 0;
+            $files = array();
+            while (($i<5) && (($file_name = readdir($handler)) !== false)) {//务必使用!==，防止目录下出现类似文件名“0”等情况
+                if ($file_name != "." && $file_name != ".." && $file_name != "archive") {
+                    $files[] = $file_name ;
+
+                    $remote_file = $remote_dir .$file_name;
+                    $local_file = $local_path .$file_name;
+
+                    //将远程文件保存到本地
+                    $content = file_get_contents('ssh2.sftp://'.$resSFTP.$remote_dir.$file_name, 'rw');
+                    $result2 = '';
+                    $get_content = iconv('gbk', 'utf-8',$content);
+
+                    $data_to_write = fopen($local_path.$file_name, 'w+');
+                    fwrite($data_to_write, $get_content);
+
+                    fclose($data_to_write);
+
+                    //将远程文件删除
+                    // sh2_sftp_unlink($resSFTP, $remote_file);
+                    //移动远程文件
+                    $remove_file = $remote_dir.'archive/'.$file_name;
+                    $res = ssh2_sftp_rename($resSFTP, $remote_file, $remove_file);
+
+                    //ClsTools::LogRecord("文件已下载 ： " .$file_name . "  文件移动:".$res ."</br>");
+                    $done_files[]=$file_name;
+
+                    $i++;
+                }
+            }
+            $done=true;
+        } catch (Exception $e) {
+            $error = 'Method '.__METHOD__.' Exception: '. $e->getMessage();
+            $done=false;
+        }
+        closedir($handler);
+        return $done;
+    }
 }
