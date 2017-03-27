@@ -8,7 +8,6 @@
 
 namespace sinri\enoch\core;
 
-
 class LibMySQL
 {
     private $pdo=null;

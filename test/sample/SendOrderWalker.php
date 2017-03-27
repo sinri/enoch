@@ -8,7 +8,6 @@
 
 namespace sinri\enoch\test\sample;
 
-
 use sinri\enoch\core\Spirit;
 use sinri\enoch\core\Walker;
 
@@ -40,7 +39,7 @@ class SendOrderWalker extends Walker
     public function walk()
     {
         // TODO: Implement walk() method.
-        $this->logger->log(Spirit::LOG_INFO,__METHOD__."@".__LINE__);
+        $this->logger->log(Spirit::LOG_INFO, __METHOD__."@".__LINE__);
         return true;
     }
 }

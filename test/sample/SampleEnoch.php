@@ -8,7 +8,6 @@
 
 namespace sinri\enoch\test\sample;
 
-
 use sinri\enoch\core\Enoch;
 
 class SampleEnoch extends Enoch
@@ -16,7 +15,7 @@ class SampleEnoch extends Enoch
     public function __construct()
     {
         parent::__construct();
-        $this->initialize('SampleEnoch',__DIR__);
+        $this->initialize('SampleEnoch', __DIR__);
     }
 
     public function readConfig()

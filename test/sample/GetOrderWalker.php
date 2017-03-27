@@ -8,7 +8,6 @@
 
 namespace sinri\enoch\test\sample;
 
-
 use sinri\enoch\core\Spirit;
 use sinri\enoch\core\Walker;
 
@@ -37,7 +36,7 @@ class GetOrderWalker extends Walker
 
     public function walk()
     {
-        $this->logger->log(Spirit::LOG_INFO,__METHOD__."@".__LINE__);
+        $this->logger->log(Spirit::LOG_INFO, __METHOD__."@".__LINE__);
         return true;
     }
 }

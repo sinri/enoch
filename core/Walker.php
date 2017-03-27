@@ -8,7 +8,6 @@
 
 namespace sinri\enoch\core;
 
-
 abstract class Walker
 {
     protected $logger=null;
@@ -23,7 +22,8 @@ abstract class Walker
         $this->initialize();
     }
 
-    public function initialize(){
+    public function initialize()
+    {
         //initialize $db
         $this->installDatabase();
         //initialize $sftp

@@ -8,7 +8,6 @@
 
 namespace sinri\enoch\core;
 
-
 class LibSFTP
 {
     protected $strServer = "";
@@ -16,23 +15,23 @@ class LibSFTP
     protected $strServerUsername = "";
     protected $strServerPassword = "";
 
-    function __construct($params)
+    public function __construct($params)
     {
-        if(isset($params['server'])){
+        if (isset($params['server'])) {
             $this->strServer=$params['server'];
         }
-        if(isset($params['port'])){
+        if (isset($params['port'])) {
             $this->strServerPort=$params['port'];
         }
-        if(isset($params['username'])){
+        if (isset($params['username'])) {
             $this->strServerUsername=$params['username'];
         }
-        if(isset($params['password'])){
+        if (isset($params['password'])) {
             $this->strServerPassword=$params['password'];
         }
     }
 
-    public function sendFileToSFtp($filename,$REMOTE_DIR,$LOCAL_DIR,&$error='')
+    public function sendFileToSFtp($filename, $REMOTE_DIR, $LOCAL_DIR, &$error = '')
     {
         $done = false;
         $sftpStream = null;
@@ -83,19 +82,17 @@ class LibSFTP
         return $done;
     }
 
-    public function downloadAndRemoveDir($remote_dir,$local_path,&$done_files=[],&$error=''){
+    public function downloadAndRemoveDir($remote_dir, $local_path, &$done_files = [], &$error = '')
+    {
         $done=false;
         try {
             $resConnection = ssh2_connect($this->strServer, $this->strServerPort);
-            if(!$resConnection) {
+            if (!$resConnection) {
                 throw new \Exception("Cound not connect: ".$this->strServer.":".$this->strServerPort);
             }
-            if(ssh2_auth_password($resConnection, $this->strServerUsername, $this->strServerPassword))
-            {
+            if (ssh2_auth_password($resConnection, $this->strServerUsername, $this->strServerPassword)) {
                 $resSFTP = ssh2_sftp($resConnection);
-            }
-            else
-            {
+            } else {
                 throw new \Exception("ssh2_auth_password false");
             }
 
@@ -114,7 +111,7 @@ class LibSFTP
                     //将远程文件保存到本地
                     $content = file_get_contents('ssh2.sftp://'.$resSFTP.$remote_dir.$file_name, 'rw');
                     $result2 = '';
-                    $get_content = iconv('gbk', 'utf-8',$content);
+                    $get_content = iconv('gbk', 'utf-8', $content);
 
                     $data_to_write = fopen($local_path.$file_name, 'w+');
                     fwrite($data_to_write, $get_content);

@@ -8,7 +8,6 @@
 
 namespace sinri\enoch\core;
 
-
 class Spirit
 {
     const LOG_INFO = 'INFO';
@@ -19,7 +18,6 @@ class Spirit
 
     protected function __construct()
     {
-
     }
 
     public static function getInstance()
@@ -30,14 +28,14 @@ class Spirit
         return self::$instance;
     }
 
-    public final function generateLog($level, $message, $object = '')
+    final public function generateLog($level, $message, $object = '')
     {
         $now = date('Y-m-d H:i:s');
 
         $log = "{$now} [{$level}] {$message} |";
         if (!is_string($object)) {
             $log .= json_encode($object, JSON_UNESCAPED_UNICODE);
-        } elsE {
+        } else {
             $log .= $object;
         }
         $log .= PHP_EOL;
@@ -67,7 +65,9 @@ class Spirit
             return $default;
         }
         $value = $_REQUEST[$name];
-        if ($regex === null) return $value;
+        if ($regex === null) {
+            return $value;
+        }
         if (!preg_match($regex, $value)) {
             $error = self::REQUEST_REGEX_NOT_MATCH;
             return $default;
@@ -81,7 +81,9 @@ class Spirit
             return $default;
         }
         $value = $_GET[$name];
-        if ($regex === null) return $value;
+        if ($regex === null) {
+            return $value;
+        }
         if (!preg_match($regex, $value)) {
             $error = self::REQUEST_REGEX_NOT_MATCH;
             return $default;
@@ -96,7 +98,9 @@ class Spirit
             return $default;
         }
         $value = $_POST[$name];
-        if ($regex === null) return $value;
+        if ($regex === null) {
+            return $value;
+        }
         if (!preg_match($regex, $value)) {
             $error = self::REQUEST_REGEX_NOT_MATCH;
             return $default;
@@ -104,10 +108,12 @@ class Spirit
         return $value;
     }
 
-    public function fullPostFields(){
+    public function fullPostFields()
+    {
         return $_POST?$_POST:[];
     }
-    public function fullGetFields(){
+    public function fullGetFields()
+    {
         return $_GET?$_GET:[];
     }
 
@@ -116,8 +122,7 @@ class Spirit
      */
     public function isAjax()
     {
-        if (
-            isset($_SERVER['HTTP_X_REQUESTED_WITH'])
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
             && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
         ) {
             return true;
@@ -150,7 +155,8 @@ class Spirit
     const AJAX_JSON_CODE_OK="OK";
     const AJAX_JSON_CODE_FAIL="FAIL";
 
-    public function json($anything){
+    public function json($anything)
+    {
         echo json_encode($anything);
     }
 
@@ -158,20 +164,25 @@ class Spirit
      * @param string $code OK or FAIL
      * @param mixed $data
      */
-    public function jsonForAjax($code=self::AJAX_JSON_CODE_OK,$data=''){
+    public function jsonForAjax($code = self::AJAX_JSON_CODE_OK, $data = '')
+    {
         echo json_encode(["code"=>$code,"data"=>$data]);
     }
 
-    public function displayPage($filepath,$params=[]){
+    public function displayPage($filepath, $params = [])
+    {
         extract($params);
         require $filepath;
     }
 
-    public function errorPage($message='',$exception=null){
+    public function errorPage($message = '', $exception = null)
+    {
         // TODO: beautify it.
         echo "<pre>".PHP_EOL;
         echo $message;
         echo PHP_EOL;
-        if($exception)var_dump($exception);
+        if ($exception) {
+            var_dump($exception);
+        }
     }
 }

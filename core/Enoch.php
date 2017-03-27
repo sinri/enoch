@@ -8,7 +8,6 @@
 
 namespace sinri\enoch\core;
 
-
 abstract class Enoch
 {
     protected $logger=null;
@@ -21,7 +20,8 @@ abstract class Enoch
         $this->logger=Spirit::getInstance();
     }
 
-    public function initialize($project_name,$project_base){
+    public function initialize($project_name, $project_base)
+    {
         $this->projectName=$project_name;
         $this->projectBase=$project_base;
 
@@ -33,56 +33,57 @@ abstract class Enoch
      * By default, read local file: projectBase/config.php;
      * Recommended, read database (to be overrode)
      */
-    public function readConfig(){
+    public function readConfig()
+    {
         // by default, read local file: projectBase/config.php
         // in which only an array $config defined
         $config=[];
-        if(file_exists($this->projectBase.'/config.php')) {
+        if (file_exists($this->projectBase.'/config.php')) {
             require($this->projectBase . '/config.php');
         }
         $this->config=$config;
     }
 
-    public function start(){
-        if(!isset($this->config['walkers']) || empty($this->config['walkers'])){
-            $this->logger->log(Spirit::LOG_ERROR,"There is not an available walker configured.");
+    public function start()
+    {
+        if (!isset($this->config['walkers']) || empty($this->config['walkers'])) {
+            $this->logger->log(Spirit::LOG_ERROR, "There is not an available walker configured.");
             return false;
         }
-        foreach ($this->config['walkers'] as $walker_name => $status){
-            if($status){
+        foreach ($this->config['walkers'] as $walker_name => $status) {
+            if ($status) {
                 $goNext=$this->walkWith($walker_name);
-                if(!$goNext){
-                    $this->logger->log(Spirit::LOG_WARNING,"The walker '{$walker_name}' stopped walking, exit.");
+                if (!$goNext) {
+                    $this->logger->log(Spirit::LOG_WARNING, "The walker '{$walker_name}' stopped walking, exit.");
                     return false;
                 }
             }
         }
-        $this->logger->log(Spirit::LOG_INFO,"All walkers have satisfied.");
+        $this->logger->log(Spirit::LOG_INFO, "All walkers have satisfied.");
         return true;
     }
 
     public function walkWith($walker_name)
     {
         $class_file=$this->projectBase.'/'.$walker_name.'Walker.php';
-        if(!file_exists($class_file)){
-            $this->logger->log(Spirit::LOG_ERROR,"No such walker!");
+        if (!file_exists($class_file)) {
+            $this->logger->log(Spirit::LOG_ERROR, "No such walker!");
             return false;
         }
         require_once $class_file;
         $walker=$this->getWalkerInstance($walker_name);
-        if(!is_a($walker,'sinri\enoch\core\Walker')){
-            $this->logger->log(Spirit::LOG_ERROR,"The walker is not of sinri\\enoch\\core\\Walker");
+        if (!is_a($walker, 'sinri\enoch\core\Walker')) {
+            $this->logger->log(Spirit::LOG_ERROR, "The walker is not of sinri\\enoch\\core\\Walker");
             return false;
         }
-        try{
+        try {
             $goNext = $walker->walk();
             return $goNext;
-        }catch (\Exception $exception){
-            $this->logger->log(Spirit::LOG_ERROR,"Walk into a trap: ".$exception->getMessage());
+        } catch (\Exception $exception) {
+            $this->logger->log(Spirit::LOG_ERROR, "Walk into a trap: ".$exception->getMessage());
             return false;
         }
     }
 
     abstract protected function getWalkerInstance($walker_name);
-
 }
