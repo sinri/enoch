@@ -1,0 +1,21 @@
+{
+  "name": "sinri/enoch",
+  "description": "PHP Framework for integrating",
+  "keywords": ["Database","SQL","PHP","SFTP"],
+  "homepage": "https://github.com/sinri/enoch",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sinri Edogawa",
+      "email": "e.joshua.s.e@gmail.com",
+      "homepage": "https://github.com/sinri/enoch",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "autoload": {
+    "files": ["autoload.php"]
+  }
+}
