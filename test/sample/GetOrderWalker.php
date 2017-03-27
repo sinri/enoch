@@ -22,7 +22,6 @@ class GetOrderWalker extends Walker
      */
     public function installDatabase()
     {
-        // TODO: Implement installDatabase() method.
         return false;
     }
 
@@ -33,13 +32,11 @@ class GetOrderWalker extends Walker
      */
     public function installSFTP()
     {
-        // TODO: Implement installSFTP() method.
         return false;
     }
 
     public function walk()
     {
-        // TODO: Implement walk() method.
         $this->logger->log(Spirit::LOG_INFO,__METHOD__."@".__LINE__);
         return true;
     }
