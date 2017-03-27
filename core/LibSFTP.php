@@ -76,9 +76,10 @@ class LibSFTP
         } catch (\Exception $e) {
             $error = __METHOD__ . ' filename:' . $filename . ' Exception: ' . $e->getMessage();
             $done = false;
-        } finally {
-            fclose($sftpStream);
         }
+        //finally {//this keyword is not available until PHP 5.5
+        fclose($sftpStream);
+        //}
         return $done;
     }
 }
