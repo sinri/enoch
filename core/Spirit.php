@@ -16,7 +16,7 @@ class Spirit
     const LOG_ERROR = 'ERROR';
 
     protected static $instance = null;
-    protected static $useColoredTerminalOutput = true;
+    protected static $useColoredTerminalOutput = false;
 
     /**
      * @return bool
