@@ -14,6 +14,7 @@ abstract class Walker
     protected $config=[];
     protected $db=null;
     protected $sftp=null;
+    protected $mailer = null;
 
     public function __construct($config)
     {
@@ -24,10 +25,9 @@ abstract class Walker
 
     public function initialize()
     {
-        //initialize $db
         $this->installDatabase();
-        //initialize $sftp
         $this->installSFTP();
+        $this->installMailer();
     }
 
     /**
@@ -35,13 +35,29 @@ abstract class Walker
      * Return false for not using database
      * @return mixed
      */
-    abstract public function installDatabase();
+    public function installDatabase()
+    {
+        return false;
+    }
     /**
-     * Set the value $this->sftp, and return it: $this->>db=new LibMySQL([...]);
+     * Set the value $this->sftp, and return it: $this->db=new LibMySQL([...]);
      * Return false for not using sftp
      * @return mixed
      */
-    abstract public function installSFTP();
+    public function installSFTP()
+    {
+        return false;
+    }
+
+    /**
+     * Set the value $this->mailer, and return it: $this->mailer=new LibMail([...]);
+     * Return false for not using mail
+     * @return mixed
+     */
+    public function installMailer()
+    {
+        return false;
+    }
 
     abstract public function walk();
 }
