@@ -16,6 +16,23 @@ class Spirit
     const LOG_ERROR = 'ERROR';
 
     protected static $instance = null;
+    protected static $useColoredTerminalOutput = true;
+
+    /**
+     * @return bool
+     */
+    public static function isUseColoredTerminalOutput()
+    {
+        return self::$useColoredTerminalOutput;
+    }
+
+    /**
+     * @param bool $useColoredTerminalOutput
+     */
+    public static function setUseColoredTerminalOutput($useColoredTerminalOutput)
+    {
+        self::$useColoredTerminalOutput = $useColoredTerminalOutput;
+    }
 
     protected function __construct()
     {
@@ -35,12 +52,16 @@ class Spirit
 
         $now = date('Y-m-d H:i:s');
 
-        if ($level === Spirit::LOG_ERROR) {
-            $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Red);
-        } elseif ($level === Spirit::LOG_WARNING) {
-            $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Yellow);
+        if (self::$useColoredTerminalOutput) {
+            if ($level === Spirit::LOG_ERROR) {
+                $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Red);
+            } elseif ($level === Spirit::LOG_WARNING) {
+                $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Yellow);
+            } else {
+                $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Green);
+            }
         } else {
-            $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Green);
+            $level_string = "[{$level}]";
         }
 
         $log = "{$now} {$level_string} {$message} |";
