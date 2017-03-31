@@ -8,6 +8,7 @@
 
 namespace sinri\enoch\core;
 
+
 class Spirit
 {
     const LOG_INFO = 'INFO';
@@ -30,9 +31,19 @@ class Spirit
 
     final public function generateLog($level, $message, $object = '')
     {
+        $lcc = new LibConsoleColor();
+
         $now = date('Y-m-d H:i:s');
 
-        $log = "{$now} [{$level}] {$message} |";
+        if ($level === Spirit::LOG_ERROR) {
+            $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Red);
+        } elseif ($level === Spirit::LOG_WARNING) {
+            $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Yellow);
+        } else {
+            $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Green);
+        }
+
+        $log = "{$now} {$level_string} {$message} |";
         if (!is_string($object)) {
             $log .= json_encode($object, JSON_UNESCAPED_UNICODE);
         } else {
@@ -74,6 +85,7 @@ class Spirit
         }
         return $value;
     }
+
     public function readGet($name, $default = null, $regex = null, &$error = 0)
     {
         if (!isset($_GET[$name])) {
@@ -110,11 +122,12 @@ class Spirit
 
     public function fullPostFields()
     {
-        return $_POST?$_POST:[];
+        return $_POST ? $_POST : [];
     }
+
     public function fullGetFields()
     {
-        return $_GET?$_GET:[];
+        return $_GET ? $_GET : [];
     }
 
     /**
@@ -152,8 +165,8 @@ class Spirit
         return (php_sapi_name() === 'cli') ? true : false;
     }
 
-    const AJAX_JSON_CODE_OK="OK";
-    const AJAX_JSON_CODE_FAIL="FAIL";
+    const AJAX_JSON_CODE_OK = "OK";
+    const AJAX_JSON_CODE_FAIL = "FAIL";
 
     public function json($anything)
     {
@@ -166,7 +179,7 @@ class Spirit
      */
     public function jsonForAjax($code = self::AJAX_JSON_CODE_OK, $data = '')
     {
-        echo json_encode(["code"=>$code,"data"=>$data]);
+        echo json_encode(["code" => $code, "data" => $data]);
     }
 
     public function displayPage($filepath, $params = [])
@@ -178,7 +191,7 @@ class Spirit
     public function errorPage($message = '', $exception = null)
     {
         // TODO: beautify it.
-        echo "<pre>".PHP_EOL;
+        echo "<pre>" . PHP_EOL;
         echo $message;
         echo PHP_EOL;
         if ($exception) {

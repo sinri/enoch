@@ -6,6 +6,7 @@
  * Time: 10:27
  */
 
+require_once __DIR__ . '/core/LibConsoleColor.php';
 require_once __DIR__.'/core/Spirit.php';
 require_once __DIR__.'/core/Enoch.php';
 require_once __DIR__.'/core/Walker.php';

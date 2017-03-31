@@ -14,3 +14,5 @@ date_default_timezone_set("Asia/Shanghai");
 
 $enoch=new \sinri\enoch\test\sample\SampleEnoch();
 $enoch->start();
+
+\sinri\enoch\core\LibConsoleColor::output('TEST', \sinri\enoch\core\LibConsoleColor::Blue);
