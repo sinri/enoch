@@ -92,6 +92,7 @@ class Spirit
 
     public function getRequest($name, $default = null, $regex = null, &$error = 0)
     {
+        $error = self::REQUEST_NO_ERROR;
         if (!isset($_REQUEST[$name])) {
             $error = self::REQUEST_FIELD_NOT_FOUND;
             return $default;
