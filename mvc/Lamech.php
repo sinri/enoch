@@ -19,11 +19,27 @@ class Lamech
     protected $view_dir;
     protected $error_page;
 
-    public function __construct($session_dir, $controller_dir, $view_dir, $error_page = null)
+    public function __construct($session_dir = null, $controller_dir = null, $view_dir = null, $error_page = null)
     {
         $this->session_dir = $session_dir;
         $this->controller_dir = $controller_dir;
         $this->view_dir = $view_dir;
+        $this->error_page = $error_page;
+    }
+
+    /**
+     * @return null
+     */
+    public function getErrorPage()
+    {
+        return $this->error_page;
+    }
+
+    /**
+     * @param null $error_page
+     */
+    public function setErrorPage($error_page)
+    {
         $this->error_page = $error_page;
     }
 
