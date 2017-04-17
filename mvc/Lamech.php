@@ -85,7 +85,7 @@ class Lamech
         $spirit = Spirit::getInstance();
         $act = $spirit->getRequest("act", 'index', "/^[A-Za-z0-9_]+$/", $error);
         if ($error === Spirit::REQUEST_REGEX_NOT_MATCH) {
-            $spirit->errorPage("Act input does not correct.", $this->error_page);
+            $spirit->errorPage("Act input does not correct.", null, $this->error_page);
         } else {
             //act 种类
             try {
@@ -95,7 +95,7 @@ class Lamech
                 }
                 $spirit->displayPage($view_path, []);
             } catch (\Exception $exception) {
-                $spirit->errorPage("Act met error: " . $exception->getMessage(), $this->error_page);
+                $spirit->errorPage("Act met error: " . $exception->getMessage(), $exception, $this->error_page);
             }
         }
     }
