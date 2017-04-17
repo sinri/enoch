@@ -9,6 +9,8 @@
 namespace sinri\enoch\core;
 
 
+use sinri\enoch\mvc\BaseCodedException;
+
 class Spirit
 {
     const LOG_INFO = 'INFO';
@@ -207,17 +209,28 @@ class Spirit
     public function displayPage($filepath, $params = [])
     {
         extract($params);
+        if (!file_exists($filepath)) {
+            throw new BaseCodedException("View not fould.");
+        }
         require $filepath;
     }
 
-    public function errorPage($message = '', $exception = null)
+    public function errorPage($message = '', $exception = null, $view_path = null)
     {
-        // TODO: beautify it.
-        echo "<pre>" . PHP_EOL;
-        echo $message;
-        echo PHP_EOL;
-        if ($exception) {
-            var_dump($exception);
+        if (empty($view_path) || !file_exists($view_path) || !is_file($view_path)) {
+            echo "<h3>ERROR</h3><hr>" . PHP_EOL;
+            echo "<pre>" . PHP_EOL;
+            echo $message;
+            echo PHP_EOL;
+            if ($exception) {
+                var_dump($exception);
+            }
+            echo "</pre>";
+            echo "<hr>";
+            echo "<p>Behold, the Lord cometh with ten thousands of his saints, to execute judgment upon all... (Jude 1:14-15)</p>" . PHP_EOL;
+            echo "<p>Powered by Enoch Project</p>" . PHP_EOL;
+            return;
         }
+        $this->displayPage($view_path, ['message' => $message, "exception" => $exception]);
     }
 }
