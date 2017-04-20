@@ -12,8 +12,12 @@ class LibMySQL
 {
     private $pdo=null;
 
-    public function __construct($params)
+    public function __construct($params = null)
     {
+        if (empty($params)) {
+            return;
+        }
+
         $host=$params['host'];
         $port=$params['port'];
         $username=$params['username'];
@@ -22,6 +26,17 @@ class LibMySQL
 
         $this->pdo = new \PDO(
             'mysql:host='.$host.';port='.$port.';dbname='.$database.';charset=utf8',
+            $username,
+            $password,
+            array(\PDO::ATTR_EMULATE_PREPARES => false)
+        );
+        $this->pdo->query("set names utf8");
+    }
+
+    public function setConnection($host, $port, $username, $password, $database)
+    {
+        $this->pdo = new \PDO(
+            'mysql:host=' . $host . ';port=' . $port . ';dbname=' . $database . ';charset=utf8',
             $username,
             $password,
             array(\PDO::ATTR_EMULATE_PREPARES => false)
@@ -159,5 +174,20 @@ class LibMySQL
         $sth->execute($values);
         $col=$sth->fetchColumn(0);
         return $col;
+    }
+
+    public function safeInsertOne($sql, $values = array(), &$inserted_id = 0, $pk = null)
+    {
+        $sth = $this->pdo->prepare($sql);
+        $done = $sth->execute($values);
+        $inserted_id = $this->pdo->lastInsertId($pk);
+        return $done;
+    }
+
+    public function safeExecute($sql, $values = array())
+    {
+        $sth = $this->pdo->prepare($sql);
+        $done = $sth->execute($values);
+        return $done;
     }
 }
