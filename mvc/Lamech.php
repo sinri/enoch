@@ -207,7 +207,7 @@ class Lamech
         }
     }
 
-    public function getController(&$sub_paths = array())
+    protected function getController(&$sub_paths = array())
     {
         global $argv;
         global $argc;
@@ -245,7 +245,7 @@ class Lamech
         return $controller_name;
     }
 
-    public function getControllerIndex()
+    protected function getControllerIndex()
     {
         $prefix = $_SERVER['SCRIPT_NAME'];
         if (strpos($_SERVER['REQUEST_URI'], $prefix) !== 0) {

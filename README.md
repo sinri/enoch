@@ -116,9 +116,28 @@ $lamech->viewFromRequest();
 ```
 This would load `sample/A.php` as HTML and output.
 
-### Index.php-Free Config
+### CodeIgniter Style RESTful Framework
 
-Use `.htaccess` file with
+```php
+$lamech = new  \sinri\enoch\mvc\Lamech();
+// If you want to use controller as api
+$lamech->setControllerDir(__DIR__ . '/controller');
+// the following two could be ignored as default, call only when you want to use a customized value.
+$lamech->setDefaultControllerName("Welcome");
+$lamech->setDefaultMethodName("index");
+// use restful handler
+$lamech->restfullyHandleRequest("\\sinri\\enoch\\test\\requesting\\controller\\");
+```
+
+For example, the following URL 
+
+`http://localhost/leqee/fundament/enoch/test/requesting/index.php/ExampleAPI/index/1/3`
+
+would call
+
+`\sinri\enoch\test\requesting\controller\ExampleAPI::index(1,3)`
+
+For index.php-free Config, use `.htaccess` file with
 
 apache version
 
