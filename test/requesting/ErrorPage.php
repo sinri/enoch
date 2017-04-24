@@ -5,3 +5,9 @@
  * Date: 2017/4/23
  * Time: 20:38
  */
+
+var_dump($url_path_parts);
+
+?>
+
+xuwu

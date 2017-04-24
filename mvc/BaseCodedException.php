@@ -18,4 +18,6 @@ class BaseCodedException extends \Exception
 
     const ACT_NOT_EXISTS = 200;
     const METHOD_NOT_EXISTS = 204;
+    const NO_MATCHED_ROUTE = 210;
+    const VIEW_NOT_EXISTS = 211;
 }
