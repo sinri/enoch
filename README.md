@@ -115,3 +115,26 @@ $lamech->setViewDir(__DIR__.'/sample');
 $lamech->viewFromRequest();
 ```
 This would load `sample/A.php` as HTML and output.
+
+### Index.php-Free Config
+
+Use `.htaccess` file with
+
+apache version
+
+```apacheconfig
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+```
+
+nginx version
+
+```nginxconfix
+server {
+    location / {
+        try_files $uri $uri/ /index.php;
+    }
+}
+```

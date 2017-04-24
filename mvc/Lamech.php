@@ -19,12 +19,47 @@ class Lamech
     protected $view_dir;
     protected $error_page;
 
+    private $default_controller_name = 'Welcome';
+    private $default_method_name = 'index';
+
     public function __construct($session_dir = null, $controller_dir = null, $view_dir = null, $error_page = null)
     {
         $this->session_dir = $session_dir;
         $this->controller_dir = $controller_dir;
         $this->view_dir = $view_dir;
         $this->error_page = $error_page;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultControllerName()
+    {
+        return $this->default_controller_name;
+    }
+
+    /**
+     * @param string $default_controller_name
+     */
+    public function setDefaultControllerName($default_controller_name)
+    {
+        $this->default_controller_name = $default_controller_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultMethodName()
+    {
+        return $this->default_method_name;
+    }
+
+    /**
+     * @param string $default_method_name
+     */
+    public function setDefaultMethodName($default_method_name)
+    {
+        $this->default_method_name = $default_method_name;
     }
 
     /**
@@ -132,12 +167,92 @@ class Lamech
             }
             require_once $target_class_path;
             $api = new $target_class();
-            $api->work();
+            $api->_work();
         } catch (BaseCodedException $exception) {
             $spirit->jsonForAjax(
                 Spirit::AJAX_JSON_CODE_FAIL,
                 ["error_code" => $exception->getCode(), "error_msg" => "请求处理异常：" . $exception->getMessage()]
             );
         }
+    }
+
+    public function restfullyHandleRequest($api_namespace = "\\")
+    {
+        $spirit = Spirit::getInstance();
+        $request_method = $_SERVER['REQUEST_METHOD'];//HEAD,GET,POST,PUT,etc.
+        $query_string = $_SERVER['QUERY_STRING'];//act=ExampleAPI&method=test
+        $path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';// /a/b/c
+
+        $act = $this->getController($sub_paths);
+        $method = $this->default_method_name;//default method
+        if (isset($sub_paths[0]) && $sub_paths[0] !== '') {
+            $method = $sub_paths[0];
+            unset($sub_paths[0]);
+        }
+
+        try {
+            $target_class = $api_namespace . $act;
+            $target_class_path = $this->controller_dir . '/' . $act . '.php';
+            if (!file_exists($target_class_path)) {
+                throw new BaseCodedException("模块已经死了:" . $target_class_path);
+            }
+            require_once $target_class_path;
+            $api = new $target_class();
+            return call_user_func_array([$api, $method], $sub_paths);
+        } catch (BaseCodedException $exception) {
+            $spirit->jsonForAjax(
+                Spirit::AJAX_JSON_CODE_FAIL,
+                ["error_code" => $exception->getCode(), "error_msg" => "请求处理异常：" . $exception->getMessage()]
+            );
+        }
+    }
+
+    public function getController(&$sub_paths = array())
+    {
+        global $argv;
+        global $argc;
+        $controller_name = $this->default_controller_name;
+        $sub_paths = [];
+        $spirit = Spirit::getInstance();
+        if ($spirit->isCLI()) {
+            $sub_paths = array();
+            for ($i = 1; $i < $argc; $i++) {
+                if ($i == 1) {
+                    $controller_name = $argv[$i];
+                } else {
+                    $sub_paths[] = $argv[$i];
+                }
+            }
+        } else {
+            $controllerIndex = $this->getControllerIndex();
+            $pattern = '/^\/([^\?]*)(\?|$)/';
+            $r = preg_match($pattern, $controllerIndex, $matches);
+            $controller_array = explode('/', $matches[1]);
+            if (count($controller_array) > 0) {
+                $controller_name = $controller_array[0];
+                if (count($controller_array) > 1) {
+                    unset($controller_array[0]);
+                    $sub_paths = array_filter($controller_array, function ($var) {
+                        return $var !== '';
+                    });
+                    $sub_paths = array_values($sub_paths);
+                }
+            }
+        }
+        if (empty($controller_name)) {
+            $controller_name = $this->default_controller_name;
+        }
+        return $controller_name;
+    }
+
+    public function getControllerIndex()
+    {
+        $prefix = $_SERVER['SCRIPT_NAME'];
+        if (strpos($_SERVER['REQUEST_URI'], $prefix) !== 0) {
+            if (strrpos($prefix, '/index.php') + 10 == strlen($prefix)) {
+                $prefix = substr($prefix, 0, strlen($prefix) - 10);
+            }
+        }
+        return substr($_SERVER['REQUEST_URI'], strlen($prefix));
     }
 }

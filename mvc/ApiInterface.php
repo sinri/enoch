@@ -22,25 +22,17 @@ class ApiInterface
         $this->spirit = Spirit::getInstance();
     }
 
-    /**
-     * @return null|Spirit
-     */
-    public function getSpirit()
+    public function _work()
     {
-        return $this->spirit;
-    }
-
-    public function work()
-    {
-        $this->beforeWork();
+        $this->_beforeWork();
 
         $method = $this->spirit->getRequest("method", "", "/^[a-zA-Z0-9]+$/", $error);
         if (empty($method) || method_exists($this, $method)) {
             try {
                 $data = $this->$method();
-                $this->sayOK($data);
+                $this->_sayOK($data);
             } catch (BaseCodedException $exception) {
-                $this->sayFail([
+                $this->_sayFail([
                     "error_code" => $exception->getCode(),
                     "error_msg" => $exception->getMessage(),
                 ]);
@@ -50,16 +42,16 @@ class ApiInterface
         }
     }
 
-    protected function beforeWork()
+    protected function _beforeWork()
     {
     }
 
-    public function sayOK($data = "")
+    protected function _sayOK($data = "")
     {
         $this->spirit->jsonForAjax(Spirit::AJAX_JSON_CODE_OK, $data);
     }
 
-    public function sayFail($error = "")
+    protected function _sayFail($error = "")
     {
         $this->spirit->jsonForAjax(Spirit::AJAX_JSON_CODE_FAIL, $error);
     }
