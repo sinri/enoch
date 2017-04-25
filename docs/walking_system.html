@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Walking System</title>
+    <link rel="stylesheet" href="./static/common.css">
+</head>
+<body>
+<div class="outer_container">
+    <h1 class="inner_container bottom_line">Walking System of Enoch</h1>
+    <div class="inner_container">
+        <h2>Enoch and Walker</h2>
+        <div class="inner_container">
+            The two classes, Enoch and Walker, support the regular tasks to run under command line mode.
+            Enoch defines the configuration and necessary helpers, and provides a method called start to call.
+            According to the configuration, Enoch would decide what Walkers should be used and their order.
+            As decided, Enoch creates Walker Instances and run walk method of each.
+        </div>
+        <div class="inner_container">
+            To use the walking system, you need to create a directory for a project, and the name of it.
+            In this directory, set one class implementing Enoch, and also one class or more implementing Walker.
+            You then need to set up the configuration. By default, it uses file config.php to store.
+            You can override the method readConfig for your own to define config property.
+            You can set the work process in the method walk, which is the main function of a Walker instance.
+        </div>
+        <div class="inner_container">
+            In Walker class defined properties db, sftp, mailer, etc.
+            You can override installX methods for your needs, to fulfill the related property.
+            Initially, Spirit would be set as logger, and config would be referred from Enoch.
+        </div>
+    </div>
+    <div class="inner_container bottom_line">
+        <a href="./index.html">Contents</a>
+    </div>
+    <div class="footer_container">
+        Copyright 2017 Sinri Edogawa, Licensed under MIT.
+    </div>
+</div>
+</body>
+</html>
