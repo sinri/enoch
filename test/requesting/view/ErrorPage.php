@@ -9,5 +9,4 @@
 var_dump($url_path_parts);
 
 ?>
-
-xuwu
+error page view

@@ -6,7 +6,7 @@
  * Time: 10:45
  */
 
-namespace sinri\enoch\test\sample;
+namespace sinri\enoch\test\WalkingSystem\sample;
 
 use sinri\enoch\core\Spirit;
 use sinri\enoch\core\Walker;

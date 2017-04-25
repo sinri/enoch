@@ -6,7 +6,7 @@
  * Time: 10:25
  */
 
-namespace sinri\enoch\test\sample;
+namespace sinri\enoch\test\WalkingSystem\sample;
 
 use sinri\enoch\core\Enoch;
 
@@ -26,7 +26,7 @@ class SampleEnoch extends Enoch
 
     protected function getWalkerInstance($walker_name)
     {
-        $class_name="sinri\\enoch\\test\\sample\\".$walker_name.'Walker';
+        $class_name = "sinri\\enoch\\test\\WalkingSystem\\sample\\" . $walker_name . 'Walker';
         $walker=new $class_name($this->config);
         return $walker;
     }

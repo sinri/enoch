@@ -6,5 +6,5 @@ composer.phar
 composer.lock
 
 .idea
-/test/sample/not_commit_config.php
+/test/WalkingSystem/sample/not_commit_config.php
 /test/requesting/.htaccess

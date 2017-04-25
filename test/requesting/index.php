@@ -16,26 +16,16 @@ $lamech->setErrorPage(__DIR__ . '/ErrorPage.php');
 //$lamech->setSessionDir('S_DIR');
 //$lamech->startSession();
 
-$lamech->setViewDir(__DIR__);
+$lamech->setViewDir(__DIR__ . '/view');
 
 // If you want to use controller as api
 $lamech->setControllerDir(__DIR__ . '/controller');
 //$lamech->apiFromRequest("\\sinri\\enoch\\test\\requesting\\");
+$lamech->viewFromRequest();
 
-$lamech->setDefaultControllerName("ExampleAPI");
-$lamech->setDefaultMethodName("index");
+/**
+ * Test URL as
+ * http://localhost/leqee/fundament/enoch/test/requesting/?act=SampleView
+ * If any error, turn to ErrorPage.
+ */
 
-// If you like CI
-//$lamech->restfullyHandleRequest("\\sinri\\enoch\\test\\requesting\\controller\\");
-
-// If you like flight
-//$lamech->getRouter()->addRouteForClass('/',"\\sinri\\enoch\\test\\requesting\\controller\\ExampleAPI");
-$lamech->getRouter()->addRouteForFunction('/^\/$/', ["ExampleAPI", "index"]);
-$lamech->getRouter()->addRouteForFunction('/^\/closure$/', function ($parts) {
-    echo __METHOD__ . PHP_EOL;
-    echo __FILE__ . '@' . __LINE__ . PHP_EOL;
-    var_dump($parts);
-});
-$lamech->getRouter()->addRouteForView('/^\/error_page(\.+\.+\.+)?$/', "ErrorPage");
-
-$lamech->handleRequestWithRoutes("\\sinri\\enoch\\test\\requesting\\controller\\");

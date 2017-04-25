@@ -6,7 +6,7 @@
  * Time: 11:13
  */
 
-namespace sinri\enoch\test\sample;
+namespace sinri\enoch\test\WalkingSystem\sample;
 
 use sinri\enoch\core\LibMail;
 use sinri\enoch\core\Spirit;
@@ -55,7 +55,7 @@ class SendOrderWalker extends Walker
             'port'=>465,
             'display_name'=>'Enoch',
         ];
-        if(file_exists(__DIR__.'/not_commit_config.php')) {
+        if (file_exists(__DIR__ . '/not_commit_config.php')) {
             require __DIR__ . '/not_commit_config.php';
         }
         $mailer=new LibMail($mail_connection_config);

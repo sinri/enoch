@@ -165,24 +165,24 @@ class Lamech
     public function apiFromRequest($api_namespace = "\\")
     {
         $spirit = Spirit::getInstance();
-        $act = $spirit->getRequest("act", '', "/^[A-Za-z0-9_]+$/", $error);
+        $act = $spirit->getRequest("act", $this->default_controller_name, "/^[A-Za-z0-9_]+$/", $error);
         if ($error !== Spirit::REQUEST_NO_ERROR) {
-            $spirit->jsonForAjax(Spirit::AJAX_JSON_CODE_FAIL, "不正常的请求不理：" . $error);
+            $spirit->jsonForAjax(Spirit::AJAX_JSON_CODE_FAIL, "Not correct request " . $error);
             return;
         }
         try {
             $target_class = $api_namespace . $act;
             $target_class_path = $this->controller_dir . '/' . $act . '.php';
             if (!file_exists($target_class_path)) {
-                throw new BaseCodedException("模块已经死了");
+                throw new BaseCodedException("Controller lack.");
             }
             require_once $target_class_path;
             $api = new $target_class();
-            $api->_work();
+            $api->_work($this->default_method_name);
         } catch (BaseCodedException $exception) {
             $spirit->jsonForAjax(
                 Spirit::AJAX_JSON_CODE_FAIL,
-                ["error_code" => $exception->getCode(), "error_msg" => "请求处理异常：" . $exception->getMessage()]
+                ["error_code" => $exception->getCode(), "error_msg" => "Exception: " . $exception->getMessage()]
             );
         }
     }
@@ -205,15 +205,18 @@ class Lamech
             $target_class = $api_namespace . $act;
             $target_class_path = $this->controller_dir . '/' . $act . '.php';
             if (!file_exists($target_class_path)) {
-                throw new BaseCodedException("模块已经死了:" . $target_class_path);
+                throw new BaseCodedException("Controller lack: " . $target_class_path);
             }
             require_once $target_class_path;
             $api = new $target_class();
+            if (!method_exists($api, $method)) {
+                throw new BaseCodedException("Target class has not this method.");
+            }
             return call_user_func_array([$api, $method], $sub_paths);
         } catch (BaseCodedException $exception) {
             $spirit->jsonForAjax(
                 Spirit::AJAX_JSON_CODE_FAIL,
-                ["error_code" => $exception->getCode(), "error_msg" => "请求处理异常：" . $exception->getMessage()]
+                ["error_code" => $exception->getCode(), "error_msg" => "Exception: " . $exception->getMessage()]
             );
         }
     }
@@ -260,7 +263,7 @@ class Lamech
     {
         $prefix = $_SERVER['SCRIPT_NAME'];
         if (strpos($_SERVER['REQUEST_URI'], $prefix) !== 0) {
-            if (strrpos($prefix, '/index.php') + 10 == strlen($prefix)) {
+            if (strrpos($prefix, '/index_route.php') + 10 == strlen($prefix)) {
                 $prefix = substr($prefix, 0, strlen($prefix) - 10);
             }
         }
@@ -269,48 +272,57 @@ class Lamech
 
     public function handleRequestWithRoutes($api_namespace = "\\")
     {
-        $parts = $this->dividePath($path_string);
-        //echo $path_string.PHP_EOL;
-        //var_dump($parts);
+        try {
+            $parts = $this->dividePath($path_string);
+            //echo $path_string.PHP_EOL;
+            //var_dump($parts);
 
-        $route = $this->router->seekRoute($path_string);
-        //var_dump($route);
+            $route = $this->router->seekRoute($path_string);
+            //var_dump($route);
 
-        if ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_FUNCTION) {
-            $callable = $route[Naamah::ROUTE_PARAM_TARGET];
-            if (is_array($callable)) {
-                $act = $this->default_controller_name;
-                $method = $this->default_method_name;
-                if (count($callable) > 0) {
-                    $act = $callable[0];
-                    if (count($callable) > 1) {
-                        $method = $callable[1];
+            if ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_FUNCTION) {
+                $callable = $route[Naamah::ROUTE_PARAM_TARGET];
+                if (is_array($callable)) {
+                    $act = $this->default_controller_name;
+                    $method = $this->default_method_name;
+                    if (count($callable) > 0) {
+                        $act = $callable[0];
+                        if (count($callable) > 1) {
+                            $method = $callable[1];
+                        }
                     }
-                }
-                $target_class = $api_namespace . $act;
-                $target_class_path = $this->controller_dir . '/' . $act . '.php';
-                if (!file_exists($target_class_path)) {
-                    throw new BaseCodedException("模块已经死了:" . $target_class_path);
-                }
-                require_once $target_class_path;
-                $api = new $target_class();
+                    $target_class = $api_namespace . $act;
+                    $target_class_path = $this->controller_dir . '/' . $act . '.php';
+                    if (!file_exists($target_class_path)) {
+                        throw new BaseCodedException("Controller lack: " . $target_class_path);
+                    }
+                    require_once $target_class_path;
+                    $api = new $target_class();
 
-                call_user_func_array([$api, $method], $parts);
-            } elseif (is_callable($callable)) {
-                call_user_func_array($callable, $parts);
+                    call_user_func_array([$api, $method], $parts);
+                } elseif (is_callable($callable)) {
+                    call_user_func_array($callable, $parts);
+                } else {
+                    throw new BaseCodedException("DIED");
+                }
+            } elseif ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_VIEW) {
+                $spirit = Spirit::getInstance();
+                $target = $route[Naamah::ROUTE_PARAM_TARGET];
+                $view_path = $this->view_dir . '/' . $target . ".php";
+                if (!file_exists($view_path)) {
+                    throw new BaseCodedException("View missing", BaseCodedException::VIEW_NOT_EXISTS);
+                }
+                $spirit->displayPage($view_path, ["url_path_parts" => $parts]);
             } else {
-                throw new BaseCodedException("DIED");
+                throw new BaseCodedException("Naamah Error with unknown type");
             }
-        } elseif ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_VIEW) {
-            $spirit = Spirit::getInstance();
-            $target = $route[Naamah::ROUTE_PARAM_TARGET];
-            $view_path = $this->view_dir . '/' . $target . ".php";
-            if (!file_exists($view_path)) {
-                throw new BaseCodedException("View missing", BaseCodedException::VIEW_NOT_EXISTS);
-            }
-            $spirit->displayPage($view_path, ["url_path_parts" => $parts]);
-        } else {
-            throw new BaseCodedException("Naamah Error with unknown type");
+        } catch (\Exception $exception) {
+            $this->router->handleRouteError(
+                [
+                    "error_code" => $exception->getCode(),
+                    "error_message" => $exception->getMessage(),
+                ]
+            );
         }
     }
 

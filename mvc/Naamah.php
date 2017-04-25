@@ -8,6 +8,8 @@
 
 namespace sinri\enoch\mvc;
 
+use sinri\enoch\core\Spirit;
+
 /**
  * Class Naamah
  * Lamech's daughter with Zillah
@@ -25,11 +27,22 @@ class Naamah
     const ROUTE_TYPE_FUNCTION = 'function';
     const ROUTE_TYPE_VIEW = 'view';
 
+    private $error_handler = null;
+
+    /**
+     * @param null $error_handler
+     */
+    public function setErrorHandler($error_handler)
+    {
+        $this->error_handler = $error_handler;
+    }
+
     protected $routes = [];
 
     public function __construct()
     {
         $this->routes = [];
+        $this->error_handler = null;
     }
 
 //    public function addRouteForClass($regex,$class_name){
@@ -62,6 +75,7 @@ class Naamah
 
     public function seekRoute($path)
     {
+        if ($path == '') $path = '/';
         foreach ($this->routes as $route) {
             $regex = $route[self::ROUTE_PARAM_REGEX];
             if (preg_match($regex, $path)) {
@@ -69,5 +83,16 @@ class Naamah
             }
         }
         throw new BaseCodedException("No route matched.", BaseCodedException::NO_MATCHED_ROUTE);
+    }
+
+    public function handleRouteError($error_data = [])
+    {
+        if (is_string($this->error_handler) && file_exists($this->error_handler)) {
+            Spirit::getInstance()->displayPage($this->error_handler, $error_data);
+        } elseif (is_callable($this->error_handler)) {
+            call_user_func_array($this->error_handler, [$error_data]);
+        } else {
+            Spirit::getInstance()->errorPage(__METHOD__);
+        }
     }
 }
