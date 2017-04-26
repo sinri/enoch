@@ -25,6 +25,8 @@ engines:
         enabled: false
       Naming/ShortMethodName:
         enabled: false
+      Controversial/CamelCasePropertyName:
+        enabled: false
 ratings:
   paths:
   - "**.css"
