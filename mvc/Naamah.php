@@ -30,11 +30,11 @@ class Naamah
     private $error_handler = null;
 
     /**
-     * @param null $error_handler
+     * @param null $errorHandler
      */
-    public function setErrorHandler($error_handler)
+    public function setErrorHandler($errorHandler)
     {
-        $this->error_handler = $error_handler;
+        $this->error_handler = $errorHandler;
     }
 
     protected $routes = [];
@@ -63,12 +63,12 @@ class Naamah
         array_unshift($this->routes, $route);
     }
 
-    public function addRouteForView($regex, $view_name)
+    public function addRouteForView($regex, $viewName)
     {
         $route = [
             self::ROUTE_PARAM_TYPE => self::ROUTE_TYPE_VIEW,
             self::ROUTE_PARAM_REGEX => $regex,
-            self::ROUTE_PARAM_TARGET => $view_name,
+            self::ROUTE_PARAM_TARGET => $viewName,
         ];
         array_unshift($this->routes, $route);
     }
@@ -85,12 +85,12 @@ class Naamah
         throw new BaseCodedException("No route matched.", BaseCodedException::NO_MATCHED_ROUTE);
     }
 
-    public function handleRouteError($error_data = [])
+    public function handleRouteError($errorData = [])
     {
         if (is_string($this->error_handler) && file_exists($this->error_handler)) {
-            Spirit::getInstance()->displayPage($this->error_handler, $error_data);
+            Spirit::getInstance()->displayPage($this->error_handler, $errorData);
         } elseif (is_callable($this->error_handler)) {
-            call_user_func_array($this->error_handler, [$error_data]);
+            call_user_func_array($this->error_handler, [$errorData]);
         } else {
             Spirit::getInstance()->errorPage(__METHOD__);
         }

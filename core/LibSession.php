@@ -67,6 +67,9 @@ class LibSession implements \SessionHandlerInterface
     /**
      * Re-initialize existing session, or creates a new one.
      * Called when a session starts or when session_start() is invoked.
+     * @param $savePath
+     * @param $sessionName
+     * @return boolean
      */
     public function open($savePath, $sessionName)
     {
@@ -93,6 +96,8 @@ class LibSession implements \SessionHandlerInterface
      * Reads the session data from the session storage, and returns the results.
      * Called right after the session starts or when session_start() is called.
      * Please note that before this method is called SessionHandlerInterface::open() is invoked.
+     * @param $id
+     * @return string
      */
     public function read($id)
     {
@@ -104,6 +109,9 @@ class LibSession implements \SessionHandlerInterface
      * Called by session_write_close(), when session_register_shutdown() fails,
      * or during a normal shutdown.
      * Note: SessionHandlerInterface::close() is called immediately after this function.
+     * @param $id
+     * @param $data
+     * @return string
      */
     public function write($id, $data)
     {
@@ -114,6 +122,8 @@ class LibSession implements \SessionHandlerInterface
      * Destroys a session.
      * Called by session_regenerate_id() (with $destroy = TRUE),
      * session_destroy() and when session_decode() fails.
+     * @param $id
+     * @return boolean
      */
     public function destroy($id)
     {
@@ -129,6 +139,8 @@ class LibSession implements \SessionHandlerInterface
      * Cleans up expired sessions.
      * Called by session_start(), based on session.gc_divisor,
      * session.gc_probability and session.gc_maxlifetime settings.
+     * @param $maxlifetime
+     * @return boolean
      */
     public function gc($maxlifetime)
     {

@@ -17,7 +17,7 @@ abstract class Enoch
 
     public function __construct()
     {
-        $this->logger=Spirit::getInstance();
+        $this->logger = new Spirit();
     }
 
     public function initialize($projectName, $projectBase)

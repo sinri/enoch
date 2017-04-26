@@ -22,11 +22,11 @@ class ApiInterface
         $this->spirit = Spirit::getInstance();
     }
 
-    public function _work($default_method = '')
+    public function _work($defaultMethod = '')
     {
         $this->_beforeWork();
 
-        $method = $this->spirit->getRequest("method", $default_method, "/^[a-zA-Z0-9]+$/", $error);
+        $method = $this->spirit->getRequest("method", $defaultMethod, "/^[a-zA-Z0-9]+$/");
         if (empty($method) || method_exists($this, $method)) {
             try {
                 $data = $this->$method();
