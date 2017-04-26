@@ -192,9 +192,9 @@ class Lamech
     public function restfullyHandleRequest($api_namespace = "\\")
     {
         $spirit = Spirit::getInstance();
-        $request_method = $_SERVER['REQUEST_METHOD'];//HEAD,GET,POST,PUT,etc.
-        $query_string = $_SERVER['QUERY_STRING'];//act=ExampleAPI&method=test
-        $path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';// /a/b/c
+        //$request_method = $_SERVER['REQUEST_METHOD'];//HEAD,GET,POST,PUT,etc.
+        //$query_string = $_SERVER['QUERY_STRING'];//act=ExampleAPI&method=test
+        //$path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';// /a/b/c
 
         $act = $this->getController($sub_paths);
         $method = $this->default_method_name;//default method
@@ -221,6 +221,7 @@ class Lamech
                 ["error_code" => $exception->getCode(), "error_msg" => "Exception: " . $exception->getMessage()]
             );
         }
+        return false;
     }
 
     protected function getController(&$sub_paths = array())
@@ -232,10 +233,12 @@ class Lamech
 
         $controller_name = $this->default_controller_name;
         $sub_paths = [];
-        $spirit = Spirit::getInstance();
         $controllerIndex = $this->getControllerIndex();
         $pattern = '/^\/([^\?]*)(\?|$)/';
         $r = preg_match($pattern, $controllerIndex, $matches);
+        if (!$r) {
+            return $controller_name;
+        }
         $controller_array = explode('/', $matches[1]);
         if (count($controller_array) > 0) {
             $controller_name = $controller_array[0];
@@ -349,6 +352,9 @@ class Lamech
             $path_string = $this->getControllerIndex();
             $pattern = '/^\/([^\?]*)(\?|$)/';
             $r = preg_match($pattern, $path_string, $matches);
+            if (!$r) {
+                return '';
+            }
             $controller_array = explode('/', $matches[1]);
             if (count($controller_array) > 0) {
                 $sub_paths = array_filter($controller_array, function ($var) {
