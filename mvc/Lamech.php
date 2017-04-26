@@ -34,7 +34,7 @@ class Lamech
 
         $this->router = new Naamah();
 
-        $this->spirit = Spirit::getInstance();
+        $this->spirit = new Spirit();
     }
 
     /**

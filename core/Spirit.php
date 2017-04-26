@@ -36,7 +36,7 @@ class Spirit
         self::$useColoredTerminalOutput = $useColoredTerminalOutput;
     }
 
-    protected function __construct()
+    public function __construct()
     {
     }
 
