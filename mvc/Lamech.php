@@ -25,12 +25,12 @@ class Lamech
     private $default_controller_name = 'Welcome';
     private $default_method_name = 'index';
 
-    public function __construct($session_dir = null, $controller_dir = null, $view_dir = null, $error_page = null)
+    public function __construct($sessionDir = null, $controllerDir = null, $viewDir = null, $errorPage = null)
     {
-        $this->session_dir = $session_dir;
-        $this->controller_dir = $controller_dir;
-        $this->view_dir = $view_dir;
-        $this->error_page = $error_page;
+        $this->session_dir = $sessionDir;
+        $this->controller_dir = $controllerDir;
+        $this->view_dir = $viewDir;
+        $this->error_page = $errorPage;
 
         $this->router = new Naamah();
 
@@ -54,11 +54,11 @@ class Lamech
     }
 
     /**
-     * @param string $default_controller_name
+     * @param string $defaultControllerName
      */
-    public function setDefaultControllerName($default_controller_name)
+    public function setDefaultControllerName($defaultControllerName)
     {
-        $this->default_controller_name = $default_controller_name;
+        $this->default_controller_name = $defaultControllerName;
     }
 
     /**
@@ -70,11 +70,11 @@ class Lamech
     }
 
     /**
-     * @param string $default_method_name
+     * @param string $defaultMethodName
      */
-    public function setDefaultMethodName($default_method_name)
+    public function setDefaultMethodName($defaultMethodName)
     {
-        $this->default_method_name = $default_method_name;
+        $this->default_method_name = $defaultMethodName;
     }
 
     /**
@@ -86,11 +86,11 @@ class Lamech
     }
 
     /**
-     * @param null $error_page
+     * @param null $errorPage
      */
-    public function setErrorPage($error_page)
+    public function setErrorPage($errorPage)
     {
-        $this->error_page = $error_page;
+        $this->error_page = $errorPage;
     }
 
     /**
@@ -102,11 +102,11 @@ class Lamech
     }
 
     /**
-     * @param mixed $session_dir
+     * @param mixed $sessionDir
      */
-    public function setSessionDir($session_dir)
+    public function setSessionDir($sessionDir)
     {
-        $this->session_dir = $session_dir;
+        $this->session_dir = $sessionDir;
     }
 
     /**
@@ -118,11 +118,11 @@ class Lamech
     }
 
     /**
-     * @param mixed $controller_dir
+     * @param mixed $controllerDir
      */
-    public function setControllerDir($controller_dir)
+    public function setControllerDir($controllerDir)
     {
-        $this->controller_dir = $controller_dir;
+        $this->controller_dir = $controllerDir;
     }
 
     /**
@@ -134,11 +134,11 @@ class Lamech
     }
 
     /**
-     * @param mixed $view_dir
+     * @param mixed $viewDir
      */
-    public function setViewDir($view_dir)
+    public function setViewDir($viewDir)
     {
-        $this->view_dir = $view_dir;
+        $this->view_dir = $viewDir;
     }
 
     public function startSession()
@@ -184,7 +184,7 @@ class Lamech
 
     }
 
-    public function apiFromRequest($api_namespace = "\\")
+    public function apiFromRequest($apiNamespace = "\\")
     {
         //$spirit = Spirit::getInstance();
         $act = $this->spirit->getRequest("act", $this->default_controller_name, "/^[A-Za-z0-9_]+$/", $error);
@@ -193,7 +193,7 @@ class Lamech
             return;
         }
         try {
-            $target_class = $api_namespace . $act;
+            $target_class = $apiNamespace . $act;
             $target_class_path = $this->controller_dir . '/' . $act . '.php';
             if (!file_exists($target_class_path)) {
                 throw new BaseCodedException("Controller lack.");
@@ -209,7 +209,7 @@ class Lamech
         }
     }
 
-    public function restfullyHandleRequest($api_namespace = "\\")
+    public function restfullyHandleRequest($apiNamespace = "\\")
     {
         //$spirit = Spirit::getInstance();
         //$request_method = $_SERVER['REQUEST_METHOD'];//HEAD,GET,POST,PUT,etc.
@@ -224,7 +224,7 @@ class Lamech
         }
 
         try {
-            $target_class = $api_namespace . $act;
+            $target_class = $apiNamespace . $act;
             $target_class_path = $this->controller_dir . '/' . $act . '.php';
             if (!file_exists($target_class_path)) {
                 throw new BaseCodedException("Controller lack: " . $target_class_path);
@@ -244,15 +244,15 @@ class Lamech
         return false;
     }
 
-    protected function getController(&$sub_paths = array())
+    protected function getController(&$subPaths = array())
     {
         //$this->spirit = Spirit::getInstance();
         if ($this->spirit->isCLI()) {
-            return $this->getControllerForCLI($sub_paths);
+            return $this->getControllerForCLI($subPaths);
         }
 
         $controller_name = $this->default_controller_name;
-        $sub_paths = [];
+        $subPaths = [];
         $controllerIndex = $this->getControllerIndex();
         $pattern = '/^\/([^\?]*)(\?|$)/';
         $r = preg_match($pattern, $controllerIndex, $matches);
@@ -264,10 +264,10 @@ class Lamech
             $controller_name = $controller_array[0];
             if (count($controller_array) > 1) {
                 unset($controller_array[0]);
-                $sub_paths = array_filter($controller_array, function ($var) {
+                $subPaths = array_filter($controller_array, function ($var) {
                     return $var !== '';
                 });
-                $sub_paths = array_values($sub_paths);
+                $subPaths = array_values($subPaths);
             }
         }
 
@@ -277,18 +277,18 @@ class Lamech
         return $controller_name;
     }
 
-    protected function getControllerForCLI(&$sub_paths = array())
+    protected function getControllerForCLI(&$subPaths = array())
     {
         global $argv;
         global $argc;
         $controller_name = $this->default_controller_name;
-        $sub_paths = [];
-        $sub_paths = array();
+        $subPaths = [];
+        $subPaths = array();
         for ($i = 1; $i < $argc; $i++) {
             if ($i == 1) {
                 $controller_name = $argv[$i];
             } else {
-                $sub_paths[] = $argv[$i];
+                $subPaths[] = $argv[$i];
             }
         }
         return $controller_name;
@@ -307,14 +307,14 @@ class Lamech
         return substr($_SERVER['REQUEST_URI'], strlen($prefix));
     }
 
-    public function handleRequestWithRoutes($api_namespace = "\\")
+    public function handleRequestWithRoutes($apiNamespace = "\\")
     {
         try {
             $parts = $this->dividePath($path_string);
             $route = $this->router->seekRoute($path_string);
             if ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_FUNCTION) {
                 $callable = $route[Naamah::ROUTE_PARAM_TARGET];
-                $this->handleRouteWithFunction($callable, $api_namespace, $parts);
+                $this->handleRouteWithFunction($callable, $apiNamespace, $parts);
             } elseif ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_VIEW) {
                 $target = $route[Naamah::ROUTE_PARAM_TARGET];
                 $this->handleRouteWithView($target, $parts);
@@ -331,7 +331,7 @@ class Lamech
         }
     }
 
-    private function handleRouteWithFunction($callable, $api_namespace, $parts)
+    private function handleRouteWithFunction($callable, $apiNamespace, $parts)
     {
         if (is_array($callable)) {
             $act = $this->default_controller_name;
@@ -342,7 +342,7 @@ class Lamech
             if (count($callable) > 1) {
                 $method = $callable[1];
             }
-            $target_class = $api_namespace . $act;
+            $target_class = $apiNamespace . $act;
             $target_class_path = $this->controller_dir . '/' . $act . '.php';
             if (!file_exists($target_class_path)) {
                 throw new BaseCodedException("Controller lack: " . $target_class_path);
@@ -367,7 +367,7 @@ class Lamech
         $this->spirit->displayPage($view_path, ["url_path_parts" => $parts]);
     }
 
-    protected function dividePath(&$path_string = '')
+    protected function dividePath(&$pathString = '')
     {
         $sub_paths = array();
         //$spirit = Spirit::getInstance();
@@ -380,9 +380,9 @@ class Lamech
             return $sub_paths;
         }
 
-        $path_string = $this->getControllerIndex();
+        $pathString = $this->getControllerIndex();
         $pattern = '/^\/([^\?]*)(\?|$)/';
-        $r = preg_match($pattern, $path_string, $matches);
+        $r = preg_match($pattern, $pathString, $matches);
         if (!$r) {
             return '';
         }
