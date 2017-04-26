@@ -54,7 +54,9 @@ class Spirit
 
         $now = date('Y-m-d H:i:s');
 
+        $level_string = "[{$level}]";
         if (self::$useColoredTerminalOutput) {
+            /*
             if ($level === Spirit::LOG_ERROR) {
                 $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Red);
             } elseif ($level === Spirit::LOG_WARNING) {
@@ -62,16 +64,29 @@ class Spirit
             } else {
                 $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Green);
             }
-        } else {
-            $level_string = "[{$level}]";
+            */
+            switch ($level) {
+                case Spirit::LOG_ERROR:
+                    $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Red);
+                    break;
+                case Spirit::LOG_WARNING:
+                    $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Yellow);
+                    break;
+                default:
+                    $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Green);
+                    break;
+            }
         }
 
         $log = "{$now} {$level_string} {$message} |";
+        /*
         if (!is_string($object)) {
             $log .= json_encode($object, JSON_UNESCAPED_UNICODE);
         } else {
             $log .= $object;
         }
+        */
+        $log .= is_string($object) ? $object : json_encode($object, JSON_UNESCAPED_UNICODE);
         $log .= PHP_EOL;
 
         return $log;
@@ -163,9 +178,8 @@ class Spirit
             && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
         ) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -215,9 +229,9 @@ class Spirit
         require $filepath;
     }
 
-    public function errorPage($message = '', $exception = null, $view_path = null)
+    public function errorPage($message = '', $exception = null, $viewPath = null)
     {
-        if (empty($view_path) || !file_exists($view_path) || !is_file($view_path)) {
+        if (empty($viewPath) || !file_exists($viewPath) || !is_file($viewPath)) {
             echo "<h3>ERROR</h3><hr>" . PHP_EOL;
             echo "<pre>" . PHP_EOL;
             echo $message;
@@ -231,6 +245,6 @@ class Spirit
             echo "<p>Powered by Enoch Project</p>" . PHP_EOL;
             return;
         }
-        $this->displayPage($view_path, ['message' => $message, "exception" => $exception]);
+        $this->displayPage($viewPath, ['message' => $message, "exception" => $exception]);
     }
 }
