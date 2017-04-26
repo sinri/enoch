@@ -19,6 +19,8 @@ class Lamech
     protected $view_dir;
     protected $error_page;
 
+    protected $spirit;
+
     protected $router;
     private $default_controller_name = 'Welcome';
     private $default_method_name = 'index';
@@ -31,6 +33,8 @@ class Lamech
         $this->error_page = $error_page;
 
         $this->router = new Naamah();
+
+        $this->spirit = Spirit::getInstance();
     }
 
     /**
@@ -160,10 +164,10 @@ class Lamech
 
     public function viewFromRequest()
     {
-        $spirit = Spirit::getInstance();
-        $act = $spirit->getRequest("act", 'index', "/^[A-Za-z0-9_]+$/", $error);
+        //$spirit = Spirit::getInstance();
+        $act = $this->spirit->getRequest("act", 'index', "/^[A-Za-z0-9_]+$/", $error);
         if ($error === Spirit::REQUEST_REGEX_NOT_MATCH) {
-            $spirit->errorPage("Act input does not correct.", null, $this->error_page);
+            $this->spirit->errorPage("Act input does not correct.", null, $this->error_page);
             return;
         }
 
@@ -173,19 +177,19 @@ class Lamech
             if (!file_exists($view_path)) {
                 throw new BaseCodedException("Act missing", BaseCodedException::ACT_NOT_EXISTS);
             }
-            $spirit->displayPage($view_path, []);
+            $this->spirit->displayPage($view_path, []);
         } catch (\Exception $exception) {
-            $spirit->errorPage("Act met error: " . $exception->getMessage(), $exception, $this->error_page);
+            $this->spirit->errorPage("Act met error: " . $exception->getMessage(), $exception, $this->error_page);
         }
 
     }
 
     public function apiFromRequest($api_namespace = "\\")
     {
-        $spirit = Spirit::getInstance();
-        $act = $spirit->getRequest("act", $this->default_controller_name, "/^[A-Za-z0-9_]+$/", $error);
+        //$spirit = Spirit::getInstance();
+        $act = $this->spirit->getRequest("act", $this->default_controller_name, "/^[A-Za-z0-9_]+$/", $error);
         if ($error !== Spirit::REQUEST_NO_ERROR) {
-            $spirit->jsonForAjax(Spirit::AJAX_JSON_CODE_FAIL, "Not correct request " . $error);
+            $this->spirit->jsonForAjax(Spirit::AJAX_JSON_CODE_FAIL, "Not correct request " . $error);
             return;
         }
         try {
@@ -198,7 +202,7 @@ class Lamech
             $api = new $target_class();
             $api->_work($this->default_method_name);
         } catch (BaseCodedException $exception) {
-            $spirit->jsonForAjax(
+            $this->spirit->jsonForAjax(
                 Spirit::AJAX_JSON_CODE_FAIL,
                 ["error_code" => $exception->getCode(), "error_msg" => "Exception: " . $exception->getMessage()]
             );
@@ -207,7 +211,7 @@ class Lamech
 
     public function restfullyHandleRequest($api_namespace = "\\")
     {
-        $spirit = Spirit::getInstance();
+        //$spirit = Spirit::getInstance();
         //$request_method = $_SERVER['REQUEST_METHOD'];//HEAD,GET,POST,PUT,etc.
         //$query_string = $_SERVER['QUERY_STRING'];//act=ExampleAPI&method=test
         //$path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';// /a/b/c
@@ -232,7 +236,7 @@ class Lamech
             }
             return call_user_func_array([$api, $method], $sub_paths);
         } catch (BaseCodedException $exception) {
-            $spirit->jsonForAjax(
+            $this->spirit->jsonForAjax(
                 Spirit::AJAX_JSON_CODE_FAIL,
                 ["error_code" => $exception->getCode(), "error_msg" => "Exception: " . $exception->getMessage()]
             );
@@ -242,8 +246,8 @@ class Lamech
 
     protected function getController(&$sub_paths = array())
     {
-        $spirit = Spirit::getInstance();
-        if ($spirit->isCLI()) {
+        //$this->spirit = Spirit::getInstance();
+        if ($this->spirit->isCLI()) {
             return $this->getControllerForCLI($sub_paths);
         }
 
@@ -355,19 +359,19 @@ class Lamech
 
     private function handleRouteWithView($target, $parts)
     {
-        $spirit = Spirit::getInstance();
+        //$spirit = Spirit::getInstance();
         $view_path = $this->view_dir . '/' . $target . ".php";
         if (!file_exists($view_path)) {
             throw new BaseCodedException("View missing", BaseCodedException::VIEW_NOT_EXISTS);
         }
-        $spirit->displayPage($view_path, ["url_path_parts" => $parts]);
+        $this->spirit->displayPage($view_path, ["url_path_parts" => $parts]);
     }
 
     protected function dividePath(&$path_string = '')
     {
         $sub_paths = array();
-        $spirit = Spirit::getInstance();
-        if ($spirit->isCLI()) {
+        //$spirit = Spirit::getInstance();
+        if ($this->spirit->isCLI()) {
             global $argv;
             global $argc;
             for ($i = 1; $i < $argc; $i++) {
