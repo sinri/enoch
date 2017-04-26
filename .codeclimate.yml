@@ -14,6 +14,9 @@ engines:
     enabled: true
   phpmd:
     enabled: true
+    checks:
+      Controversial/Superglobals:
+      enabled: false
 ratings:
   paths:
   - "**.css"
@@ -26,3 +29,6 @@ ratings:
   - "**.rb"
 exclude_paths:
 - test/
+- SmallPHPMail/
+- docs/
+- vendor/
