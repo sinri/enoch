@@ -15,7 +15,7 @@ class LibSession implements \SessionHandlerInterface
     private $session_name;
     private $savePath;
 
-    protected function __construct()
+    public function __construct()
     {
         // NOTHING
     }

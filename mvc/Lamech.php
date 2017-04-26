@@ -139,7 +139,23 @@ class Lamech
 
     public function startSession()
     {
-        LibSession::sessionStart($this->session_dir);
+        // instead of this
+        //LibSession::sessionStart($this->session_dir);
+
+        if (!empty($session_dir)) {
+            session_save_path($session_dir);
+        }
+        //指定LibSession为会话处理代理
+        $handler = new LibSession();
+        session_set_save_handler($handler, true);
+        //启动新会话或者重用现有会话
+        session_start();
+        //获取当前会话 ID
+        $session_id = session_id();
+        $handler->setSessionID($session_id);
+        //读取会话名称
+        $session_name = session_name();
+        $handler->setSessionName($session_name);
     }
 
     public function viewFromRequest()
@@ -294,37 +310,10 @@ class Lamech
             $route = $this->router->seekRoute($path_string);
             if ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_FUNCTION) {
                 $callable = $route[Naamah::ROUTE_PARAM_TARGET];
-                if (is_array($callable)) {
-                    $act = $this->default_controller_name;
-                    $method = $this->default_method_name;
-                    if (count($callable) > 0) {
-                        $act = $callable[0];
-                        if (count($callable) > 1) {
-                            $method = $callable[1];
-                        }
-                    }
-                    $target_class = $api_namespace . $act;
-                    $target_class_path = $this->controller_dir . '/' . $act . '.php';
-                    if (!file_exists($target_class_path)) {
-                        throw new BaseCodedException("Controller lack: " . $target_class_path);
-                    }
-                    require_once $target_class_path;
-                    $api = new $target_class();
-
-                    call_user_func_array([$api, $method], $parts);
-                } elseif (is_callable($callable)) {
-                    call_user_func_array($callable, $parts);
-                } else {
-                    throw new BaseCodedException("DIED");
-                }
+                $this->handleRouteWithFunction($callable, $api_namespace, $parts);
             } elseif ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_VIEW) {
-                $spirit = Spirit::getInstance();
                 $target = $route[Naamah::ROUTE_PARAM_TARGET];
-                $view_path = $this->view_dir . '/' . $target . ".php";
-                if (!file_exists($view_path)) {
-                    throw new BaseCodedException("View missing", BaseCodedException::VIEW_NOT_EXISTS);
-                }
-                $spirit->displayPage($view_path, ["url_path_parts" => $parts]);
+                $this->handleRouteWithView($target, $parts);
             } else {
                 throw new BaseCodedException("Naamah Error with unknown type");
             }
@@ -338,6 +327,42 @@ class Lamech
         }
     }
 
+    private function handleRouteWithFunction($callable, $api_namespace, $parts)
+    {
+        if (is_array($callable)) {
+            $act = $this->default_controller_name;
+            $method = $this->default_method_name;
+            if (count($callable) > 0) {
+                $act = $callable[0];
+            }
+            if (count($callable) > 1) {
+                $method = $callable[1];
+            }
+            $target_class = $api_namespace . $act;
+            $target_class_path = $this->controller_dir . '/' . $act . '.php';
+            if (!file_exists($target_class_path)) {
+                throw new BaseCodedException("Controller lack: " . $target_class_path);
+            }
+            require_once $target_class_path;
+            $api = new $target_class();
+
+            return call_user_func_array([$api, $method], $parts);
+        } elseif (is_callable($callable)) {
+            return call_user_func_array($callable, $parts);
+        }
+        throw new BaseCodedException("DIED");
+    }
+
+    private function handleRouteWithView($target, $parts)
+    {
+        $spirit = Spirit::getInstance();
+        $view_path = $this->view_dir . '/' . $target . ".php";
+        if (!file_exists($view_path)) {
+            throw new BaseCodedException("View missing", BaseCodedException::VIEW_NOT_EXISTS);
+        }
+        $spirit->displayPage($view_path, ["url_path_parts" => $parts]);
+    }
+
     protected function dividePath(&$path_string = '')
     {
         $sub_paths = array();
@@ -348,21 +373,23 @@ class Lamech
             for ($i = 1; $i < $argc; $i++) {
                 $sub_paths[] = $argv[$i];
             }
-        } else {
-            $path_string = $this->getControllerIndex();
-            $pattern = '/^\/([^\?]*)(\?|$)/';
-            $r = preg_match($pattern, $path_string, $matches);
-            if (!$r) {
-                return '';
-            }
-            $controller_array = explode('/', $matches[1]);
-            if (count($controller_array) > 0) {
-                $sub_paths = array_filter($controller_array, function ($var) {
-                    return $var !== '';
-                });
-                $sub_paths = array_values($sub_paths);
-            }
+            return $sub_paths;
         }
+
+        $path_string = $this->getControllerIndex();
+        $pattern = '/^\/([^\?]*)(\?|$)/';
+        $r = preg_match($pattern, $path_string, $matches);
+        if (!$r) {
+            return '';
+        }
+        $controller_array = explode('/', $matches[1]);
+        if (count($controller_array) > 0) {
+            $sub_paths = array_filter($controller_array, function ($var) {
+                return $var !== '';
+            });
+            $sub_paths = array_values($sub_paths);
+        }
+
         return $sub_paths;
     }
 }
