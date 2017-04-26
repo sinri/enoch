@@ -20,10 +20,10 @@ abstract class Enoch
         $this->logger=Spirit::getInstance();
     }
 
-    public function initialize($project_name, $project_base)
+    public function initialize($projectName, $projectBase)
     {
-        $this->projectName=$project_name;
-        $this->projectBase=$project_base;
+        $this->projectName = $projectName;
+        $this->projectBase = $projectBase;
 
         $this->readConfig();
     }
@@ -63,15 +63,15 @@ abstract class Enoch
         return true;
     }
 
-    public function walkWith($walker_name)
+    public function walkWith($walkerName)
     {
-        $class_file=$this->projectBase.'/'.$walker_name.'Walker.php';
+        $class_file = $this->projectBase . '/' . $walkerName . 'Walker.php';
         if (!file_exists($class_file)) {
             $this->logger->log(Spirit::LOG_ERROR, "No such walker!");
             return false;
         }
         require_once $class_file;
-        $walker=$this->getWalkerInstance($walker_name);
+        $walker = $this->getWalkerInstance($walkerName);
         if (!is_a($walker, 'sinri\enoch\core\Walker')) {
             $this->logger->log(Spirit::LOG_ERROR, "The walker is not of sinri\\enoch\\core\\Walker");
             return false;

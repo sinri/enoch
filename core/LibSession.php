@@ -40,10 +40,14 @@ class LibSession implements \SessionHandlerInterface
         $this->session_name = $name;
     }
 
-    public static function sessionStart($session_dir = null)
+    /**
+     * @deprecated Better to use the method of Lamech with same name
+     * @param null $sessionDir
+     */
+    public static function sessionStart($sessionDir = null)
     {
-        if (!empty($session_dir)) {
-            session_save_path($session_dir);
+        if (!empty($sessionDir)) {
+            session_save_path($sessionDir);
         }
         //指定本类为会话处理代理
         $handler = new LibSession();

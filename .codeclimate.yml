@@ -19,6 +19,12 @@ engines:
         enabled: false
       Design/TooManyPublicMethods:
         enabled: false
+      Naming/LongVariable:
+        enabled: false
+      Naming/ShortVariable:
+        enabled: false
+      Naming/ShortMethodName:
+        enabled: false
 ratings:
   paths:
   - "**.css"

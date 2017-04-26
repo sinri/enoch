@@ -142,9 +142,9 @@ class LibMySQL
         return $this->pdo->errorInfo();
     }
 
-    public function quote($string, $parameter_type = \PDO::PARAM_STR)
+    public function quote($string, $parameterType = \PDO::PARAM_STR)
     {
-        return $this->pdo->quote($string, $parameter_type);
+        return $this->pdo->quote($string, $parameterType);
     }
 
     private function logSql($sql, $stmt)
@@ -176,11 +176,11 @@ class LibMySQL
         return $col;
     }
 
-    public function safeInsertOne($sql, $values = array(), &$inserted_id = 0, $pk = null)
+    public function safeInsertOne($sql, $values = array(), &$insertedId = 0, $pk = null)
     {
         $sth = $this->pdo->prepare($sql);
         $done = $sth->execute($values);
-        $inserted_id = $this->pdo->lastInsertId($pk);
+        $insertedId = $this->pdo->lastInsertId($pk);
         return $done;
     }
 

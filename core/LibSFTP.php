@@ -31,9 +31,9 @@ class LibSFTP
         }
     }
 
-    public function sendFileToSFtp($filename, $REMOTE_DIR, $LOCAL_DIR, &$error = '')
+    public function sendFileToSFtp($filename, $remoteDir, $localDir, &$error = '')
     {
-        $done = false;
+        //$done = false;
         $sftpStream = null;
         try {
             $resConnection = ssh2_connect($this->strServer, $this->strServerPort);
@@ -53,8 +53,8 @@ class LibSFTP
                 throw new \Exception("Auth Failed");
             }
 
-            $remote_path = $REMOTE_DIR . '/' . $filename;
-            $local_path = $LOCAL_DIR . '/' . $filename;
+            $remote_path = $remoteDir . '/' . $filename;
+            $local_path = $localDir . '/' . $filename;
 
             $sftpStream = fopen('ssh2.sftp://' . $resSFTP . $remote_path, 'w');
 
@@ -82,9 +82,10 @@ class LibSFTP
         return $done;
     }
 
-    public function downloadAndRemoveDir($remote_dir, $local_path, &$done_files = [], &$error = '')
+    public function downloadAndRemoveDir($remoteDir, $localPath, &$doneFiles = [], &$error = '')
     {
-        $done=false;
+        //$done=false;
+        $handler = null;
         try {
             $resConnection = ssh2_connect($this->strServer, $this->strServerPort);
             if (!$resConnection) {
@@ -96,8 +97,8 @@ class LibSFTP
                 throw new \Exception("ssh2_auth_password false");
             }
 
-            $file_name = '';
-            $handler = opendir('ssh2.sftp://'.$resSFTP.$remote_dir);
+            //$file_name = '';
+            $handler = opendir('ssh2.sftp://' . $resSFTP . $remoteDir);
 
             $i = 0;
             $files = array();
@@ -105,15 +106,15 @@ class LibSFTP
                 if ($file_name != "." && $file_name != ".." && $file_name != "archive") {
                     $files[] = $file_name ;
 
-                    $remote_file = $remote_dir .$file_name;
-                    $local_file = $local_path .$file_name;
+                    $remote_file = $remoteDir . $file_name;
+                    $local_file = $localPath . $file_name;
 
                     //将远程文件保存到本地
-                    $content = file_get_contents('ssh2.sftp://'.$resSFTP.$remote_dir.$file_name, 'rw');
-                    $result2 = '';
+                    $content = file_get_contents('ssh2.sftp://' . $resSFTP . $remoteDir . $file_name, 'rw');
+                    //$result2 = '';
                     $get_content = iconv('gbk', 'utf-8', $content);
 
-                    $data_to_write = fopen($local_path.$file_name, 'w+');
+                    $data_to_write = fopen($local_file, 'w+');
                     fwrite($data_to_write, $get_content);
 
                     fclose($data_to_write);
@@ -121,17 +122,18 @@ class LibSFTP
                     //将远程文件删除
                     // sh2_sftp_unlink($resSFTP, $remote_file);
                     //移动远程文件
-                    $remove_file = $remote_dir.'archive/'.$file_name;
-                    $res = ssh2_sftp_rename($resSFTP, $remote_file, $remove_file);
+                    $remove_file = $remoteDir . 'archive/' . $file_name;
+                    //$res =
+                    ssh2_sftp_rename($resSFTP, $remote_file, $remove_file);
 
                     //ClsTools::LogRecord("文件已下载 ： " .$file_name . "  文件移动:".$res ."</br>");
-                    $done_files[]=$file_name;
+                    $doneFiles[] = $file_name;
 
                     $i++;
                 }
             }
             $done=true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $error = 'Method '.__METHOD__.' Exception: '. $e->getMessage();
             $done=false;
         }
