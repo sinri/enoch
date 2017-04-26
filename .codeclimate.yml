@@ -16,7 +16,7 @@ engines:
     enabled: true
     checks:
       Controversial/Superglobals:
-      enabled: false
+        enabled: false
 ratings:
   paths:
   - "**.css"
