@@ -8,3 +8,4 @@ composer.lock
 .idea
 /test/WalkingSystem/sample/not_commit_config.php
 /test/requesting/.htaccess
+/codeclimate-config.patch
