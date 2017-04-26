@@ -29,6 +29,8 @@ class Naamah
 
     private $error_handler = null;
 
+    protected $spirit = null;
+
     /**
      * @param null $errorHandler
      */
@@ -43,6 +45,7 @@ class Naamah
     {
         $this->routes = [];
         $this->error_handler = null;
+        $this->spirit = new Spirit();
     }
 
 //    public function addRouteForClass($regex,$class_name){
@@ -88,11 +91,12 @@ class Naamah
     public function handleRouteError($errorData = [])
     {
         if (is_string($this->error_handler) && file_exists($this->error_handler)) {
-            Spirit::getInstance()->displayPage($this->error_handler, $errorData);
+            $this->spirit->displayPage($this->error_handler, $errorData);
+            return;
         } elseif (is_callable($this->error_handler)) {
             call_user_func_array($this->error_handler, [$errorData]);
-        } else {
-            Spirit::getInstance()->errorPage(__METHOD__);
+            return;
         }
+        $this->spirit->errorPage(__METHOD__);
     }
 }

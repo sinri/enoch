@@ -85,5 +85,5 @@ abstract class Enoch
         }
     }
 
-    abstract protected function getWalkerInstance($walker_name);
+    abstract protected function getWalkerInstance($walkerName);
 }

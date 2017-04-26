@@ -68,34 +68,32 @@ class LibMySQL
 
     public function getRow($sql)
     {
-        $stmt=$this->pdo->query($sql);
+        $stmt = $this->pdo->query($sql);
         $this->logSql($sql, $stmt);
-        $rows=$stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         if ($rows) {
             return $rows[0];
-        } else {
-            return false;
         }
+        return false;
     }
 
     public function getOne($sql)
     {
         //FETCH_BOTH
-        $stmt=$this->pdo->query($sql);
+        $stmt = $this->pdo->query($sql);
         $this->logSql($sql, $stmt);
         // $rows=$stmt->fetchAll(\PDO::FETCH_BOTH);//var_dump($rows);
-        $rows=$stmt->fetchAll(\PDO::FETCH_ASSOC);//var_dump($rows);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);//var_dump($rows);
         if ($rows) {
             $row = $rows[0];
             if ($row) {
-                $row=array_values($row);
+                $row = array_values($row);
                 return $row[0];
             } else {
                 return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     public function exec($sql)
@@ -108,12 +106,11 @@ class LibMySQL
     public function insert($sql)
     {
         $this->logSql($sql, true);
-        $rows=$this->pdo->exec($sql);
+        $rows = $this->pdo->exec($sql);
         if ($rows) {
             return $this->pdo->lastInsertId();
-        } else {
-            return false;
         }
+        return false;
     }
 
     public function beginTransaction()

@@ -27,18 +27,18 @@ class ApiInterface
         $this->_beforeWork();
 
         $method = $this->spirit->getRequest("method", $defaultMethod, "/^[a-zA-Z0-9]+$/");
-        if (empty($method) || method_exists($this, $method)) {
-            try {
-                $data = $this->$method();
-                $this->_sayOK($data);
-            } catch (BaseCodedException $exception) {
-                $this->_sayFail([
-                    "error_code" => $exception->getCode(),
-                    "error_msg" => $exception->getMessage(),
-                ]);
-            }
-        } else {
+        if (empty($method) || !method_exists($this, $method)) {
             throw new BaseCodedException("Method not exists", BaseCodedException::METHOD_NOT_EXISTS);
+        }
+
+        try {
+            $data = $this->$method();
+            $this->_sayOK($data);
+        } catch (BaseCodedException $exception) {
+            $this->_sayFail([
+                "error_code" => $exception->getCode(),
+                "error_msg" => $exception->getMessage(),
+            ]);
         }
     }
 

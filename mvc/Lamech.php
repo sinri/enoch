@@ -287,9 +287,9 @@ class Lamech
         for ($i = 1; $i < $argc; $i++) {
             if ($i == 1) {
                 $controller_name = $argv[$i];
-            } else {
-                $subPaths[] = $argv[$i];
+                continue;
             }
+            $subPaths[] = $argv[$i];
         }
         return $controller_name;
     }

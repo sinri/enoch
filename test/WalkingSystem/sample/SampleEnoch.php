@@ -24,9 +24,9 @@ class SampleEnoch extends Enoch
         parent::readConfig();
     }
 
-    protected function getWalkerInstance($walker_name)
+    protected function getWalkerInstance($walkerName)
     {
-        $class_name = "sinri\\enoch\\test\\WalkingSystem\\sample\\" . $walker_name . 'Walker';
+        $class_name = "sinri\\enoch\\test\\WalkingSystem\\sample\\" . $walkerName . 'Walker';
         $walker=new $class_name($this->config);
         return $walker;
     }
