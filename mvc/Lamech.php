@@ -148,18 +148,20 @@ class Lamech
         $act = $spirit->getRequest("act", 'index', "/^[A-Za-z0-9_]+$/", $error);
         if ($error === Spirit::REQUEST_REGEX_NOT_MATCH) {
             $spirit->errorPage("Act input does not correct.", null, $this->error_page);
-        } else {
-            //act 种类
-            try {
-                $view_path = $this->view_dir . '/' . $act . ".php";
-                if (!file_exists($view_path)) {
-                    throw new BaseCodedException("Act missing", BaseCodedException::ACT_NOT_EXISTS);
-                }
-                $spirit->displayPage($view_path, []);
-            } catch (\Exception $exception) {
-                $spirit->errorPage("Act met error: " . $exception->getMessage(), $exception, $this->error_page);
-            }
+            return;
         }
+
+        //act 种类
+        try {
+            $view_path = $this->view_dir . '/' . $act . ".php";
+            if (!file_exists($view_path)) {
+                throw new BaseCodedException("Act missing", BaseCodedException::ACT_NOT_EXISTS);
+            }
+            $spirit->displayPage($view_path, []);
+        } catch (\Exception $exception) {
+            $spirit->errorPage("Act met error: " . $exception->getMessage(), $exception, $this->error_page);
+        }
+
     }
 
     public function apiFromRequest($api_namespace = "\\")
@@ -223,38 +225,48 @@ class Lamech
 
     protected function getController(&$sub_paths = array())
     {
+        $spirit = Spirit::getInstance();
+        if ($spirit->isCLI()) {
+            return $this->getControllerForCLI($sub_paths);
+        }
+
         $controller_name = $this->default_controller_name;
         $sub_paths = [];
         $spirit = Spirit::getInstance();
-        if ($spirit->isCLI()) {
-            global $argv;
-            global $argc;
-            $sub_paths = array();
-            for ($i = 1; $i < $argc; $i++) {
-                if ($i == 1) {
-                    $controller_name = $argv[$i];
-                } else {
-                    $sub_paths[] = $argv[$i];
-                }
-            }
-        } else {
-            $controllerIndex = $this->getControllerIndex();
-            $pattern = '/^\/([^\?]*)(\?|$)/';
-            $r = preg_match($pattern, $controllerIndex, $matches);
-            $controller_array = explode('/', $matches[1]);
-            if (count($controller_array) > 0) {
-                $controller_name = $controller_array[0];
-                if (count($controller_array) > 1) {
-                    unset($controller_array[0]);
-                    $sub_paths = array_filter($controller_array, function ($var) {
-                        return $var !== '';
-                    });
-                    $sub_paths = array_values($sub_paths);
-                }
+        $controllerIndex = $this->getControllerIndex();
+        $pattern = '/^\/([^\?]*)(\?|$)/';
+        $r = preg_match($pattern, $controllerIndex, $matches);
+        $controller_array = explode('/', $matches[1]);
+        if (count($controller_array) > 0) {
+            $controller_name = $controller_array[0];
+            if (count($controller_array) > 1) {
+                unset($controller_array[0]);
+                $sub_paths = array_filter($controller_array, function ($var) {
+                    return $var !== '';
+                });
+                $sub_paths = array_values($sub_paths);
             }
         }
+
         if (empty($controller_name)) {
             $controller_name = $this->default_controller_name;
+        }
+        return $controller_name;
+    }
+
+    protected function getControllerForCLI(&$sub_paths = array())
+    {
+        global $argv;
+        global $argc;
+        $controller_name = $this->default_controller_name;
+        $sub_paths = [];
+        $sub_paths = array();
+        for ($i = 1; $i < $argc; $i++) {
+            if ($i == 1) {
+                $controller_name = $argv[$i];
+            } else {
+                $sub_paths[] = $argv[$i];
+            }
         }
         return $controller_name;
     }
@@ -262,11 +274,13 @@ class Lamech
     protected function getControllerIndex()
     {
         $prefix = $_SERVER['SCRIPT_NAME'];
-        if (strpos($_SERVER['REQUEST_URI'], $prefix) !== 0) {
-            if (strrpos($prefix, '/index_route.php') + 10 == strlen($prefix)) {
-                $prefix = substr($prefix, 0, strlen($prefix) - 10);
-            }
+        if (
+            (strpos($_SERVER['REQUEST_URI'], $prefix) !== 0)
+            && (strrpos($prefix, '/index_route.php') + 10 == strlen($prefix))
+        ) {
+            $prefix = substr($prefix, 0, strlen($prefix) - 10);
         }
+
         return substr($_SERVER['REQUEST_URI'], strlen($prefix));
     }
 
@@ -274,12 +288,7 @@ class Lamech
     {
         try {
             $parts = $this->dividePath($path_string);
-            //echo $path_string.PHP_EOL;
-            //var_dump($parts);
-
             $route = $this->router->seekRoute($path_string);
-            //var_dump($route);
-
             if ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_FUNCTION) {
                 $callable = $route[Naamah::ROUTE_PARAM_TARGET];
                 if (is_array($callable)) {

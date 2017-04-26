@@ -17,6 +17,8 @@ engines:
     checks:
       Controversial/Superglobals:
         enabled: false
+      Design/TooManyPublicMethods:
+        enabled: false
 ratings:
   paths:
   - "**.css"
