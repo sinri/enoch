@@ -107,14 +107,14 @@ class Spirit
     const REQUEST_FIELD_NOT_FOUND = 1;
     const REQUEST_REGEX_NOT_MATCH = 2;
 
-    public function getRequest($name, $default = null, $regex = null, &$error = 0)
+    public function safeReadArray($target, $name, $default = null, $regex = null, &$error = 0)
     {
         $error = self::REQUEST_NO_ERROR;
-        if (!isset($_REQUEST[$name])) {
+        if (!isset($target[$name])) {
             $error = self::REQUEST_FIELD_NOT_FOUND;
             return $default;
         }
-        $value = $_REQUEST[$name];
+        $value = $target[$name];
         if ($regex === null) {
             return $value;
         }
@@ -122,40 +122,24 @@ class Spirit
             $error = self::REQUEST_REGEX_NOT_MATCH;
             return $default;
         }
+        return $value;
+    }
+
+    public function getRequest($name, $default = null, $regex = null, &$error = 0)
+    {
+        $value = $this->safeReadArray($_REQUEST, $name, $default, $regex, $error);
         return $value;
     }
 
     public function readGet($name, $default = null, $regex = null, &$error = 0)
     {
-        if (!isset($_GET[$name])) {
-            $error = self::REQUEST_FIELD_NOT_FOUND;
-            return $default;
-        }
-        $value = $_GET[$name];
-        if ($regex === null) {
-            return $value;
-        }
-        if (!preg_match($regex, $value)) {
-            $error = self::REQUEST_REGEX_NOT_MATCH;
-            return $default;
-        }
+        $value = $this->safeReadArray($_GET, $name, $default, $regex, $error);
         return $value;
     }
 
     public function readPost($name, $default = null, $regex = null, &$error = 0)
     {
-        if (!isset($_POST[$name])) {
-            $error = self::REQUEST_FIELD_NOT_FOUND;
-            return $default;
-        }
-        $value = $_POST[$name];
-        if ($regex === null) {
-            return $value;
-        }
-        if (!preg_match($regex, $value)) {
-            $error = self::REQUEST_REGEX_NOT_MATCH;
-            return $default;
-        }
+        $value = $this->safeReadArray($_POST, $name, $default, $regex, $error);
         return $value;
     }
 
