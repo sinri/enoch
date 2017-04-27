@@ -315,12 +315,13 @@ class Lamech
             if ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_FUNCTION) {
                 $callable = $route[Naamah::ROUTE_PARAM_TARGET];
                 $this->handleRouteWithFunction($callable, $apiNamespace, $parts);
+                return;
             } elseif ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_VIEW) {
                 $target = $route[Naamah::ROUTE_PARAM_TARGET];
                 $this->handleRouteWithView($target, $parts);
-            } else {
-                throw new BaseCodedException("Naamah Error with unknown type");
+                return;
             }
+            throw new BaseCodedException("Naamah Error with unknown type");
         } catch (\Exception $exception) {
             $this->router->handleRouteError(
                 [
