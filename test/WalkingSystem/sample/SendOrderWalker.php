@@ -59,12 +59,22 @@ class SendOrderWalker extends Walker
             require __DIR__ . '/not_commit_config.php';
         }
         $mailer=new LibMail($mail_connection_config);
+
+
         $mail_info=[
-            "to"=>['ljni'=>'ljni@leqee.com'],
-            "subject"=>"Enoch Test Mail",
+            "to" => 'ljni@leqee.com',
+            "subject" => "Enoch Test Mail Old Style",
             "body"=>"And Enoch walked with God: and he <i>[was]</i> not; for God took him.",
         ];
         $done=$mailer->sendMail($mail_info);
+
+        $done = $mailer->prepareSMTP()
+            ->addReceiver("ljni@leqee.com", "ljni")
+            ->addSubject("Enoch Test Mail")
+            ->addHTMLBody("And Enoch walked with God: and he <i>[was]</i> not; for God took him.")
+            ->finallySend();
+
+
         $this->logger->log(($done?Spirit::LOG_INFO:Spirit::LOG_ERROR),"Sending mail",$done);
     }
 }

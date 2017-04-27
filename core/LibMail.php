@@ -14,6 +14,8 @@ use sinri\enoch\SmallPHPMail\PHPMailer;
 class LibMail
 {
     private $mail;
+    private $smtpInfo;
+    private $spirit;
 
     /**
      * LibMail constructor.
@@ -23,18 +25,21 @@ class LibMail
      */
     public function __construct($params)
     {
-        $this->mail = new PHPMailer();
-        $this->mail->Host = $params['host'];// Specify main and backup SMTP servers
-        $this->mail->SMTPAuth = $params['smtp_auth'];// Enable SMTP authentication
-        $this->mail->Username = $params['username'];// SMTP username
-        $this->mail->Password = $params['password'];// SMTP password
-        $this->mail->SMTPSecure = $params['smtp_secure'];// Enable TLS encryption, `ssl` also accepted
-        $this->mail->Port = $params['port'];// TCP port to connect to
+        $this->smtpInfo = [];
+        $this->spirit = new Spirit();
+        $this->smtpInfo['host'] = $this->spirit->safeReadArray($params, 'host', '');
+        $this->smtpInfo['smtp_auth'] = $this->spirit->safeReadArray($params, 'smtp_auth', '');
+        $this->smtpInfo['username'] = $this->spirit->safeReadArray($params, 'username', '');
+        $this->smtpInfo['password'] = $this->spirit->safeReadArray($params, 'password', '');
+        $this->smtpInfo['smtp_secure'] = $this->spirit->safeReadArray($params, 'smtp_secure', '');
+        $this->smtpInfo['port'] = $this->spirit->safeReadArray($params, 'port', '');
+        $this->smtpInfo['display_name'] = $this->spirit->safeReadArray($params, 'display_name', '');
 
-        $this->mail->setFrom($params['username'], $params['display_name']);
+        $this->mail = new PHPMailer();
     }
 
     /**
+     * @deprecated
      * @param $params
      * @return bool
      *
@@ -48,76 +53,161 @@ class LibMail
      * 7. html: Boolean true for default
      * 8. body: String
      */
-    public function sendMail($params){
+    public function sendMail($params)
+    {
+        $this->prepareSMTP();
         $this->mail->isSMTP();
 
-        if(is_array($params['to'])){
-            foreach ($params['to'] as $name => $mail){
-                $this->mail->addAddress($mail,$name);
+        if (!is_array($params['to'])) {
+            $params['to'] = [
+                '' => $params['to'],
+            ];
+        }
+        foreach ($params['to'] as $name => $mail) {
+            $this->mail->addAddress($mail, $name);
+        }
+
+        if (isset($params['reply_to'])) {
+            if (!is_array($params['reply_to'])) {
+                $params['reply_to'] = [
+                    '' => $params['reply_to'],
+                ];
+            }
+            foreach ($params['reply_to'] as $name => $mail) {
+                $this->mail->addReplyTo($mail, $name);
             }
         }
-        else{
-            $this->mail->addAddress($params['to']);
-        }
-        if(isset($params['reply_to'])){
-            if(is_array($params['reply_to'])){
-                foreach ($params['reply_to'] as $name => $mail){
-                    $this->mail->addReplyTo($mail,$name);
-                }
+        if (isset($params['cc'])) {
+            if (!is_array($params['cc'])) {
+                $params['cc'] = [
+                    '' => $params['cc'],
+                ];
             }
-            else{
-                $this->mail->addReplyTo($params['reply_to']);
+            foreach ($params['cc'] as $name => $mail) {
+                $this->mail->addCC($mail, $name);
             }
         }
-        if(isset($params['cc'])){
-            if(is_array($params['cc'])){
-                foreach ($params['cc'] as $name => $mail){
-                    $this->mail->addCC($mail,$name);
-                }
+        if (isset($params['bcc'])) {
+            if (!is_array($params['bcc'])) {
+                $params['bcc'] = [
+                    '' => $params['bcc'],
+                ];
             }
-            else{
-                $this->mail->addCC($params['cc']);
-            }
-        }
-        if(isset($params['bcc'])){
-            if(is_array($params['bcc'])){
-                foreach ($params['bcc'] as $name => $mail){
-                    $this->mail->addBCC($mail,$name);
-                }
-            }
-            else{
-                $this->mail->addBCC($params['bcc']);
+            foreach ($params['bcc'] as $name => $mail) {
+                $this->mail->addBCC($mail, $name);
             }
         }
 
-        if(isset($params['attachment'])){
-            if(is_array($params['attachment'])){
-                foreach ($params['attachment'] as $name => $file_path){
-                    $this->mail->addAttachment($file_path,$name);
-                }
+        if (isset($params['attachment'])) {
+            if (!is_array($params['attachment'])) {
+                $params['attachment'] = [
+                    '' => $params['attachment'],
+                ];
             }
-            else{
-                $this->mail->addAttachment($params['attachment']);
+            foreach ($params['attachment'] as $name => $file_path) {
+                $this->mail->addAttachment($file_path, $name);
             }
         }
 
         $this->mail->Subject = $params['subject'];
 
-        if(isset($params['html']) && $params['html']===false) {
+        /*
+        if (isset($params['html']) && $params['html'] === false) {
             $this->mail->Body = $params['body'];
-        }else{
+        } else {
             $this->mail->isHTML(true);// Set email format to HTML
             $this->mail->Body = $params['body'];
             $this->mail->AltBody = $this->turnHTML2TEXT($params['body']);
         }
+        */
 
-        $done=$this->mail->send();
+        $this->mail->Body = $params['body'];
+        if (!isset($params['html']) || $params['html'] === false) {
+            $this->mail->isHTML(true);// Set email format to HTML
+            $this->mail->AltBody = $this->turnHTML2TEXT($params['body']);
+        }
+
+        $done = $this->mail->send();
         return $done;
     }
 
-    private function turnHTML2TEXT($html){
-        $html=preg_replace('/\<[Bb][Rr] *\/?\>/',PHP_EOL,$html);
-        $html=strip_tags($html);
+    private function turnHTML2TEXT($html)
+    {
+        $html = preg_replace('/\<[Bb][Rr] *\/?\>/', PHP_EOL, $html);
+        $html = strip_tags($html);
         return $html;
+    }
+
+    // new way
+    public function prepareSMTP()
+    {
+        $this->mail = new PHPMailer();
+        $this->mail->Host = $this->smtpInfo['host'];// Specify main and backup SMTP servers
+        $this->mail->SMTPAuth = $this->smtpInfo['smtp_auth'];// Enable SMTP authentication
+        $this->mail->Username = $this->smtpInfo['username'];// SMTP username
+        $this->mail->Password = $this->smtpInfo['password'];// SMTP password
+        $this->mail->SMTPSecure = $this->smtpInfo['smtp_secure'];// Enable TLS encryption, `ssl` also accepted
+        $this->mail->Port = $this->smtpInfo['port'];// TCP port to connect to
+
+        $this->mail->setFrom($this->smtpInfo['username'], $this->smtpInfo['display_name']);
+
+        $this->mail->isSMTP();
+        return $this;
+    }
+
+    public function addReceiver($address, $name = '')
+    {
+        $this->mail->addAddress($address, $name);
+        return $this;
+    }
+
+    public function addReplyAddress($address, $name)
+    {
+        $this->mail->addReplyTo($address, $name);
+        return $this;
+    }
+
+    public function addCCAddress($address, $name)
+    {
+        $this->mail->addCC($address, $name);
+        return $this;
+    }
+
+    public function addBCCAddress($address, $name)
+    {
+        $this->mail->addBCC($address, $name);
+        return $this;
+    }
+
+    public function addAttachment($filepath, $name = '')
+    {
+        $this->mail->addAttachment($filepath, $name);
+        return $this;
+    }
+
+    public function addSubject($subject)
+    {
+        $this->mail->Subject = $subject;
+        return $this;
+    }
+
+    public function addTextBody($text)
+    {
+        $this->mail->Body = $text;
+        return $this;
+    }
+
+    public function addHTMLBody($htmlCode)
+    {
+        $this->mail->isHTML(true);// Set email format to HTML
+        $this->mail->Body = $htmlCode;
+        $this->mail->AltBody = $this->turnHTML2TEXT($htmlCode);
+        return $this;
+    }
+
+    public function finallySend()
+    {
+        $done = $this->mail->send();
+        return $done;
     }
 }
