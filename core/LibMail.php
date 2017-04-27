@@ -58,68 +58,33 @@ class LibMail
         $this->prepareSMTP();
         $this->mail->isSMTP();
 
-        if (!is_array($params['to'])) {
-            $params['to'] = [
-                '' => $params['to'],
-            ];
+        foreach (['to', 'reply_to', 'cc', 'bcc', 'attachment'] as $item_name) {
+            if (!isset($params[$item_name])) {
+                $params[$item_name] = [];
+                continue;
+            }
+            if (!is_array($params[$item_name])) {
+                $params[$item_name] = ['' => $params[$item_name]];
+            }
         }
+
         foreach ($params['to'] as $name => $mail) {
             $this->mail->addAddress($mail, $name);
         }
-
-        if (isset($params['reply_to'])) {
-            if (!is_array($params['reply_to'])) {
-                $params['reply_to'] = [
-                    '' => $params['reply_to'],
-                ];
-            }
-            foreach ($params['reply_to'] as $name => $mail) {
-                $this->mail->addReplyTo($mail, $name);
-            }
+        foreach ($params['reply_to'] as $name => $mail) {
+            $this->mail->addReplyTo($mail, $name);
         }
-        if (isset($params['cc'])) {
-            if (!is_array($params['cc'])) {
-                $params['cc'] = [
-                    '' => $params['cc'],
-                ];
-            }
-            foreach ($params['cc'] as $name => $mail) {
-                $this->mail->addCC($mail, $name);
-            }
+        foreach ($params['cc'] as $name => $mail) {
+            $this->mail->addCC($mail, $name);
         }
-        if (isset($params['bcc'])) {
-            if (!is_array($params['bcc'])) {
-                $params['bcc'] = [
-                    '' => $params['bcc'],
-                ];
-            }
-            foreach ($params['bcc'] as $name => $mail) {
-                $this->mail->addBCC($mail, $name);
-            }
+        foreach ($params['bcc'] as $name => $mail) {
+            $this->mail->addBCC($mail, $name);
         }
-
-        if (isset($params['attachment'])) {
-            if (!is_array($params['attachment'])) {
-                $params['attachment'] = [
-                    '' => $params['attachment'],
-                ];
-            }
-            foreach ($params['attachment'] as $name => $file_path) {
-                $this->mail->addAttachment($file_path, $name);
-            }
+        foreach ($params['attachment'] as $name => $file_path) {
+            $this->mail->addAttachment($file_path, $name);
         }
 
         $this->mail->Subject = $params['subject'];
-
-        /*
-        if (isset($params['html']) && $params['html'] === false) {
-            $this->mail->Body = $params['body'];
-        } else {
-            $this->mail->isHTML(true);// Set email format to HTML
-            $this->mail->Body = $params['body'];
-            $this->mail->AltBody = $this->turnHTML2TEXT($params['body']);
-        }
-        */
 
         $this->mail->Body = $params['body'];
         if (!isset($params['html']) || $params['html'] === false) {
