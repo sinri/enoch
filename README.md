@@ -1,6 +1,10 @@
 # Enoch 
 
-http://enoch.sinri.cc/ [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/sinri/enoch/master/LICENSE) [![Packagist](https://img.shields.io/packagist/v/sinri/enoch.svg)](https://packagist.org/packages/sinri/enoch)
+http://enoch.sinri.cc/ 
+
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/sinri/enoch/master/LICENSE) 
+[![Packagist](https://img.shields.io/packagist/v/sinri/enoch.svg)](https://packagist.org/packages/sinri/enoch) 
+[![Code Climate](https://codeclimate.com/github/sinri/enoch/badges/gpa.svg)](https://codeclimate.com/github/sinri/enoch)
 
 PHP Framework for integrating. 
 Mainly for regular work run under CLI. 
