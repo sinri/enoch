@@ -56,15 +56,6 @@ class Spirit
 
         $level_string = "[{$level}]";
         if (self::$useColoredTerminalOutput) {
-            /*
-            if ($level === Spirit::LOG_ERROR) {
-                $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Red);
-            } elseif ($level === Spirit::LOG_WARNING) {
-                $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Yellow);
-            } else {
-                $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Green);
-            }
-            */
             switch ($level) {
                 case Spirit::LOG_ERROR:
                     $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Red);
@@ -79,13 +70,6 @@ class Spirit
         }
 
         $log = "{$now} {$level_string} {$message} |";
-        /*
-        if (!is_string($object)) {
-            $log .= json_encode($object, JSON_UNESCAPED_UNICODE);
-        } else {
-            $log .= $object;
-        }
-        */
         $log .= is_string($object) ? $object : json_encode($object, JSON_UNESCAPED_UNICODE);
         $log .= PHP_EOL;
 
