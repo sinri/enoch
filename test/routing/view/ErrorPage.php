@@ -11,5 +11,7 @@
 <head><title>ERROR</title></head>
 <body>
 <?php echo __FILE__; ?>
+<hr>
+<?php print_r($url_path_parts); ?>
 </body>
 </html>

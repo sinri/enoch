@@ -24,7 +24,7 @@ $lamech->getRouter()->addRouteForFunction('/^\/closure$/', function ($parts) {
     echo __FILE__ . '@' . __LINE__ . PHP_EOL;
     var_dump($parts);
 });
-$lamech->getRouter()->addRouteForView('/^\/error_page(\.+\.+\.+)?$/', "ErrorPage");
+$lamech->getRouter()->addRouteForView('/^\/error_page(\/.+\/.+\/.+)?$/', "ErrorPage");
 
 //since v1.1.0 method support
 $lamech->getRouter()->addRouteForFunction(
@@ -53,6 +53,7 @@ $lamech->getRouter()->addRouteForFunction(
     \sinri\enoch\core\Spirit::METHOD_GET
 );
 
+// pass the elements within the path to target
 $lamech->getRouter()->addRouteForFunction(
     '/^\/simple_url\/\d+(\/\d+)?$/',
     ["SampleHandler", "handleCommonRequest"],
