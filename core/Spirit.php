@@ -91,6 +91,14 @@ class Spirit
     const REQUEST_FIELD_NOT_FOUND = 1;
     const REQUEST_REGEX_NOT_MATCH = 2;
 
+    const METHOD_HEAD = "HEAD";//since v1.1.0
+    const METHOD_GET = "GET";//since v1.1.0
+    const METHOD_POST = "POST";//since v1.1.0
+    const METHOD_PUT = "PUT";//since v1.1.0
+    const METHOD_DELETE = "DELETE";//since v1.1.0
+    const METHOD_OPTION = "OPTION";//since v1.1.0
+    const METHOD_CLI = "cli";//since v1.1.0
+
     public function safeReadArray($target, $name, $default = null, $regex = null, &$error = 0)
     {
         $error = self::REQUEST_NO_ERROR;
@@ -164,6 +172,18 @@ class Spirit
     public function isPost()
     {
         return ($_SERVER['REQUEST_METHOD'] == 'POST') ? true : false;
+    }
+
+    /**
+     * @since v1.1.0
+     * @return string|bool return request method, or false on failed.
+     */
+    public function getRequestMethod()
+    {
+        if (isset($_SERVER['REQUEST_METHOD'])) {
+            return $_SERVER['REQUEST_METHOD'];
+        }
+        return $this->isCLI() ? self::METHOD_CLI : false;
     }
 
     public function isCLI()

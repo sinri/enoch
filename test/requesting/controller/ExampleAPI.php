@@ -15,13 +15,11 @@ class ExampleAPI extends ApiInterface
 {
     public function test($p1 = 1, $p2 = 2)
     {
-        //print_r(func_get_args());
-        echo __METHOD__ . " with P1=$p1, P2=$p2";
-        //return __LINE__;
+        return __METHOD__ . " with P1=$p1, P2=$p2";
     }
 
     public function index($p1 = 1, $p2 = 2)
     {
-        echo __METHOD__ . " with P1=$p1, P2=$p2";
+        return __METHOD__ . " with P1=$p1, P2=$p2";
     }
 }

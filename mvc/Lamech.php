@@ -200,7 +200,8 @@ class Lamech
             }
             require_once $target_class_path;
             $api = new $target_class();
-            $api->_work($this->default_method_name);
+            //$api->_work($this->default_method_name);
+            call_user_func_array([$api, '_work'], [$this->default_method_name]);
         } catch (BaseCodedException $exception) {
             $this->spirit->jsonForAjax(
                 Spirit::AJAX_JSON_CODE_FAIL,
@@ -311,7 +312,7 @@ class Lamech
     {
         try {
             $parts = $this->dividePath($path_string);
-            $route = $this->router->seekRoute($path_string);
+            $route = $this->router->seekRoute($path_string, $this->spirit->getRequestMethod());
             if ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_FUNCTION) {
                 $callable = $route[Naamah::ROUTE_PARAM_TARGET];
                 $this->handleRouteWithFunction($callable, $apiNamespace, $parts);

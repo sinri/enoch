@@ -1,20 +1,22 @@
 # General Information
 
-## Framework Research Version 
+## Test Version on Packagist
 
-Main version code is zero.
+[![Packagist](https://img.shields.io/packagist/vpre/sinri/enoch.svg)](https://packagist.org/packages/sinri/enoch)
 
-Last open version is 0.9.9.
+## Stable Version on Packagist
 
-## Test Version
-
-Latest version 1.0.0-alpha.10
-
-## Stable Version
-
-1.0.0
+[![Packagist](https://img.shields.io/packagist/v/sinri/enoch.svg)](https://packagist.org/packages/sinri/enoch)
 
 # Changing Note
+
+## 1.1.0
+
+Router added support for Method and Pure Text judgement.
+
+## 1.0.2
+
+Fix https://github.com/sinri/enoch/issues/1
 
 ## 1.0.0
 

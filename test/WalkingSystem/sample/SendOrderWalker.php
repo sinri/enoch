@@ -60,13 +60,14 @@ class SendOrderWalker extends Walker
         }
         $mailer=new LibMail($mail_connection_config);
 
-
+        /*
         $mail_info=[
             "to" => 'ljni@leqee.com',
             "subject" => "Enoch Test Mail Old Style",
             "body"=>"And Enoch walked with God: and he <i>[was]</i> not; for God took him.",
         ];
         $done=$mailer->sendMail($mail_info);
+        */
 
         $done = $mailer->prepareSMTP()
             ->addReceiver("ljni@leqee.com", "ljni")
