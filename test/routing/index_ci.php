@@ -5,6 +5,8 @@
  * Date: 2017/4/25
  * Time: 16:02
  */
+if (!defined("GATEWAY_NAME")) die("GATEWAY_NAME not defined");
+
 require_once __DIR__ . '/../../autoload.php';
 
 $lamech = new  \sinri\enoch\mvc\Lamech();

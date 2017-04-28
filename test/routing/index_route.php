@@ -6,6 +6,8 @@
  * Time: 15:58
  */
 
+if (!defined("GATEWAY_NAME")) die("GATEWAY_NAME not defined");
+
 require_once __DIR__ . '/../../autoload.php';
 
 $lamech = new  \sinri\enoch\mvc\Lamech();
@@ -47,6 +49,12 @@ $lamech->getRouter()->addRouteForFunction(
 // use simple text other than regex to show route, you should remove the leading '/'
 $lamech->getRouter()->addRouteForFunction(
     'simple_url',
+    ["SampleHandler", "handleCommonRequest"],
+    \sinri\enoch\core\Spirit::METHOD_GET
+);
+
+$lamech->getRouter()->addRouteForFunction(
+    '/^\/simple_url\/\d+(\/\d+)?$/',
     ["SampleHandler", "handleCommonRequest"],
     \sinri\enoch\core\Spirit::METHOD_GET
 );

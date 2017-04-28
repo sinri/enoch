@@ -14,13 +14,12 @@ use sinri\enoch\core\Spirit;
 
 class Lamech
 {
+    protected $gateway = "index.php";
     protected $session_dir;
     protected $controller_dir;
     protected $view_dir;
     protected $error_page;
-
     protected $spirit;
-
     protected $router;
     private $default_controller_name = 'Welcome';
     private $default_method_name = 'index';
@@ -35,6 +34,22 @@ class Lamech
         $this->router = new Naamah();
 
         $this->spirit = new Spirit();
+    }
+
+    /**
+     * @return string
+     */
+    public function getGateway()
+    {
+        return $this->gateway;
+    }
+
+    /**
+     * @param string $gateway
+     */
+    public function setGateway($gateway)
+    {
+        $this->gateway = $gateway;
     }
 
     /**
@@ -300,7 +315,7 @@ class Lamech
         $prefix = $_SERVER['SCRIPT_NAME'];
         if (
             (strpos($_SERVER['REQUEST_URI'], $prefix) !== 0)
-            && (strrpos($prefix, '/index_route.php') + 10 == strlen($prefix))
+            && (strrpos($prefix, '/' . $this->gateway) + 10 == strlen($prefix))
         ) {
             $prefix = substr($prefix, 0, strlen($prefix) - 10);
         }
@@ -312,7 +327,10 @@ class Lamech
     {
         try {
             $parts = $this->dividePath($path_string);
+            //$this->spirit->log(Spirit::LOG_INFO,__METHOD__."-part",$parts);
+            //$this->spirit->log(Spirit::LOG_INFO,__METHOD__."-path_string",$path_string);
             $route = $this->router->seekRoute($path_string, $this->spirit->getRequestMethod());
+            //$this->spirit->log(Spirit::LOG_INFO,__METHOD__."-route",$route);
             if ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_FUNCTION) {
                 $callable = $route[Naamah::ROUTE_PARAM_TARGET];
                 $this->handleRouteWithFunction($callable, $apiNamespace, $parts);
@@ -324,6 +342,7 @@ class Lamech
             }
             throw new BaseCodedException("Naamah Error with unknown type");
         } catch (\Exception $exception) {
+            //var_dump($exception);
             $this->router->handleRouteError(
                 [
                     "error_code" => $exception->getCode(),
@@ -331,42 +350,6 @@ class Lamech
                 ]
             );
         }
-    }
-
-    private function handleRouteWithFunction($callable, $apiNamespace, $parts)
-    {
-        if (is_array($callable)) {
-            $act = $this->default_controller_name;
-            $method = $this->default_method_name;
-            if (count($callable) > 0) {
-                $act = $callable[0];
-            }
-            if (count($callable) > 1) {
-                $method = $callable[1];
-            }
-            $target_class = $apiNamespace . $act;
-            $target_class_path = $this->controller_dir . '/' . $act . '.php';
-            if (!file_exists($target_class_path)) {
-                throw new BaseCodedException("Controller lack: " . $target_class_path);
-            }
-            require_once $target_class_path;
-            $api = new $target_class();
-
-            return call_user_func_array([$api, $method], $parts);
-        } elseif (is_callable($callable)) {
-            return call_user_func_array($callable, $parts);
-        }
-        throw new BaseCodedException("DIED");
-    }
-
-    private function handleRouteWithView($target, $parts)
-    {
-        //$spirit = Spirit::getInstance();
-        $view_path = $this->view_dir . '/' . $target . ".php";
-        if (!file_exists($view_path)) {
-            throw new BaseCodedException("View missing", BaseCodedException::VIEW_NOT_EXISTS);
-        }
-        $this->spirit->displayPage($view_path, ["url_path_parts" => $parts]);
     }
 
     protected function dividePath(&$pathString = '')
@@ -399,5 +382,41 @@ class Lamech
         }
 
         return $sub_paths;
+    }
+
+    private function handleRouteWithFunction($callable, $apiNamespace, $parts)
+    {
+        if (is_array($callable)) {
+            $act = $this->default_controller_name;
+            $method = $this->default_method_name;
+            if (count($callable) > 0) {
+                $act = $callable[0];
+            }
+            if (count($callable) > 1) {
+                $method = $callable[1];
+            }
+            $target_class = $apiNamespace . $act;
+            $target_class_path = $this->controller_dir . '/' . $act . '.php';
+            if (!file_exists($target_class_path)) {
+                throw new BaseCodedException("Controller lack: " . $target_class_path);
+            }
+            require_once $target_class_path;
+            $api = new $target_class();
+
+            return call_user_func_array([$api, $method], [$parts]);
+        } elseif (is_callable($callable)) {
+            return call_user_func_array($callable, [$parts]);
+        }
+        throw new BaseCodedException("DIED");
+    }
+
+    private function handleRouteWithView($target, $parts)
+    {
+        //$spirit = Spirit::getInstance();
+        $view_path = $this->view_dir . '/' . $target . ".php";
+        if (!file_exists($view_path)) {
+            throw new BaseCodedException("View missing", BaseCodedException::VIEW_NOT_EXISTS);
+        }
+        $this->spirit->displayPage($view_path, ["url_path_parts" => $parts]);
     }
 }

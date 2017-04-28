@@ -14,9 +14,10 @@ use sinri\enoch\mvc\ApiInterface;
 class SampleHandler extends ApiInterface
 {
 
-    public function handleCommonRequest()
+    public function handleCommonRequest($parts = [])
     {
-        echo __METHOD__;
+        echo __METHOD__ . PHP_EOL;
+        echo "(" . implode(',', $parts) . ")" . PHP_EOL;
     }
 
     public function handleErrorRequest()

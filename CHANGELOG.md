@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.1.1
+
+Lamech Path Analyzer could use customized gateway now instead of fixed 'index_route.php'.
+
 ## 1.1.0
 
 Router added support for Method and Pure Text judgement.
