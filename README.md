@@ -3,7 +3,7 @@
 http://enoch.sinri.cc/ 
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/sinri/enoch/master/LICENSE) 
-[![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg)](https://github.com/sinri/enoch/releases)
+[![GitHub release](https://img.shields.io/github/release/sinri/enoch.svg)](https://github.com/sinri/enoch/releases)
 [![Packagist](https://img.shields.io/packagist/v/sinri/enoch.svg)](https://packagist.org/packages/sinri/enoch) 
 [![Code Climate](https://codeclimate.com/github/sinri/enoch/badges/gpa.svg)](https://codeclimate.com/github/sinri/enoch)
 

@@ -1,7 +1,7 @@
 # General Information
 
 GitHub Release: 
-[![GitHub release](https://img.shields.io/github/release/qubyte/rubidium.svg)](https://github.com/sinri/enoch/releases)
+[![GitHub release](https://img.shields.io/github/release/sinri/enoch.svg)](https://github.com/sinri/enoch/releases)
 
 Stable Release Version on Packagist:
 [![Packagist](https://img.shields.io/packagist/v/sinri/enoch.svg)](https://packagist.org/packages/sinri/enoch)
