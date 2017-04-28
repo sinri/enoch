@@ -385,7 +385,9 @@ class Lamech
         $pattern = '/^\/([^\?]*)(\?|$)/';
         $r = preg_match($pattern, $pathString, $matches);
         if (!$r) {
-            return '';
+            // https://github.com/sinri/enoch/issues/1
+            // this bug (return '' which is not an array) fixed since v1.0.2
+            return [''];
         }
         $controller_array = explode('/', $matches[1]);
         if (count($controller_array) > 0) {
