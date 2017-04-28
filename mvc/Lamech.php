@@ -30,10 +30,22 @@ class Lamech
         $this->controller_dir = $controllerDir;
         $this->view_dir = $viewDir;
         $this->error_page = $errorPage;
-
-        $this->router = new Naamah();
-
         $this->spirit = new Spirit();
+
+        $this->router = new Adah();
+    }
+
+    public function useAdahAsRouter()
+    {
+        $this->router = new Adah();
+    }
+
+    /**
+     * @deprecated sinri v1.2.0
+     */
+    public function useNaamahAsRouter()
+    {
+        $this->router = new Naamah();
     }
 
     /**
@@ -53,7 +65,7 @@ class Lamech
     }
 
     /**
-     * @return Naamah
+     * @return RouterInterface
      */
     public function getRouter()
     {
@@ -177,7 +189,16 @@ class Lamech
         $handler->setSessionName($session_name);
     }
 
+    /**
+     * @deprecated since v1.2.0
+     * alias of handleRequestAsView
+     */
     public function viewFromRequest()
+    {
+        $this->handleRequestAsView();
+    }
+
+    public function handleRequestAsView()
     {
         //$spirit = Spirit::getInstance();
         $act = $this->spirit->getRequest("act", 'index', "/^[A-Za-z0-9_]+$/", $error);
@@ -199,7 +220,17 @@ class Lamech
 
     }
 
+    /**
+     * @deprecated since v1.2.0
+     * alias of handleRequestAsApi
+     * @param string $apiNamespace
+     */
     public function apiFromRequest($apiNamespace = "\\")
+    {
+        $this->handleRequestAsApi($apiNamespace);
+    }
+
+    public function handleRequestAsApi($apiNamespace = "\\")
     {
         //$spirit = Spirit::getInstance();
         $act = $this->spirit->getRequest("act", $this->default_controller_name, "/^[A-Za-z0-9_]+$/", $error);
@@ -225,7 +256,18 @@ class Lamech
         }
     }
 
+    /**
+     * @deprecated since v1.2.0
+     * alias of handleRequestAsCI
+     * @param string $apiNamespace
+     * @return bool|mixed
+     */
     public function restfullyHandleRequest($apiNamespace = "\\")
+    {
+        return $this->handleRequestAsCI($apiNamespace);
+    }
+
+    public function handleRequestAsCI($apiNamespace = "\\")
     {
         //$spirit = Spirit::getInstance();
         //$request_method = $_SERVER['REQUEST_METHOD'];//HEAD,GET,POST,PUT,etc.
@@ -323,7 +365,21 @@ class Lamech
         return substr($_SERVER['REQUEST_URI'], strlen($prefix));
     }
 
+    /**
+     * @deprecated since v1.2.0
+     * alias of handleRequestWithNaamah
+     * @param string $apiNamespace
+     */
     public function handleRequestWithRoutes($apiNamespace = "\\")
+    {
+        $this->handleRequestWithNaamah($apiNamespace);
+    }
+
+    /**
+     * @deprecated since v1.2.0
+     * @param string $apiNamespace
+     */
+    public function handleRequestWithNaamah($apiNamespace = "\\")
     {
         try {
             $parts = $this->dividePath($path_string);
@@ -384,6 +440,14 @@ class Lamech
         return $sub_paths;
     }
 
+    /**
+     * @deprecated sinri v1.2.0
+     * @param $callable
+     * @param $apiNamespace
+     * @param $parts
+     * @return mixed
+     * @throws BaseCodedException
+     */
     private function handleRouteWithFunction($callable, $apiNamespace, $parts)
     {
         if (is_array($callable)) {
@@ -410,6 +474,12 @@ class Lamech
         throw new BaseCodedException("DIED");
     }
 
+    /**
+     * @deprecated since v1.2.0
+     * @param $target
+     * @param $parts
+     * @throws BaseCodedException
+     */
     private function handleRouteWithView($target, $parts)
     {
         //$spirit = Spirit::getInstance();
@@ -418,5 +488,24 @@ class Lamech
             throw new BaseCodedException("View missing", BaseCodedException::VIEW_NOT_EXISTS);
         }
         $this->spirit->displayPage($view_path, ["url_path_parts" => $parts]);
+    }
+
+    public function handleRequestThroughAdah()
+    {
+        try {
+            $parts = $this->dividePath($path_string);
+            $route = $this->router->seekRoute($path_string, $this->spirit->getRequestMethod());
+            $callable = $route[Adah::ROUTE_PARAM_CALLBACK];
+            $params = $route[Adah::ROUTE_PARSED_PARAMETERS];
+            if (!empty($params)) array_shift($params);
+            call_user_func_array($callable, $params);
+        } catch (\Exception $exception) {
+            $this->router->handleRouteError(
+                [
+                    "error_code" => $exception->getCode(),
+                    "error_message" => $exception->getMessage(),
+                ]
+            );
+        }
     }
 }

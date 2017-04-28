@@ -23,4 +23,6 @@ require_once __DIR__.'/core/LibMail.php';
 require_once __DIR__ . '/mvc/BaseCodedException.php';
 require_once __DIR__ . '/mvc/ApiInterface.php';
 require_once __DIR__ . '/mvc/Lamech.php';
+require_once __DIR__ . '/mvc/RouterInterface.php';
 require_once __DIR__ . '/mvc/Naamah.php';
+require_once __DIR__ . '/mvc/Adah.php';

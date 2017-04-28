@@ -39,4 +39,9 @@ class SampleHandler extends ApiInterface
     {
         echo "Method: " . $this->spirit->getRequestMethod() . '; ' . __METHOD__;
     }
+
+    public function adah($p, $q)
+    {
+        echo __METHOD__ . " p=$p, q=$q";
+    }
 }

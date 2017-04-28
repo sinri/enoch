@@ -97,6 +97,7 @@ class Spirit
     const METHOD_PUT = "PUT";//since v1.1.0
     const METHOD_DELETE = "DELETE";//since v1.1.0
     const METHOD_OPTION = "OPTION";//since v1.1.0
+    const METHOD_PATCH = "PATCH";//since v1.2.0
     const METHOD_CLI = "cli";//since v1.1.0
 
     public function safeReadArray($target, $name, $default = null, $regex = null, &$error = 0)

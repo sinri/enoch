@@ -8,6 +8,11 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.2.0
+
+A new router Adah instead of Naamah for Lamech.
+Refine method names of Lamech.
+
 ## 1.1.1
 
 Lamech Path Analyzer could use customized gateway now instead of fixed 'index_route.php'.
