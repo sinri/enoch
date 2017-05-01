@@ -19,7 +19,7 @@ abstract class Walker
     public function __construct($config)
     {
         $this->config=$config;
-        $this->logger=Spirit::getInstance();
+        $this->logger = new Spirit();
         $this->initialize();
     }
 

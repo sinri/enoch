@@ -87,10 +87,8 @@ class Naamah extends RouterInterface
                 if (preg_match($route_regex, $path)) {
                     return $route;
                 }
-            } else {
-                if ("/" . $route_regex == $path) {
-                    return $route;
-                }
+            } elseif ("/" . $route_regex == $path) {
+                return $route;
             }
             //echo "REGEX NOT MATCH".PHP_EOL;
         }

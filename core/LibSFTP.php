@@ -45,13 +45,21 @@ class LibSFTP
                 );
             }
 
-            if (ssh2_auth_password($resConnection, $this->strServerUsername, $this->strServerPassword)) {
-                //初始化SFTP子系统
-                //请求从一个已经连接子系统SFTP服务器SSH2安全性会更高。
-                $resSFTP = ssh2_sftp($resConnection);
-            } else {
+//            if (ssh2_auth_password($resConnection, $this->strServerUsername, $this->strServerPassword)) {
+//                //初始化SFTP子系统
+//                //请求从一个已经连接子系统SFTP服务器SSH2安全性会更高。
+//                $resSFTP = ssh2_sftp($resConnection);
+//            } else {
+//                throw new \Exception("Auth Failed");
+//            }
+
+            $auth_passed = ssh2_auth_password($resConnection, $this->strServerUsername, $this->strServerPassword);
+            if (!$auth_passed) {
                 throw new \Exception("Auth Failed");
             }
+            //初始化SFTP子系统
+            //请求从一个已经连接子系统SFTP服务器SSH2安全性会更高。
+            $resSFTP = ssh2_sftp($resConnection);
 
             $remote_path = $remoteDir . '/' . $filename;
             $local_path = $localDir . '/' . $filename;

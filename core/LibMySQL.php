@@ -89,8 +89,6 @@ class LibMySQL
             if ($row) {
                 $row = array_values($row);
                 return $row[0];
-            } else {
-                return false;
             }
         }
         return false;

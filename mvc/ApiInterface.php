@@ -19,7 +19,7 @@ class ApiInterface
     public function __construct()
     {
         $this->request_guid = uniqid();
-        $this->spirit = Spirit::getInstance();
+        $this->spirit = new Spirit();
     }
 
     public function _work($defaultMethod = '')
