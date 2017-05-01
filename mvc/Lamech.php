@@ -493,7 +493,7 @@ class Lamech
     public function handleRequestThroughAdah()
     {
         try {
-            $parts = $this->dividePath($path_string);
+            $this->dividePath($path_string);
             $route = $this->router->seekRoute($path_string, $this->spirit->getRequestMethod());
             $callable = $route[Adah::ROUTE_PARAM_CALLBACK];
             $params = $route[Adah::ROUTE_PARSED_PARAMETERS];
