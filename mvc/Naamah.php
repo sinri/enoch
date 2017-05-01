@@ -8,6 +8,8 @@
 
 namespace sinri\enoch\mvc;
 
+use sinri\enoch\core\Spirit;
+
 /**
  * Class Naamah
  * Lamech's daughter with Zillah
@@ -96,4 +98,38 @@ class Naamah extends RouterInterface
     }
 
 
+    public function get($path, $callback)
+    {
+        $this->addRouteForFunction($path, $callback, Spirit::METHOD_GET);
+    }
+
+    public function post($path, $callback)
+    {
+        $this->addRouteForFunction($path, $callback, Spirit::METHOD_POST);
+    }
+
+    public function put($path, $callback)
+    {
+        $this->addRouteForFunction($path, $callback, Spirit::METHOD_PUT);
+    }
+
+    public function patch($path, $callback)
+    {
+        $this->addRouteForFunction($path, $callback, Spirit::METHOD_PATCH);
+    }
+
+    public function delete($path, $callback)
+    {
+        $this->addRouteForFunction($path, $callback, Spirit::METHOD_DELETE);
+    }
+
+    public function option($path, $callback)
+    {
+        $this->addRouteForFunction($path, $callback, Spirit::METHOD_OPTION);
+    }
+
+    public function head($path, $callback)
+    {
+        $this->addRouteForFunction($path, $callback, Spirit::METHOD_HEAD);
+    }
 }

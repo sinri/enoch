@@ -11,7 +11,7 @@ namespace sinri\enoch\mvc;
 
 use sinri\enoch\core\Spirit;
 
-class RouterInterface
+abstract class RouterInterface
 {
     protected $spirit = null;
     protected $error_handler = null;
@@ -32,11 +32,6 @@ class RouterInterface
         $this->error_handler = $errorHandler;
     }
 
-    public function seekRoute($path, $method)
-    {
-        throw new BaseCodedException("NOT IMPLEMENT ERROR", BaseCodedException::NOT_IMPLEMENT_ERROR);
-    }
-
     public function handleRouteError($errorData = [])
     {
         if (is_string($this->error_handler) && file_exists($this->error_handler)) {
@@ -49,38 +44,19 @@ class RouterInterface
         $this->spirit->errorPage(__METHOD__);
     }
 
-    public function get($path, $callback)
-    {
-        throw new BaseCodedException("NOT IMPLEMENT ERROR", BaseCodedException::NOT_IMPLEMENT_ERROR);
-    }
+    abstract public function seekRoute($path, $method);
 
-    public function post($path, $callback)
-    {
-        throw new BaseCodedException("NOT IMPLEMENT ERROR", BaseCodedException::NOT_IMPLEMENT_ERROR);
-    }
+    abstract public function get($path, $callback);
 
-    public function put($path, $callback)
-    {
-        throw new BaseCodedException("NOT IMPLEMENT ERROR", BaseCodedException::NOT_IMPLEMENT_ERROR);
-    }
+    abstract public function post($path, $callback);
 
-    public function patch($path, $callback)
-    {
-        throw new BaseCodedException("NOT IMPLEMENT ERROR", BaseCodedException::NOT_IMPLEMENT_ERROR);
-    }
+    abstract public function put($path, $callback);
 
-    public function delete($path, $callback)
-    {
-        throw new BaseCodedException("NOT IMPLEMENT ERROR", BaseCodedException::NOT_IMPLEMENT_ERROR);
-    }
+    abstract public function patch($path, $callback);
 
-    public function option($path, $callback)
-    {
-        throw new BaseCodedException("NOT IMPLEMENT ERROR", BaseCodedException::NOT_IMPLEMENT_ERROR);
-    }
+    abstract public function delete($path, $callback);
 
-    public function head($path, $callback)
-    {
-        throw new BaseCodedException("NOT IMPLEMENT ERROR", BaseCodedException::NOT_IMPLEMENT_ERROR);
-    }
+    abstract public function option($path, $callback);
+
+    abstract public function head($path, $callback);
 }
