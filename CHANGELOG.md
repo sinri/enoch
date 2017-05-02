@@ -10,7 +10,7 @@ Stable Release Version on Packagist:
 
 ## 1.2.5
 
-Fix https://github.com/sinri/enoch/issues/2
+Fix issue Adah cannot match url with query string (https://github.com/sinri/enoch/issues/2)
 
 ## 1.2.4
 
