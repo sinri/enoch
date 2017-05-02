@@ -421,7 +421,9 @@ class Lamech
             return $sub_paths;
         }
 
-        $pathString = $this->getControllerIndex();
+        $fullPathString = $this->getControllerIndex();
+        $tmp = explode('?', $fullPathString);
+        $pathString = isset($tmp[0]) ? $tmp[0] : '';
         $pattern = '/^\/([^\?]*)(\?|$)/';
         $r = preg_match($pattern, $pathString, $matches);
         if (!$r) {

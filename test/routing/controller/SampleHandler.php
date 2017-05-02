@@ -20,6 +20,7 @@ class SampleHandler extends ApiInterface
         echo __METHOD__ . PHP_EOL;
         echo "(" . implode(',', $parts) . ")" . PHP_EOL;
         echo $this->inner . PHP_EOL;
+        echo $this->spirit->readGet('k') . PHP_EOL;
     }
 
     public function handleErrorRequest()

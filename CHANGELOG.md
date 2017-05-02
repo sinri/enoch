@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.2.5
+
+Fix https://github.com/sinri/enoch/issues/2
+
 ## 1.2.4
 
 Add support to non-static method calling to Lamech-Adah Pair. 
