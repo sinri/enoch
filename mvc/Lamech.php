@@ -498,6 +498,11 @@ class Lamech
             $callable = $route[Adah::ROUTE_PARAM_CALLBACK];
             $params = $route[Adah::ROUTE_PARSED_PARAMETERS];
             if (!empty($params)) array_shift($params);
+            if (is_array($callable) && isset($callable[0])) {
+                $class_instance = $callable[0];
+                $class_instance = new $class_instance();
+                $callable[0] = $class_instance;
+            }
             call_user_func_array($callable, $params);
         } catch (\Exception $exception) {
             $this->router->handleRouteError(

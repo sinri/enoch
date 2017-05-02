@@ -13,11 +13,13 @@ use sinri\enoch\mvc\ApiInterface;
 
 class SampleHandler extends ApiInterface
 {
+    protected $inner = 'lalala';
 
     public function handleCommonRequest($parts = [])
     {
         echo __METHOD__ . PHP_EOL;
         echo "(" . implode(',', $parts) . ")" . PHP_EOL;
+        echo $this->inner . PHP_EOL;
     }
 
     public function handleErrorRequest()

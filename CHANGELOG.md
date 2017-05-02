@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.2.4
+
+Add support to non-static method calling to Lamech-Adah Pair. 
+
 ## 1.2.3
 
 Cache Interface and File Cache.
