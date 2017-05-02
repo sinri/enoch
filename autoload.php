@@ -26,3 +26,6 @@ require_once __DIR__ . '/mvc/Lamech.php';
 require_once __DIR__ . '/mvc/RouterInterface.php';
 require_once __DIR__ . '/mvc/Naamah.php';
 require_once __DIR__ . '/mvc/Adah.php';
+
+require_once __DIR__ . '/service/QueueItem.php';
+require_once __DIR__ . '/service/QueueInterface.php';

@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.2.2
+
+Add Queue Interface.
+
 ## 1.2.1
 
 Refine RouterInterface, marked lumen style methods (get, post, etc.) as abstract.

@@ -9,3 +9,4 @@ composer.lock
 /test/WalkingSystem/sample/not_commit_config.php
 /test/requesting/.htaccess
 /codeclimate-config.patch
+/test/queue/queue_item_dir/
