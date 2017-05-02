@@ -29,3 +29,6 @@ require_once __DIR__ . '/mvc/Adah.php';
 
 require_once __DIR__ . '/service/QueueItem.php';
 require_once __DIR__ . '/service/QueueInterface.php';
+
+require_once __DIR__ . '/service/CacheInterface.php';
+require_once __DIR__ . '/service/FileCache.php';

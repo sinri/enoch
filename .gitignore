@@ -10,3 +10,4 @@ composer.lock
 /test/requesting/.htaccess
 /codeclimate-config.patch
 /test/queue/queue_item_dir/
+/test/cache/cache_dir/

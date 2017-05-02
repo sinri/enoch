@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.2.3
+
+Cache Interface and File Cache.
+
 ## 1.2.2
 
 Add Queue Interface.
