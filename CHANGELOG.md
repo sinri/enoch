@@ -8,6 +8,11 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.2.6
+
+Make libraries for walker system constructable without parameters;
+And predefined them in Walker class.
+
 ## 1.2.5
 
 Fix issue Adah cannot match url with query string (https://github.com/sinri/enoch/issues/2)

@@ -20,6 +20,11 @@ abstract class Walker
     {
         $this->config=$config;
         $this->logger = new Spirit();
+
+        $this->db = new LibMySQL();
+        $this->sftp = new LibSFTP();
+        $this->mailer = new LibMail();
+
         $this->initialize();
     }
 

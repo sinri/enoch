@@ -15,7 +15,12 @@ class LibSFTP
     protected $strServerUsername = "";
     protected $strServerPassword = "";
 
-    public function __construct($params)
+    public function __construct($params = [])
+    {
+        $this->setUpServer($params);
+    }
+
+    public function setUpServer($params)
     {
         if (isset($params['server'])) {
             $this->strServer=$params['server'];

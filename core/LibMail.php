@@ -23,10 +23,18 @@ class LibMail
      *
      * host,smtp_auth,username,password,smtp_secure,port,display_name
      */
-    public function __construct($params)
+    public function __construct($params = [])
     {
         $this->smtpInfo = [];
         $this->spirit = new Spirit();
+
+        $this->setUpSMTP($params);
+
+        $this->mail = new PHPMailer();
+    }
+
+    public function setUpSMTP($params)
+    {
         $this->smtpInfo['host'] = $this->spirit->safeReadArray($params, 'host', '');
         $this->smtpInfo['smtp_auth'] = $this->spirit->safeReadArray($params, 'smtp_auth', '');
         $this->smtpInfo['username'] = $this->spirit->safeReadArray($params, 'username', '');
@@ -34,8 +42,6 @@ class LibMail
         $this->smtpInfo['smtp_secure'] = $this->spirit->safeReadArray($params, 'smtp_secure', '');
         $this->smtpInfo['port'] = $this->spirit->safeReadArray($params, 'port', '');
         $this->smtpInfo['display_name'] = $this->spirit->safeReadArray($params, 'display_name', '');
-
-        $this->mail = new PHPMailer();
     }
 
     /**
