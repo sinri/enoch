@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.2.7
+
+Add fetch style of PDO in LibMySQL safe query all.
+
 ## 1.2.6
 
 Make libraries for walker system constructable without parameters;

@@ -149,11 +149,11 @@ class LibMySQL
         }
     }
 
-    public function safeQueryAll($sql, $values = array())
+    public function safeQueryAll($sql, $values = array(), $fetchStyle = \PDO::FETCH_ASSOC)
     {
         $sth = $this->pdo->prepare($sql);
         $sth->execute($values);
-        $rows=$sth->fetchAll();
+        $rows = $sth->fetchAll($fetchStyle);
         return $rows;
     }
     public function safeQueryRow($sql, $values = array())
