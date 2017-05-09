@@ -21,4 +21,6 @@ class BaseCodedException extends \Exception
     const METHOD_NOT_EXISTS = 204;
     const NO_MATCHED_ROUTE = 210;
     const VIEW_NOT_EXISTS = 211;
+
+    const REQUEST_FILTER_REJECT = 403;
 }

@@ -21,6 +21,8 @@ class Adah extends RouterInterface
     const ROUTE_PARAM_METHOD = "METHOD";
     const ROUTE_PARAM_PATH = "PATH";
     const ROUTE_PARAM_CALLBACK = "CALLBACK";
+    // @since 1.2.8
+    const ROUTE_PARAM_MIDDLEWARE = "MIDDLEWARE";
 
     const ROUTE_PARSED_PARAMETERS = "PARSED";
 
@@ -35,8 +37,9 @@ class Adah extends RouterInterface
      * @param $method
      * @param $path
      * @param $callback
+     * @param $middleware MiddlewareInterface
      */
-    protected function registerRoute($method, $path, $callback)
+    protected function registerRoute($method, $path, $callback, $middleware = null)
     {
         $regex = [];
         $param_names = [];
@@ -58,42 +61,43 @@ class Adah extends RouterInterface
             self::ROUTE_PARAM_METHOD => $method,
             self::ROUTE_PARAM_PATH => $regex,
             self::ROUTE_PARAM_CALLBACK => $callback,
+            self::ROUTE_PARAM_MIDDLEWARE => $middleware,
         ]);
     }
 
-    public function get($path, $callback)
+    public function get($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_GET, $path, $callback);
+        $this->registerRoute(Spirit::METHOD_GET, $path, $callback, $middleware);
     }
 
-    public function post($path, $callback)
+    public function post($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_POST, $path, $callback);
+        $this->registerRoute(Spirit::METHOD_POST, $path, $callback, $middleware);
     }
 
-    public function put($path, $callback)
+    public function put($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_PUT, $path, $callback);
+        $this->registerRoute(Spirit::METHOD_PUT, $path, $callback, $middleware);
     }
 
-    public function patch($path, $callback)
+    public function patch($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_PATCH, $path, $callback);
+        $this->registerRoute(Spirit::METHOD_PATCH, $path, $callback, $middleware);
     }
 
-    public function delete($path, $callback)
+    public function delete($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_DELETE, $path, $callback);
+        $this->registerRoute(Spirit::METHOD_DELETE, $path, $callback, $middleware);
     }
 
-    public function option($path, $callback)
+    public function option($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_OPTION, $path, $callback);
+        $this->registerRoute(Spirit::METHOD_OPTION, $path, $callback, $middleware);
     }
 
-    public function head($path, $callback)
+    public function head($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_HEAD, $path, $callback);
+        $this->registerRoute(Spirit::METHOD_HEAD, $path, $callback, $middleware);
     }
 
     public function seekRoute($path, $method)
@@ -108,6 +112,8 @@ class Adah extends RouterInterface
                 continue;
             }
             if (preg_match($route_regex, $path, $matches)) {
+                // @since 1.2.8 the shift job moved here
+                if (!empty($matches)) array_shift($matches);
                 $route[self::ROUTE_PARSED_PARAMETERS] = $matches;
                 return $route;
             }

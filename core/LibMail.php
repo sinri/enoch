@@ -109,7 +109,9 @@ class LibMail
         return $html;
     }
 
-    // new way
+    /**
+     * @return $this LibMail
+     */
     public function prepareSMTP()
     {
         $this->mail = new PHPMailer();
@@ -126,48 +128,85 @@ class LibMail
         return $this;
     }
 
+    /**
+     * @param $address
+     * @param string $name
+     * @return $this LibMail
+     */
     public function addReceiver($address, $name = '')
     {
         $this->mail->addAddress($address, $name);
         return $this;
     }
 
+    /**
+     * @param $address
+     * @param $name
+     * @return $this LibMail
+     */
     public function addReplyAddress($address, $name)
     {
         $this->mail->addReplyTo($address, $name);
         return $this;
     }
 
+    /**
+     * @param $address
+     * @param $name
+     * @return $this LibMail
+     */
     public function addCCAddress($address, $name)
     {
         $this->mail->addCC($address, $name);
         return $this;
     }
 
+    /**
+     * @param $address
+     * @param $name
+     * @return $this LibMail
+     */
     public function addBCCAddress($address, $name)
     {
         $this->mail->addBCC($address, $name);
         return $this;
     }
 
+    /**
+     * @param $filepath
+     * @param string $name
+     * @return $this LibMail
+     */
     public function addAttachment($filepath, $name = '')
     {
         $this->mail->addAttachment($filepath, $name);
         return $this;
     }
 
+    /**
+     * @param $subject
+     * @return $this LibMail
+     */
     public function addSubject($subject)
     {
         $this->mail->Subject = $subject;
         return $this;
     }
 
+    /**
+     * @param $text
+     * @return $this LibMail
+     */
     public function addTextBody($text)
     {
         $this->mail->Body = $text;
         return $this;
     }
 
+    /**
+     * @param $htmlCode
+     * @return $this LibMail
+     */
     public function addHTMLBody($htmlCode)
     {
         $this->mail->isHTML(true);// Set email format to HTML
@@ -176,6 +215,9 @@ class LibMail
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function finallySend()
     {
         $done = $this->mail->send();

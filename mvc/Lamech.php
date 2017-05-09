@@ -497,9 +497,23 @@ class Lamech
         try {
             $this->dividePath($path_string);
             $route = $this->router->seekRoute($path_string, $this->spirit->getRequestMethod());
-            $callable = $route[Adah::ROUTE_PARAM_CALLBACK];
-            $params = $route[Adah::ROUTE_PARSED_PARAMETERS];
-            if (!empty($params)) array_shift($params);
+            $callable = $this->spirit->safeReadArray($route, Adah::ROUTE_PARAM_CALLBACK);
+            $params = $this->spirit->safeReadArray($route, Adah::ROUTE_PARSED_PARAMETERS);
+            // @since 1.2.8 as MiddlewareInterface
+            $middleware = $this->spirit->safeReadArray($route, Adah::ROUTE_PARAM_MIDDLEWARE);
+
+            // @since 1.2.8 the shift job moved to Adah
+            //if (!empty($params)) array_shift($params);
+
+            $middleware_instance = MiddlewareInterface::MiddlewareFactory($middleware);
+            if (!$middleware_instance->shouldAcceptRequest($path_string, $this->spirit->getRequestMethod(), $params)) {
+                //header('HTTP/1.0 403 Forbidden');
+                throw new BaseCodedException(
+                    "Rejected by Middleware " . $middleware,
+                    BaseCodedException::REQUEST_FILTER_REJECT
+                );
+            }
+
             if (is_array($callable) && isset($callable[0])) {
                 $class_instance = $callable[0];
                 $class_instance = new $class_instance();
@@ -507,11 +521,16 @@ class Lamech
             }
             call_user_func_array($callable, $params);
         } catch (\Exception $exception) {
+            $http_code = 200;
+            if ($exception->getCode() == BaseCodedException::REQUEST_FILTER_REJECT) {
+                $http_code = 403;
+            }
             $this->router->handleRouteError(
                 [
                     "error_code" => $exception->getCode(),
                     "error_message" => $exception->getMessage(),
-                ]
+                ],
+                $http_code
             );
         }
     }

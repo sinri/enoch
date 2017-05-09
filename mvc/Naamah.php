@@ -96,37 +96,37 @@ class Naamah extends RouterInterface
     }
 
 
-    public function get($path, $callback)
+    public function get($path, $callback, $middleware = null)
     {
         $this->addRouteForFunction($path, $callback, Spirit::METHOD_GET);
     }
 
-    public function post($path, $callback)
+    public function post($path, $callback, $middleware = null)
     {
         $this->addRouteForFunction($path, $callback, Spirit::METHOD_POST);
     }
 
-    public function put($path, $callback)
+    public function put($path, $callback, $middleware = null)
     {
         $this->addRouteForFunction($path, $callback, Spirit::METHOD_PUT);
     }
 
-    public function patch($path, $callback)
+    public function patch($path, $callback, $middleware = null)
     {
         $this->addRouteForFunction($path, $callback, Spirit::METHOD_PATCH);
     }
 
-    public function delete($path, $callback)
+    public function delete($path, $callback, $middleware = null)
     {
         $this->addRouteForFunction($path, $callback, Spirit::METHOD_DELETE);
     }
 
-    public function option($path, $callback)
+    public function option($path, $callback, $middleware = null)
     {
         $this->addRouteForFunction($path, $callback, Spirit::METHOD_OPTION);
     }
 
-    public function head($path, $callback)
+    public function head($path, $callback, $middleware = null)
     {
         $this->addRouteForFunction($path, $callback, Spirit::METHOD_HEAD);
     }

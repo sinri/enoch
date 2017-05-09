@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.2.8
+
+Add MiddleWare Support to Adah and Lamech.
+
 ## 1.2.7
 
 Add fetch style of PDO in LibMySQL safe query all.

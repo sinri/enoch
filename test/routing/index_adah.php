@@ -9,6 +9,7 @@ if (!defined("GATEWAY_NAME")) die("GATEWAY_NAME not defined");
 
 require_once __DIR__ . '/../../autoload.php';
 require_once __DIR__ . '/controller/SampleHandler.php';
+require_once __DIR__ . '/middleware/SampleMiddleware.php';
 
 $lamech = new  \sinri\enoch\mvc\Lamech();
 
@@ -19,5 +20,11 @@ $lamech->useAdahAsRouter();
 
 $lamech->getRouter()->get("", ['\sinri\enoch\test\routing\controller\SampleHandler', 'handleCommonRequest']);
 $lamech->getRouter()->get("adah/{p}/{q}", ['\sinri\enoch\test\routing\controller\SampleHandler', 'adah']);
+
+$lamech->getRouter()->get(
+    "mid/{p}/{q}",
+    ['\sinri\enoch\test\routing\controller\SampleHandler', 'adah'],
+    '\sinri\enoch\test\routing\middleware\SampleMiddleware'
+);
 
 $lamech->handleRequestThroughAdah();

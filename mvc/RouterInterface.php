@@ -32,8 +32,15 @@ abstract class RouterInterface
         $this->error_handler = $errorHandler;
     }
 
-    public function handleRouteError($errorData = [])
+    /**
+     * @param array $errorData
+     * @param int $http_code @since 1.2.8
+     */
+    public function handleRouteError($errorData = [], $http_code = 200)
     {
+        if ($http_code == 403) {
+            header('HTTP/1.0 403 Forbidden');
+        }
         if (is_string($this->error_handler) && file_exists($this->error_handler)) {
             $this->spirit->displayPage($this->error_handler, $errorData);
             return;
@@ -46,17 +53,17 @@ abstract class RouterInterface
 
     abstract public function seekRoute($path, $method);
 
-    abstract public function get($path, $callback);
+    abstract public function get($path, $callback, $middleware = null);
 
-    abstract public function post($path, $callback);
+    abstract public function post($path, $callback, $middleware = null);
 
-    abstract public function put($path, $callback);
+    abstract public function put($path, $callback, $middleware = null);
 
-    abstract public function patch($path, $callback);
+    abstract public function patch($path, $callback, $middleware = null);
 
-    abstract public function delete($path, $callback);
+    abstract public function delete($path, $callback, $middleware = null);
 
-    abstract public function option($path, $callback);
+    abstract public function option($path, $callback, $middleware = null);
 
-    abstract public function head($path, $callback);
+    abstract public function head($path, $callback, $middleware = null);
 }
