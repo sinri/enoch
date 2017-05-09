@@ -200,7 +200,6 @@ class Lamech
 
     public function handleRequestAsView()
     {
-        //$spirit = Spirit::getInstance();
         $act = $this->spirit->getRequest("act", 'index', "/^[A-Za-z0-9_]+$/", $error);
         if ($error === Spirit::REQUEST_REGEX_NOT_MATCH) {
             $this->spirit->errorPage("Act input does not correct.", null, $this->error_page);
@@ -232,7 +231,6 @@ class Lamech
 
     public function handleRequestAsApi($apiNamespace = "\\")
     {
-        //$spirit = Spirit::getInstance();
         $act = $this->spirit->getRequest("act", $this->default_controller_name, "/^[A-Za-z0-9_]+$/", $error);
         if ($error !== Spirit::REQUEST_NO_ERROR) {
             $this->spirit->jsonForAjax(Spirit::AJAX_JSON_CODE_FAIL, "Not correct request " . $error);
@@ -269,11 +267,6 @@ class Lamech
 
     public function handleRequestAsCI($apiNamespace = "\\")
     {
-        //$spirit = Spirit::getInstance();
-        //$request_method = $_SERVER['REQUEST_METHOD'];//HEAD,GET,POST,PUT,etc.
-        //$query_string = $_SERVER['QUERY_STRING'];//act=ExampleAPI&method=test
-        //$path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';// /a/b/c
-
         $act = $this->getController($sub_paths);
         $method = $this->default_method_name;//default method
         if (isset($sub_paths[0]) && $sub_paths[0] !== '') {
@@ -304,7 +297,6 @@ class Lamech
 
     protected function getController(&$subPaths = array())
     {
-        //$this->spirit = Spirit::getInstance();
         if ($this->spirit->isCLI()) {
             return $this->getControllerForCLI($subPaths);
         }
@@ -383,10 +375,7 @@ class Lamech
     {
         try {
             $parts = $this->dividePath($path_string);
-            //$this->spirit->log(Spirit::LOG_INFO,__METHOD__."-part",$parts);
-            //$this->spirit->log(Spirit::LOG_INFO,__METHOD__."-path_string",$path_string);
             $route = $this->router->seekRoute($path_string, $this->spirit->getRequestMethod());
-            //$this->spirit->log(Spirit::LOG_INFO,__METHOD__."-route",$route);
             if ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_FUNCTION) {
                 $callable = $route[Naamah::ROUTE_PARAM_TARGET];
                 $this->handleRouteWithFunction($callable, $apiNamespace, $parts);

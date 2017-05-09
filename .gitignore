@@ -11,3 +11,5 @@ composer.lock
 /codeclimate-config.patch
 /test/queue/queue_item_dir/
 /test/cache/cache_dir/
+/test/routing/log/
+/test/routing/log/*

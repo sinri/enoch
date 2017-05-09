@@ -19,8 +19,10 @@ class Spirit
 
     protected static $instance = null;
     protected static $useColoredTerminalOutput = false;
+    protected $logger = null;
 
     /**
+     * @deprecated since 1.2.9
      * @return bool
      */
     public static function isUseColoredTerminalOutput()
@@ -29,6 +31,7 @@ class Spirit
     }
 
     /**
+     * @deprecated since 1.2.9
      * @param bool $useColoredTerminalOutput
      */
     public static function setUseColoredTerminalOutput($useColoredTerminalOutput)
@@ -38,6 +41,7 @@ class Spirit
 
     public function __construct()
     {
+        $this->logger = new LibLog();
     }
 
     public static function getInstance()
@@ -48,43 +52,34 @@ class Spirit
         return self::$instance;
     }
 
+    /**
+     * @deprecated use LibLog instead since 1.2.9
+     * @param $level
+     * @param $message
+     * @param string $object
+     * @return string
+     */
     final public function generateLog($level, $message, $object = '')
     {
-        $lcc = new LibConsoleColor();
-
-        $now = date('Y-m-d H:i:s');
-
-        $level_string = "[{$level}]";
         if (self::$useColoredTerminalOutput) {
-            switch ($level) {
-                case Spirit::LOG_ERROR:
-                    $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Red);
-                    break;
-                case Spirit::LOG_WARNING:
-                    $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Yellow);
-                    break;
-                default:
-                    $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Green);
-                    break;
-            }
+            $this->logger->setUseColoredTerminalOutput(true);
         }
-
-        $log = "{$now} {$level_string} {$message} |";
-        $log .= is_string($object) ? $object : json_encode($object, JSON_UNESCAPED_UNICODE);
-        $log .= PHP_EOL;
-
-        return $log;
+        return $this->logger->generateLog($level, $message, $object);
     }
 
     /**
      * This could be overrode for customized log output
+     * @deprecated use LibLog instead since 1.2.9
      * @param $level
      * @param $message
      * @param string $object
      */
     public function log($level, $message, $object = '')
     {
-        echo $this->generateLog($level, $message, $object);
+        if (self::$useColoredTerminalOutput) {
+            $this->logger->setUseColoredTerminalOutput(true);
+        }
+        $this->logger->generateLog($level, $message, $object);
     }
 
     const REQUEST_NO_ERROR = 0;

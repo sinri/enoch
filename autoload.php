@@ -5,8 +5,24 @@
  * Date: 2017/3/27
  * Time: 10:27
  */
+require_once __DIR__ . '/helper/CommonHelper.php';
+spl_autoload_register(function ($class_name) {
+    $ch = new \sinri\enoch\helper\CommonHelper();
+    $file_path = $ch->getFilePathOfClassNameWithPSR0(
+        $class_name,
+        'sinri\enoch',
+        __DIR__,
+        '.php'
+    );
+    if ($file_path) {
+        require_once $file_path;
+    }
+});
 
+/*
+//OLD STYLE
 require_once __DIR__ . '/core/LibConsoleColor.php';
+require_once __DIR__ . '/core/LibLog.php';
 require_once __DIR__.'/core/Spirit.php';
 require_once __DIR__.'/core/Enoch.php';
 require_once __DIR__.'/core/Walker.php';
@@ -33,3 +49,4 @@ require_once __DIR__ . '/service/QueueInterface.php';
 
 require_once __DIR__ . '/service/CacheInterface.php';
 require_once __DIR__ . '/service/FileCache.php';
+*/

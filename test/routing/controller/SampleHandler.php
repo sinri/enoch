@@ -9,11 +9,19 @@
 namespace sinri\enoch\test\routing\controller;
 
 
+use sinri\enoch\core\LibLog;
 use sinri\enoch\mvc\ApiInterface;
 
 class SampleHandler extends ApiInterface
 {
     protected $inner = 'lalala';
+    protected $logger = null;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->logger = new LibLog(__DIR__ . '/../log', 'SampleHandler');
+    }
 
     public function handleCommonRequest($parts = [])
     {
@@ -46,5 +54,6 @@ class SampleHandler extends ApiInterface
     public function adah($p, $q)
     {
         echo __METHOD__ . " p=$p, q=$q";
+        $this->logger->log(LibLog::LOG_INFO, __METHOD__, [$p, $q]);
     }
 }

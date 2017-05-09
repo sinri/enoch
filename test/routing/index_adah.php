@@ -8,8 +8,9 @@
 if (!defined("GATEWAY_NAME")) die("GATEWAY_NAME not defined");
 
 require_once __DIR__ . '/../../autoload.php';
-require_once __DIR__ . '/controller/SampleHandler.php';
-require_once __DIR__ . '/middleware/SampleMiddleware.php';
+//autoload has covered these
+//require_once __DIR__ . '/controller/SampleHandler.php';
+//require_once __DIR__ . '/middleware/SampleMiddleware.php';
 
 $lamech = new  \sinri\enoch\mvc\Lamech();
 

@@ -8,6 +8,11 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.2.9
+
+Autoloader;
+LibLog instead of full Spirit.
+
 ## 1.2.8
 
 Add MiddleWare Support to Adah and Lamech.
