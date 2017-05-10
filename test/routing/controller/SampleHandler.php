@@ -60,6 +60,7 @@ class SampleHandler extends ApiInterface
     public function groupAdd($x, $y)
     {
         echo "$x + $y = " . ($x + $y);
+        //print_r(get_class_methods(__CLASS__));
     }
 
     public function groupMinus($x, $y)

@@ -507,6 +507,7 @@ class Lamech
 
             if (is_array($callable) && isset($callable[0])) {
                 $class_instance = $callable[0];
+                //print_r(get_class_methods($class_instance));
                 $class_instance = new $class_instance();
                 $callable[0] = $class_instance;
             }

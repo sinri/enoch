@@ -28,23 +28,32 @@ $lamech->getRouter()->get(
     '\sinri\enoch\test\routing\middleware\SampleMiddleware'
 );
 
+//such as http://localhost/leqee/fundament/enoch/test/routing/group/add/3/4
 $lamech->getRouter()->group(
     [
         \sinri\enoch\mvc\Adah::ROUTE_PARAM_MIDDLEWARE => '\sinri\enoch\test\routing\middleware\SampleMiddleware',
         \sinri\enoch\mvc\Adah::ROUTE_PARAM_PATH => 'group/',
+        \sinri\enoch\mvc\Adah::ROUTE_PARAM_NAMESPACE => '\sinri\enoch\test\routing'
     ],
     [
         [
             \sinri\enoch\mvc\Adah::ROUTE_PARAM_PATH => 'add/{x}/{y}',
             \sinri\enoch\mvc\Adah::ROUTE_PARAM_METHOD => \sinri\enoch\core\LibRequest::METHOD_GET,
-            \sinri\enoch\mvc\Adah::ROUTE_PARAM_CALLBACK => ['\sinri\enoch\test\routing\controller\SampleHandler', 'groupAdd'],
+            \sinri\enoch\mvc\Adah::ROUTE_PARAM_CALLBACK => ['\controller\SampleHandler', 'groupAdd'],
         ],
         [
             \sinri\enoch\mvc\Adah::ROUTE_PARAM_PATH => 'minus/{x}/{y}',
             \sinri\enoch\mvc\Adah::ROUTE_PARAM_METHOD => \sinri\enoch\core\LibRequest::METHOD_GET,
-            \sinri\enoch\mvc\Adah::ROUTE_PARAM_CALLBACK => ['\sinri\enoch\test\routing\controller\SampleHandler', 'groupMinus'],
+            \sinri\enoch\mvc\Adah::ROUTE_PARAM_CALLBACK => ['\controller\SampleHandler', 'groupMinus'],
         ]
     ]
+);
+
+// such as http://localhost/leqee/fundament/enoch/test/routing/controller/groupAdd/4/4
+$lamech->getRouter()->loadController(
+    'controller/',
+    '\sinri\enoch\test\routing\controller\SampleHandler',
+    '\sinri\enoch\test\routing\middleware\SampleMiddleware'
 );
 
 $lamech->handleRequestThroughAdah();

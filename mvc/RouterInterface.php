@@ -77,4 +77,6 @@ abstract class RouterInterface
      * @return mixed
      */
     abstract public function group($shared, $list);
+
+    abstract public function loadController($basePath, $controllerClass, $middleware = null);
 }

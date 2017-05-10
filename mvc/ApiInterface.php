@@ -12,6 +12,11 @@ namespace sinri\enoch\mvc;
 use sinri\enoch\core\LibRequest;
 use sinri\enoch\core\LibResponse;
 
+/**
+ * Designed for Request Based MVC, not specially for router based mvc
+ * Class ApiInterface
+ * @package sinri\enoch\mvc
+ */
 class ApiInterface
 {
     protected $request;

@@ -135,4 +135,9 @@ class Naamah extends RouterInterface
     {
         throw new BaseCodedException('not use this', BaseCodedException::NOT_IMPLEMENT_ERROR);
     }
+
+    public function loadController($basePath, $controllerClass, $middleware = null)
+    {
+        throw new BaseCodedException('not use this', BaseCodedException::NOT_IMPLEMENT_ERROR);
+    }
 }

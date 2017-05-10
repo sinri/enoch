@@ -23,6 +23,8 @@ class Adah extends RouterInterface
     const ROUTE_PARAM_CALLBACK = "CALLBACK";
     // @since 1.2.8
     const ROUTE_PARAM_MIDDLEWARE = "MIDDLEWARE";
+    // @since 1.3.2 only use in group
+    const ROUTE_PARAM_NAMESPACE = "NAMESPACE";
 
     const ROUTE_PARSED_PARAMETERS = "PARSED";
 
@@ -131,20 +133,53 @@ class Adah extends RouterInterface
     {
         $middleware = null;
         $sharedPath = '';
+        $sharedNamespace = '';
         if (isset($shared[self::ROUTE_PARAM_MIDDLEWARE])) {
             $middleware = $shared[self::ROUTE_PARAM_MIDDLEWARE];
         }
         if (isset($shared[self::ROUTE_PARAM_PATH])) {
             $sharedPath = $shared[self::ROUTE_PARAM_PATH];
         }
+        if (isset($shared[self::ROUTE_PARAM_NAMESPACE])) {
+            $sharedNamespace = $shared[self::ROUTE_PARAM_NAMESPACE];
+        }
 
         foreach ($list as $item) {
+            $callback = $item[self::ROUTE_PARAM_CALLBACK];
+            if (is_array($callback) && isset($callback[0]) && is_string($callback[0])) {
+                $callback[0] = $sharedNamespace . $callback[0];
+            }
             $this->registerRoute(
                 $item[self::ROUTE_PARAM_METHOD],
                 $sharedPath . $item[self::ROUTE_PARAM_PATH],
-                $item[self::ROUTE_PARAM_CALLBACK],
+                $callback,
                 $middleware
             );
+        }
+    }
+
+    /**
+     * Like CI, bind a controller to a base URL
+     * @param string $basePath controller/base/
+     * @param string $controllerClass app/controller/controllerA
+     * @param null|MiddlewareInterface $middleware as is
+     */
+    public function loadController($basePath, $controllerClass, $middleware = null)
+    {
+        $method_list = get_class_methods($controllerClass);
+        $reflector = new \ReflectionClass($controllerClass);
+        foreach ($method_list as $method) {
+            if (strpos($method, '_') === 0) {
+                continue;
+            }
+            $path = $basePath . $method;
+            $parameters = $reflector->getMethod($method)->getParameters();
+            if (!empty($parameters)) {
+                foreach ($parameters as $param) {
+                    $path .= '/{' . $param->name . '}';
+                }
+            }
+            $this->registerRoute(null, $path, [$controllerClass, $method], $middleware);
         }
     }
 }
