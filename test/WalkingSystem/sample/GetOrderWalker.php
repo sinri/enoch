@@ -8,7 +8,7 @@
 
 namespace sinri\enoch\test\WalkingSystem\sample;
 
-use sinri\enoch\core\Spirit;
+use sinri\enoch\core\LibLog;
 use sinri\enoch\core\Walker;
 
 class GetOrderWalker extends Walker
@@ -36,7 +36,7 @@ class GetOrderWalker extends Walker
 
     public function walk()
     {
-        $this->logger->log(Spirit::LOG_INFO, __METHOD__."@".__LINE__);
+        $this->logger->log(LibLog::LOG_INFO, __METHOD__ . "@" . __LINE__);
         return true;
     }
 }

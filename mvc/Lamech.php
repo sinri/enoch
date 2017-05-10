@@ -9,8 +9,10 @@
 namespace sinri\enoch\mvc;
 
 
+use sinri\enoch\core\LibRequest;
+use sinri\enoch\core\LibResponse;
 use sinri\enoch\core\LibSession;
-use sinri\enoch\core\Spirit;
+use sinri\enoch\helper\CommonHelper;
 
 class Lamech
 {
@@ -19,8 +21,10 @@ class Lamech
     protected $controller_dir;
     protected $view_dir;
     protected $error_page;
-    protected $spirit;
+    protected $request;
+    protected $response;
     protected $router;
+    protected $helper;
     private $default_controller_name = 'Welcome';
     private $default_method_name = 'index';
 
@@ -30,9 +34,10 @@ class Lamech
         $this->controller_dir = $controllerDir;
         $this->view_dir = $viewDir;
         $this->error_page = $errorPage;
-        $this->spirit = new Spirit();
-
+        $this->request = new LibRequest();
+        $this->response = new LibResponse();
         $this->router = new Adah();
+        $this->helper = new CommonHelper();
     }
 
     public function useAdahAsRouter()
@@ -200,9 +205,9 @@ class Lamech
 
     public function handleRequestAsView()
     {
-        $act = $this->spirit->getRequest("act", 'index', "/^[A-Za-z0-9_]+$/", $error);
-        if ($error === Spirit::REQUEST_REGEX_NOT_MATCH) {
-            $this->spirit->errorPage("Act input does not correct.", null, $this->error_page);
+        $act = $this->request->getRequest("act", 'index', "/^[A-Za-z0-9_]+$/", $error);
+        if ($error === CommonHelper::REQUEST_REGEX_NOT_MATCH) {
+            $this->response->errorPage("Act input does not correct.", null, $this->error_page);
             return;
         }
 
@@ -212,9 +217,9 @@ class Lamech
             if (!file_exists($view_path)) {
                 throw new BaseCodedException("Act missing", BaseCodedException::ACT_NOT_EXISTS);
             }
-            $this->spirit->displayPage($view_path, []);
+            $this->response->displayPage($view_path, []);
         } catch (\Exception $exception) {
-            $this->spirit->errorPage("Act met error: " . $exception->getMessage(), $exception, $this->error_page);
+            $this->response->errorPage("Act met error: " . $exception->getMessage(), $exception, $this->error_page);
         }
 
     }
@@ -231,9 +236,9 @@ class Lamech
 
     public function handleRequestAsApi($apiNamespace = "\\")
     {
-        $act = $this->spirit->getRequest("act", $this->default_controller_name, "/^[A-Za-z0-9_]+$/", $error);
-        if ($error !== Spirit::REQUEST_NO_ERROR) {
-            $this->spirit->jsonForAjax(Spirit::AJAX_JSON_CODE_FAIL, "Not correct request " . $error);
+        $act = $this->request->getRequest("act", $this->default_controller_name, "/^[A-Za-z0-9_]+$/", $error);
+        if ($error !== CommonHelper::REQUEST_NO_ERROR) {
+            $this->response->jsonForAjax(LibResponse::AJAX_JSON_CODE_FAIL, "Not correct request " . $error);
             return;
         }
         try {
@@ -247,8 +252,8 @@ class Lamech
             //$api->_work($this->default_method_name);
             call_user_func_array([$api, '_work'], [$this->default_method_name]);
         } catch (BaseCodedException $exception) {
-            $this->spirit->jsonForAjax(
-                Spirit::AJAX_JSON_CODE_FAIL,
+            $this->response->jsonForAjax(
+                LibResponse::AJAX_JSON_CODE_FAIL,
                 ["error_code" => $exception->getCode(), "error_msg" => "Exception: " . $exception->getMessage()]
             );
         }
@@ -287,8 +292,8 @@ class Lamech
             }
             return call_user_func_array([$api, $method], $sub_paths);
         } catch (BaseCodedException $exception) {
-            $this->spirit->jsonForAjax(
-                Spirit::AJAX_JSON_CODE_FAIL,
+            $this->response->jsonForAjax(
+                LibResponse::AJAX_JSON_CODE_FAIL,
                 ["error_code" => $exception->getCode(), "error_msg" => "Exception: " . $exception->getMessage()]
             );
         }
@@ -297,7 +302,7 @@ class Lamech
 
     protected function getController(&$subPaths = array())
     {
-        if ($this->spirit->isCLI()) {
+        if ($this->request->isCLI()) {
             return $this->getControllerForCLI($subPaths);
         }
 
@@ -375,7 +380,7 @@ class Lamech
     {
         try {
             $parts = $this->dividePath($path_string);
-            $route = $this->router->seekRoute($path_string, $this->spirit->getRequestMethod());
+            $route = $this->router->seekRoute($path_string, $this->request->getRequestMethod());
             if ($route[Naamah::ROUTE_PARAM_TYPE] == Naamah::ROUTE_TYPE_FUNCTION) {
                 $callable = $route[Naamah::ROUTE_PARAM_TARGET];
                 $this->handleRouteWithFunction($callable, $apiNamespace, $parts);
@@ -387,7 +392,6 @@ class Lamech
             }
             throw new BaseCodedException("Naamah Error with unknown type");
         } catch (\Exception $exception) {
-            //var_dump($exception);
             $this->router->handleRouteError(
                 [
                     "error_code" => $exception->getCode(),
@@ -400,8 +404,7 @@ class Lamech
     protected function dividePath(&$pathString = '')
     {
         $sub_paths = array();
-        //$spirit = Spirit::getInstance();
-        if ($this->spirit->isCLI()) {
+        if ($this->request->isCLI()) {
             global $argv;
             global $argc;
             for ($i = 1; $i < $argc; $i++) {
@@ -473,29 +476,28 @@ class Lamech
      */
     private function handleRouteWithView($target, $parts)
     {
-        //$spirit = Spirit::getInstance();
         $view_path = $this->view_dir . '/' . $target . ".php";
         if (!file_exists($view_path)) {
             throw new BaseCodedException("View missing", BaseCodedException::VIEW_NOT_EXISTS);
         }
-        $this->spirit->displayPage($view_path, ["url_path_parts" => $parts]);
+        $this->response->displayPage($view_path, ["url_path_parts" => $parts]);
     }
 
     public function handleRequestThroughAdah()
     {
         try {
             $this->dividePath($path_string);
-            $route = $this->router->seekRoute($path_string, $this->spirit->getRequestMethod());
-            $callable = $this->spirit->safeReadArray($route, Adah::ROUTE_PARAM_CALLBACK);
-            $params = $this->spirit->safeReadArray($route, Adah::ROUTE_PARSED_PARAMETERS);
+            $route = $this->router->seekRoute($path_string, $this->request->getRequestMethod());
+            $callable = $this->helper->safeReadArray($route, Adah::ROUTE_PARAM_CALLBACK);
+            $params = $this->helper->safeReadArray($route, Adah::ROUTE_PARSED_PARAMETERS);
             // @since 1.2.8 as MiddlewareInterface
-            $middleware = $this->spirit->safeReadArray($route, Adah::ROUTE_PARAM_MIDDLEWARE);
+            $middleware = $this->helper->safeReadArray($route, Adah::ROUTE_PARAM_MIDDLEWARE);
 
             // @since 1.2.8 the shift job moved to Adah
             //if (!empty($params)) array_shift($params);
 
             $middleware_instance = MiddlewareInterface::MiddlewareFactory($middleware);
-            if (!$middleware_instance->shouldAcceptRequest($path_string, $this->spirit->getRequestMethod(), $params)) {
+            if (!$middleware_instance->shouldAcceptRequest($path_string, $this->request->getRequestMethod(), $params)) {
                 //header('HTTP/1.0 403 Forbidden');
                 throw new BaseCodedException(
                     "Rejected by Middleware " . $middleware,

@@ -9,8 +9,13 @@
 namespace sinri\enoch\core;
 
 
-use sinri\enoch\mvc\BaseCodedException;
+use sinri\enoch\helper\CommonHelper;
 
+/**
+ * @deprecated since 1.3.0
+ * Class Spirit
+ * @package sinri\enoch\core
+ */
 class Spirit
 {
     const LOG_INFO = 'INFO';
@@ -20,6 +25,9 @@ class Spirit
     protected static $instance = null;
     protected static $useColoredTerminalOutput = false;
     protected $logger = null;
+    protected $helper = null;
+    protected $request = null;
+    protected $response = null;
 
     /**
      * @deprecated since 1.2.9
@@ -42,6 +50,9 @@ class Spirit
     public function __construct()
     {
         $this->logger = new LibLog();
+        $this->helper = new CommonHelper();
+        $this->request = new LibRequest();
+        $this->response = new LibResponse();
     }
 
     public static function getInstance()
@@ -95,50 +106,43 @@ class Spirit
     const METHOD_PATCH = "PATCH";//since v1.2.0
     const METHOD_CLI = "cli";//since v1.1.0
 
+    /**
+     * @deprecated since 1.3.0 use CommonHelper instead
+     * @param $target
+     * @param $name
+     * @param null $default
+     * @param null $regex
+     * @param int $error
+     * @return null
+     */
     public function safeReadArray($target, $name, $default = null, $regex = null, &$error = 0)
     {
-        $error = self::REQUEST_NO_ERROR;
-        if (!isset($target[$name])) {
-            $error = self::REQUEST_FIELD_NOT_FOUND;
-            return $default;
-        }
-        $value = $target[$name];
-        if ($regex === null) {
-            return $value;
-        }
-        if (!preg_match($regex, $value)) {
-            $error = self::REQUEST_REGEX_NOT_MATCH;
-            return $default;
-        }
-        return $value;
+        return $this->helper->safeReadArray($target, $name, $default, $regex, $error);
     }
 
     public function getRequest($name, $default = null, $regex = null, &$error = 0)
     {
-        $value = $this->safeReadArray($_REQUEST, $name, $default, $regex, $error);
-        return $value;
+        return $this->request->getRequest($name, $default, $regex, $error);
     }
 
     public function readGet($name, $default = null, $regex = null, &$error = 0)
     {
-        $value = $this->safeReadArray($_GET, $name, $default, $regex, $error);
-        return $value;
+        return $this->request->get($name, $default, $regex, $error);
     }
 
     public function readPost($name, $default = null, $regex = null, &$error = 0)
     {
-        $value = $this->safeReadArray($_POST, $name, $default, $regex, $error);
-        return $value;
+        return $this->request->post($name, $default, $regex, $error);
     }
 
     public function fullPostFields()
     {
-        return $_POST ? $_POST : [];
+        return $this->request->fullPostFields();
     }
 
     public function fullGetFields()
     {
-        return $_GET ? $_GET : [];
+        return $this->request->fullGetFields();
     }
 
     /**
@@ -146,12 +150,7 @@ class Spirit
      */
     public function isAjax()
     {
-        if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])
-            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
-        ) {
-            return true;
-        }
-        return false;
+        return $this->request->isAjax();
     }
 
     /**
@@ -159,7 +158,7 @@ class Spirit
      */
     public function isGet()
     {
-        return $_SERVER['REQUEST_METHOD'] == 'GET' ? true : false;
+        return $this->request->isGet();
     }
 
     /**
@@ -167,7 +166,7 @@ class Spirit
      */
     public function isPost()
     {
-        return ($_SERVER['REQUEST_METHOD'] == 'POST') ? true : false;
+        return $this->request->isPost();
     }
 
     /**
@@ -176,15 +175,12 @@ class Spirit
      */
     public function getRequestMethod()
     {
-        if (isset($_SERVER['REQUEST_METHOD'])) {
-            return $_SERVER['REQUEST_METHOD'];
-        }
-        return $this->isCLI() ? self::METHOD_CLI : false;
+        return $this->request->getRequestMethod();
     }
 
     public function isCLI()
     {
-        return (php_sapi_name() === 'cli') ? true : false;
+        return $this->request->isCLI();
     }
 
     const AJAX_JSON_CODE_OK = "OK";
@@ -192,7 +188,7 @@ class Spirit
 
     public function json($anything)
     {
-        echo json_encode($anything);
+        $this->response->json($anything);
     }
 
     /**
@@ -201,34 +197,16 @@ class Spirit
      */
     public function jsonForAjax($code = self::AJAX_JSON_CODE_OK, $data = '')
     {
-        echo json_encode(["code" => $code, "data" => $data]);
+        $this->response->jsonForAjax($code, $data);
     }
 
     public function displayPage($filepath, $params = [])
     {
-        extract($params);
-        if (!file_exists($filepath)) {
-            throw new BaseCodedException("View not fould.");
-        }
-        require $filepath;
+        $this->response->displayPage($filepath, $params);
     }
 
     public function errorPage($message = '', $exception = null, $viewPath = null)
     {
-        if (empty($viewPath) || !file_exists($viewPath) || !is_file($viewPath)) {
-            echo "<h3>ERROR</h3><hr>" . PHP_EOL;
-            echo "<pre>" . PHP_EOL;
-            echo $message;
-            echo PHP_EOL;
-            if ($exception) {
-                var_dump($exception);
-            }
-            echo "</pre>";
-            echo "<hr>";
-            echo "<p>Behold, the Lord cometh with ten thousands of his saints, to execute judgment upon all... (Jude 1:14-15)</p>" . PHP_EOL;
-            echo "<p>Powered by Enoch Project</p>" . PHP_EOL;
-            return;
-        }
-        $this->displayPage($viewPath, ['message' => $message, "exception" => $exception]);
+        $this->response->errorPage($message, $exception, $viewPath);
     }
 }

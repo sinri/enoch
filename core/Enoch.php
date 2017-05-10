@@ -17,7 +17,7 @@ abstract class Enoch
 
     public function __construct()
     {
-        $this->logger = new Spirit();
+        $this->logger = new LibLog();
     }
 
     public function initialize($projectName, $projectBase)
@@ -47,19 +47,19 @@ abstract class Enoch
     public function start()
     {
         if (!isset($this->config['walkers']) || empty($this->config['walkers'])) {
-            $this->logger->log(Spirit::LOG_ERROR, "There is not an available walker configured.");
+            $this->logger->log(LibLog::LOG_ERROR, "There is not an available walker configured.");
             return false;
         }
         foreach ($this->config['walkers'] as $walker_name => $status) {
             if ($status) {
                 $goNext=$this->walkWith($walker_name);
                 if (!$goNext) {
-                    $this->logger->log(Spirit::LOG_WARNING, "The walker '{$walker_name}' stopped walking, exit.");
+                    $this->logger->log(LibLog::LOG_WARNING, "The walker '{$walker_name}' stopped walking, exit.");
                     return false;
                 }
             }
         }
-        $this->logger->log(Spirit::LOG_INFO, "All walkers have satisfied.");
+        $this->logger->log(LibLog::LOG_INFO, "All walkers have satisfied.");
         return true;
     }
 
@@ -67,20 +67,20 @@ abstract class Enoch
     {
         $class_file = $this->projectBase . '/' . $walkerName . 'Walker.php';
         if (!file_exists($class_file)) {
-            $this->logger->log(Spirit::LOG_ERROR, "No such walker!");
+            $this->logger->log(LibLog::LOG_ERROR, "No such walker!");
             return false;
         }
         require_once $class_file;
         $walker = $this->getWalkerInstance($walkerName);
         if (!is_a($walker, 'sinri\enoch\core\Walker')) {
-            $this->logger->log(Spirit::LOG_ERROR, "The walker is not of sinri\\enoch\\core\\Walker");
+            $this->logger->log(LibLog::LOG_ERROR, "The walker is not of sinri\\enoch\\core\\Walker");
             return false;
         }
         try {
-            $goNext = $walker->walk();
+            $goNext = call_user_func_array([$walker, 'walk'], []);
             return $goNext;
         } catch (\Exception $exception) {
-            $this->logger->log(Spirit::LOG_ERROR, "Walk into a trap: ".$exception->getMessage());
+            $this->logger->log(LibLog::LOG_ERROR, "Walk into a trap: " . $exception->getMessage());
             return false;
         }
     }

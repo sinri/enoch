@@ -8,7 +8,7 @@
 
 namespace sinri\enoch\mvc;
 
-use sinri\enoch\core\Spirit;
+use sinri\enoch\core\LibRequest;
 
 /**
  * Class Naamah
@@ -98,36 +98,36 @@ class Naamah extends RouterInterface
 
     public function get($path, $callback, $middleware = null)
     {
-        $this->addRouteForFunction($path, $callback, Spirit::METHOD_GET);
+        $this->addRouteForFunction($path, $callback, LibRequest::METHOD_GET);
     }
 
     public function post($path, $callback, $middleware = null)
     {
-        $this->addRouteForFunction($path, $callback, Spirit::METHOD_POST);
+        $this->addRouteForFunction($path, $callback, LibRequest::METHOD_POST);
     }
 
     public function put($path, $callback, $middleware = null)
     {
-        $this->addRouteForFunction($path, $callback, Spirit::METHOD_PUT);
+        $this->addRouteForFunction($path, $callback, LibRequest::METHOD_PUT);
     }
 
     public function patch($path, $callback, $middleware = null)
     {
-        $this->addRouteForFunction($path, $callback, Spirit::METHOD_PATCH);
+        $this->addRouteForFunction($path, $callback, LibRequest::METHOD_PATCH);
     }
 
     public function delete($path, $callback, $middleware = null)
     {
-        $this->addRouteForFunction($path, $callback, Spirit::METHOD_DELETE);
+        $this->addRouteForFunction($path, $callback, LibRequest::METHOD_DELETE);
     }
 
     public function option($path, $callback, $middleware = null)
     {
-        $this->addRouteForFunction($path, $callback, Spirit::METHOD_OPTION);
+        $this->addRouteForFunction($path, $callback, LibRequest::METHOD_OPTION);
     }
 
     public function head($path, $callback, $middleware = null)
     {
-        $this->addRouteForFunction($path, $callback, Spirit::METHOD_HEAD);
+        $this->addRouteForFunction($path, $callback, LibRequest::METHOD_HEAD);
     }
 }

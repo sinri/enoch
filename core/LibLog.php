@@ -70,10 +70,10 @@ class LibLog
         if ($this->useColoredTerminalOutput) {
             $lcc = new LibConsoleColor();
             switch ($level) {
-                case Spirit::LOG_ERROR:
+                case self::LOG_ERROR:
                     $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Red);
                     break;
-                case Spirit::LOG_WARNING:
+                case self::LOG_WARNING:
                     $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Yellow);
                     break;
                 default:

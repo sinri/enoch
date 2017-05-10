@@ -9,24 +9,27 @@
 namespace sinri\enoch\mvc;
 
 
-use sinri\enoch\core\Spirit;
+use sinri\enoch\core\LibRequest;
+use sinri\enoch\core\LibResponse;
 
 class ApiInterface
 {
-    protected $spirit;
+    protected $request;
+    protected $response;
     protected $request_guid;
 
     public function __construct()
     {
         $this->request_guid = uniqid();
-        $this->spirit = new Spirit();
+        $this->request = new LibRequest();
+        $this->response = new LibResponse();
     }
 
     public function _work($defaultMethod = '')
     {
         $this->_beforeWork();
 
-        $method = $this->spirit->getRequest("method", $defaultMethod, "/^[a-zA-Z0-9]+$/");
+        $method = $this->request->getRequest("method", $defaultMethod, "/^[a-zA-Z0-9]+$/");
         if (empty($method) || !method_exists($this, $method)) {
             throw new BaseCodedException("Method not exists", BaseCodedException::METHOD_NOT_EXISTS);
         }
@@ -48,11 +51,11 @@ class ApiInterface
 
     protected function _sayOK($data = "")
     {
-        $this->spirit->jsonForAjax(Spirit::AJAX_JSON_CODE_OK, $data);
+        $this->response->jsonForAjax(LibResponse::AJAX_JSON_CODE_OK, $data);
     }
 
     protected function _sayFail($error = "")
     {
-        $this->spirit->jsonForAjax(Spirit::AJAX_JSON_CODE_FAIL, $error);
+        $this->response->jsonForAjax(LibResponse::AJAX_JSON_CODE_FAIL, $error);
     }
 }

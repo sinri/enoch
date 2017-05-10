@@ -19,7 +19,7 @@ abstract class Walker
     public function __construct($config)
     {
         $this->config=$config;
-        $this->logger = new Spirit();
+        $this->logger = new LibLog();
 
         $this->db = new LibMySQL();
         $this->sftp = new LibSFTP();

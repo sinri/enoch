@@ -8,8 +8,8 @@
 
 namespace sinri\enoch\test\WalkingSystem\sample;
 
+use sinri\enoch\core\LibLog;
 use sinri\enoch\core\LibMail;
-use sinri\enoch\core\Spirit;
 use sinri\enoch\core\Walker;
 
 class SendOrderWalker extends Walker
@@ -40,7 +40,7 @@ class SendOrderWalker extends Walker
     public function walk()
     {
         // TODO: Implement walk() method.
-        $this->logger->log(Spirit::LOG_INFO, __METHOD__."@".__LINE__);
+        $this->logger->log(LibLog::LOG_INFO, __METHOD__ . "@" . __LINE__);
         $this->testSendMail();
         return true;
     }
@@ -76,6 +76,6 @@ class SendOrderWalker extends Walker
             ->finallySend();
 
 
-        $this->logger->log(($done?Spirit::LOG_INFO:Spirit::LOG_ERROR),"Sending mail",$done);
+        $this->logger->log(($done ? LibLog::LOG_INFO : LibLog::LOG_ERROR), "Sending mail", $done);
     }
 }

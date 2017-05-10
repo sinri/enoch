@@ -2711,7 +2711,7 @@ class PHPMailer
                 }
             }
             return $file_buffer;
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $this->setError($exc->getMessage());
             return '';
         }

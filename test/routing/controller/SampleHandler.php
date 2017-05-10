@@ -28,7 +28,7 @@ class SampleHandler extends ApiInterface
         echo __METHOD__ . PHP_EOL;
         echo "(" . implode(',', $parts) . ")" . PHP_EOL;
         echo $this->inner . PHP_EOL;
-        echo $this->spirit->readGet('k') . PHP_EOL;
+        echo $this->request->get('k') . PHP_EOL;
     }
 
     public function handleErrorRequest()
@@ -38,17 +38,17 @@ class SampleHandler extends ApiInterface
 
     public function handleGetRequest()
     {
-        echo "Method: " . $this->spirit->getRequestMethod() . '; ' . __METHOD__;
+        echo "Method: " . $this->request->getRequestMethod() . '; ' . __METHOD__;
     }
 
     public function handlePostRequest()
     {
-        echo "Method: " . $this->spirit->getRequestMethod() . '; ' . __METHOD__;
+        echo "Method: " . $this->request->getRequestMethod() . '; ' . __METHOD__;
     }
 
     public function handleOtherRequest()
     {
-        echo "Method: " . $this->spirit->getRequestMethod() . '; ' . __METHOD__;
+        echo "Method: " . $this->request->getRequestMethod() . '; ' . __METHOD__;
     }
 
     public function adah($p, $q)

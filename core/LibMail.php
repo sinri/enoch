@@ -9,13 +9,14 @@
 namespace sinri\enoch\core;
 
 
+use sinri\enoch\helper\CommonHelper;
 use sinri\enoch\SmallPHPMail\PHPMailer;
 
 class LibMail
 {
     private $mail;
     private $smtpInfo;
-    private $spirit;
+    private $helper;
 
     /**
      * LibMail constructor.
@@ -26,7 +27,7 @@ class LibMail
     public function __construct($params = [])
     {
         $this->smtpInfo = [];
-        $this->spirit = new Spirit();
+        $this->helper = new CommonHelper();
 
         $this->setUpSMTP($params);
 
@@ -35,13 +36,13 @@ class LibMail
 
     public function setUpSMTP($params)
     {
-        $this->smtpInfo['host'] = $this->spirit->safeReadArray($params, 'host', '');
-        $this->smtpInfo['smtp_auth'] = $this->spirit->safeReadArray($params, 'smtp_auth', '');
-        $this->smtpInfo['username'] = $this->spirit->safeReadArray($params, 'username', '');
-        $this->smtpInfo['password'] = $this->spirit->safeReadArray($params, 'password', '');
-        $this->smtpInfo['smtp_secure'] = $this->spirit->safeReadArray($params, 'smtp_secure', '');
-        $this->smtpInfo['port'] = $this->spirit->safeReadArray($params, 'port', '');
-        $this->smtpInfo['display_name'] = $this->spirit->safeReadArray($params, 'display_name', '');
+        $this->smtpInfo['host'] = $this->helper->safeReadArray($params, 'host', '');
+        $this->smtpInfo['smtp_auth'] = $this->helper->safeReadArray($params, 'smtp_auth', '');
+        $this->smtpInfo['username'] = $this->helper->safeReadArray($params, 'username', '');
+        $this->smtpInfo['password'] = $this->helper->safeReadArray($params, 'password', '');
+        $this->smtpInfo['smtp_secure'] = $this->helper->safeReadArray($params, 'smtp_secure', '');
+        $this->smtpInfo['port'] = $this->helper->safeReadArray($params, 'port', '');
+        $this->smtpInfo['display_name'] = $this->helper->safeReadArray($params, 'display_name', '');
     }
 
     /**

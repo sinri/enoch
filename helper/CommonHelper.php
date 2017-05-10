@@ -29,4 +29,35 @@ class CommonHelper
         }
         return null;
     }
+
+
+    const REQUEST_NO_ERROR = 0;
+    const REQUEST_FIELD_NOT_FOUND = 1;
+    const REQUEST_REGEX_NOT_MATCH = 2;
+
+    /**
+     * @param $target
+     * @param $name
+     * @param null $default
+     * @param null $regex
+     * @param int $error
+     * @return mixed
+     */
+    public function safeReadArray($target, $name, $default = null, $regex = null, &$error = 0)
+    {
+        $error = self::REQUEST_NO_ERROR;
+        if (!isset($target[$name])) {
+            $error = self::REQUEST_FIELD_NOT_FOUND;
+            return $default;
+        }
+        $value = $target[$name];
+        if ($regex === null) {
+            return $value;
+        }
+        if (!preg_match($regex, $value)) {
+            $error = self::REQUEST_REGEX_NOT_MATCH;
+            return $default;
+        }
+        return $value;
+    }
 }

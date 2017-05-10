@@ -8,6 +8,11 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.3.0
+
+Stop use of Spirit in Package Codes.
+Add LibRequest and LibResponse.
+
 ## 1.2.9
 
 Autoloader;

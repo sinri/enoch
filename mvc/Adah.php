@@ -9,7 +9,7 @@
 namespace sinri\enoch\mvc;
 
 
-use sinri\enoch\core\Spirit;
+use sinri\enoch\core\LibRequest;
 
 /**
  * Class Adah
@@ -67,37 +67,37 @@ class Adah extends RouterInterface
 
     public function get($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_GET, $path, $callback, $middleware);
+        $this->registerRoute(LibRequest::METHOD_GET, $path, $callback, $middleware);
     }
 
     public function post($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_POST, $path, $callback, $middleware);
+        $this->registerRoute(LibRequest::METHOD_POST, $path, $callback, $middleware);
     }
 
     public function put($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_PUT, $path, $callback, $middleware);
+        $this->registerRoute(LibRequest::METHOD_PUT, $path, $callback, $middleware);
     }
 
     public function patch($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_PATCH, $path, $callback, $middleware);
+        $this->registerRoute(LibRequest::METHOD_PATCH, $path, $callback, $middleware);
     }
 
     public function delete($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_DELETE, $path, $callback, $middleware);
+        $this->registerRoute(LibRequest::METHOD_DELETE, $path, $callback, $middleware);
     }
 
     public function option($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_OPTION, $path, $callback, $middleware);
+        $this->registerRoute(LibRequest::METHOD_OPTION, $path, $callback, $middleware);
     }
 
     public function head($path, $callback, $middleware = null)
     {
-        $this->registerRoute(Spirit::METHOD_HEAD, $path, $callback, $middleware);
+        $this->registerRoute(LibRequest::METHOD_HEAD, $path, $callback, $middleware);
     }
 
     public function seekRoute($path, $method)

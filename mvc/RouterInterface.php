@@ -9,17 +9,20 @@
 namespace sinri\enoch\mvc;
 
 
-use sinri\enoch\core\Spirit;
+use sinri\enoch\core\LibRequest;
+use sinri\enoch\core\LibResponse;
 
 abstract class RouterInterface
 {
-    protected $spirit = null;
+    protected $request;
+    protected $response;
     protected $error_handler = null;
     protected $routes = [];
 
     public function __construct()
     {
-        $this->spirit = new Spirit();
+        $this->request = new LibRequest();
+        $this->response = new LibResponse();
         $this->error_handler = null;
         $this->routes = [];
     }
@@ -42,13 +45,13 @@ abstract class RouterInterface
             header('HTTP/1.0 403 Forbidden');
         }
         if (is_string($this->error_handler) && file_exists($this->error_handler)) {
-            $this->spirit->displayPage($this->error_handler, $errorData);
+            $this->response->displayPage($this->error_handler, $errorData);
             return;
         } elseif (is_callable($this->error_handler)) {
             call_user_func_array($this->error_handler, [$errorData]);
             return;
         }
-        $this->spirit->errorPage(__METHOD__);
+        $this->response->errorPage(__METHOD__);
     }
 
     abstract public function seekRoute($path, $method);
