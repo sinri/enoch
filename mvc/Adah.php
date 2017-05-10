@@ -121,4 +121,30 @@ class Adah extends RouterInterface
         throw new BaseCodedException("No route matched.", BaseCodedException::NO_MATCHED_ROUTE);
     }
 
+    /**
+     * @since 1.3.1
+     * @param $shared array
+     * @param $list array
+     * @return void
+     */
+    public function group($shared, $list)
+    {
+        $middleware = null;
+        $sharedPath = '';
+        if (isset($shared[self::ROUTE_PARAM_MIDDLEWARE])) {
+            $middleware = $shared[self::ROUTE_PARAM_MIDDLEWARE];
+        }
+        if (isset($shared[self::ROUTE_PARAM_PATH])) {
+            $sharedPath = $shared[self::ROUTE_PARAM_PATH];
+        }
+
+        foreach ($list as $item) {
+            $this->registerRoute(
+                $item[self::ROUTE_PARAM_METHOD],
+                $sharedPath . $item[self::ROUTE_PARAM_PATH],
+                $item[self::ROUTE_PARAM_CALLBACK],
+                $middleware
+            );
+        }
+    }
 }

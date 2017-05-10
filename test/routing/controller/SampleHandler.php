@@ -56,4 +56,14 @@ class SampleHandler extends ApiInterface
         echo __METHOD__ . " p=$p, q=$q";
         $this->logger->log(LibLog::LOG_INFO, __METHOD__, [$p, $q]);
     }
+
+    public function groupAdd($x, $y)
+    {
+        echo "$x + $y = " . ($x + $y);
+    }
+
+    public function groupMinus($x, $y)
+    {
+        echo "$x - $y = " . ($x - $y);
+    }
 }

@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.3.1
+
+Add group to router.
+
 ## 1.3.0
 
 Stop use of Spirit in Package Codes.

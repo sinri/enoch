@@ -130,4 +130,9 @@ class Naamah extends RouterInterface
     {
         $this->addRouteForFunction($path, $callback, LibRequest::METHOD_HEAD);
     }
+
+    public function group($shared, $list)
+    {
+        throw new BaseCodedException('not use this', BaseCodedException::NOT_IMPLEMENT_ERROR);
+    }
 }
