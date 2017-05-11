@@ -77,6 +77,7 @@ class FileQueue implements QueueInterface
     }
 
     /**
+     * @param null|int $index
      * @return mixed
      */
     public function removeQueueItem($index = null)

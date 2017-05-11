@@ -23,6 +23,7 @@ interface QueueInterface
     public function takeFromQueueHead();
 
     /**
+     * @param null|int $index
      * @return bool
      */
     public function removeQueueItem($index = null);

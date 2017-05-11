@@ -18,4 +18,4 @@ $lamech->setErrorPage(__DIR__ . '/ErrorPage.php');
 
 // If you want to use controller as api
 $lamech->setControllerDir(__DIR__ . '/controller');
-$lamech->apiFromRequest("\\sinri\\enoch\\test\\requesting\\controller\\");
+$lamech->handleRequestAsApi("\\sinri\\enoch\\test\\requesting\\controller\\");

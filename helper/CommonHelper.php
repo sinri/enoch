@@ -14,10 +14,11 @@ class CommonHelper
     /**
      * 按照PSR-0规范
      * @since 1.2.9
-     * @param $class_name string such as sinri\enoch\test\routing\controller\SampleHandler
-     * @param $base_namespace string such as sinri\enoch
-     * @param $base_path string /code/sinri/enoch
-     * @return string|null
+     * @param string $class_name such as sinri\enoch\test\routing\controller\SampleHandler
+     * @param string $base_namespace such as sinri\enoch
+     * @param string $base_path /code/sinri/enoch
+     * @param string $extension
+     * @return null|string
      */
     public function getFilePathOfClassNameWithPSR0($class_name, $base_namespace, $base_path, $extension = '.php')
     {

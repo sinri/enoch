@@ -102,7 +102,7 @@ class LibSFTP
         try {
             $resConnection = ssh2_connect($this->strServer, $this->strServerPort);
             if (!$resConnection) {
-                throw new \Exception("Cound not connect: ".$this->strServer.":".$this->strServerPort);
+                throw new \Exception("Could not connect: " . $this->strServer . ":" . $this->strServerPort);
             }
             if (ssh2_auth_password($resConnection, $this->strServerUsername, $this->strServerPassword)) {
                 $resSFTP = ssh2_sftp($resConnection);

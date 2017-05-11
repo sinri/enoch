@@ -20,4 +20,4 @@ $lamech->setControllerDir(__DIR__ . '/controller');
 $lamech->setDefaultControllerName("SampleHandler");
 $lamech->setDefaultMethodName("handleErrorRequest");
 
-$lamech->restfullyHandleRequest("\\sinri\\enoch\\test\\routing\\controller\\");
+$lamech->handleRequestAsCI("\\sinri\\enoch\\test\\routing\\controller\\");

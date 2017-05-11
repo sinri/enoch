@@ -21,7 +21,7 @@ $lamech->setViewDir(__DIR__ . '/view');
 // If you want to use controller as api
 $lamech->setControllerDir(__DIR__ . '/controller');
 //$lamech->apiFromRequest("\\sinri\\enoch\\test\\requesting\\");
-$lamech->viewFromRequest();
+$lamech->handleRequestAsView();
 
 /**
  * Test URL as

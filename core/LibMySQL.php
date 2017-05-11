@@ -179,10 +179,39 @@ class LibMySQL
         return $done;
     }
 
-    public function safeExecute($sql, $values = array())
+    /**
+     * @param $sql
+     * @param array $values
+     * @param null $sth @since 1.3.3
+     * @return bool
+     */
+    public function safeExecute($sql, $values = array(), &$sth = null)
     {
         $sth = $this->pdo->prepare($sql);
         $done = $sth->execute($values);
         return $done;
+    }
+
+    /**
+     * @since 1.3.3
+     * @param null|string $pk
+     * @return string
+     */
+    public function getLastInsertID($pk = null)
+    {
+        return $this->pdo->lastInsertId($pk);
+    }
+
+    /**
+     * @since 1.3.3
+     * PDOStatement::rowCount() 返回上一个由对应的 PDOStatement 对象执行DELETE、 INSERT、或 UPDATE 语句受影响的行数。
+     * 如果上一条由相关 PDOStatement 执行的 SQL 语句是一条 SELECT 语句，有些数据可能返回由此语句返回的行数。
+     * 但这种方式不能保证对所有数据有效，且对于可移植的应用不应依赖于此方式。
+     * @param \PDOStatement $statement
+     * @return int
+     */
+    public function getAffectedRowCount($statement)
+    {
+        return $statement->rowCount();
     }
 }

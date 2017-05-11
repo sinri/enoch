@@ -101,6 +101,7 @@ class FileCache implements CacheInterface
     {
         if (!$this->validateObjectKey($key)) return false;
         array_map('unlink', glob($this->cacheDir . '/' . $key . '.*'));
+        return true;
     }
 
     /**
@@ -110,11 +111,16 @@ class FileCache implements CacheInterface
     {
         $list = glob($this->cacheDir . '/*.*');
         if (empty($list)) return true;
+        $all_deleted = true;
         foreach ($list as $path) {
             $limit = $this->getTimeLimitFromObjectPath($path);
             if ($limit < time()) {
-                unlink($path);
+                $deleted = unlink($path);
+                if (!$deleted) {
+                    $all_deleted = false;
+                }
             }
         }
+        return $all_deleted;
     }
 }
