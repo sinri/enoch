@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.3.3
+
+Add debug mode for Lamech.
+
 ## 1.3.2
 
 Use ReflectionClass to auto build CI-style routers.

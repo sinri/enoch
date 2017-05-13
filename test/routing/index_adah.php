@@ -14,6 +14,8 @@ require_once __DIR__ . '/../../autoload.php';
 
 $lamech = new  \sinri\enoch\mvc\Lamech();
 
+$lamech->setDebug(true);
+
 $lamech->setControllerDir(__DIR__ . '/controller');
 $lamech->setViewDir(__DIR__ . '/view');
 

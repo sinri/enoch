@@ -25,6 +25,7 @@ class Lamech
     protected $response;
     protected $router;
     protected $helper;
+    protected $debug = false;
     private $default_controller_name = 'Welcome';
     private $default_method_name = 'index';
 
@@ -38,6 +39,15 @@ class Lamech
         $this->response = new LibResponse();
         $this->router = new Adah();
         $this->helper = new CommonHelper();
+        $this->debug = false;
+    }
+
+    /**
+     * @param bool $debug
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
     }
 
     public function useAdahAsRouter()
@@ -220,6 +230,11 @@ class Lamech
             $this->response->displayPage($view_path, []);
         } catch (\Exception $exception) {
             $this->response->errorPage("Act met error: " . $exception->getMessage(), $exception, $this->error_page);
+            if ($this->debug) {
+                echo "<pre>" . PHP_EOL;
+                print_r($exception);
+                echo "</pre>" . PHP_EOL;
+            }
         }
 
     }
@@ -256,6 +271,11 @@ class Lamech
                 LibResponse::AJAX_JSON_CODE_FAIL,
                 ["error_code" => $exception->getCode(), "error_msg" => "Exception: " . $exception->getMessage()]
             );
+            if ($this->debug) {
+                echo "<pre>" . PHP_EOL;
+                print_r($exception);
+                echo "</pre>" . PHP_EOL;
+            }
         }
     }
 
@@ -296,6 +316,11 @@ class Lamech
                 LibResponse::AJAX_JSON_CODE_FAIL,
                 ["error_code" => $exception->getCode(), "error_msg" => "Exception: " . $exception->getMessage()]
             );
+            if ($this->debug) {
+                echo "<pre>" . PHP_EOL;
+                print_r($exception);
+                echo "</pre>" . PHP_EOL;
+            }
         }
         return false;
     }
@@ -398,6 +423,11 @@ class Lamech
                     "error_message" => $exception->getMessage(),
                 ]
             );
+            if ($this->debug) {
+                echo "<pre>" . PHP_EOL;
+                print_r($exception);
+                echo "</pre>" . PHP_EOL;
+            }
         }
     }
 
@@ -524,6 +554,11 @@ class Lamech
                 ],
                 $http_code
             );
+            if ($this->debug) {
+                echo "<pre>" . PHP_EOL;
+                print_r($exception);
+                echo "</pre>" . PHP_EOL;
+            }
         }
     }
 }
