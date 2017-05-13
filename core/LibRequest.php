@@ -47,6 +47,30 @@ class LibRequest
         return $value;
     }
 
+    public function getCookie($name, $default = null, $regex = null, &$error = 0)
+    {
+        $value = $this->helper->safeReadArray($_COOKIE, $name, $default, $regex, $error);
+        return $value;
+    }
+
+    public function getServerVar($name, $default = null, $regex = null, &$error = 0)
+    {
+        $value = $this->helper->safeReadArray($_SERVER, $name, $default, $regex, $error);
+        return $value;
+    }
+
+    public function getSessionVar($name, $default = null, $regex = null, &$error = 0)
+    {
+        $value = $this->helper->safeReadArray($_SESSION, $name, $default, $regex, $error);
+        return $value;
+    }
+
+    public function getHeader($name, $default = null, $regex = null, &$error = 0)
+    {
+        $value = $this->helper->safeReadArray($this->fullHeaderFields(), $name, $default, $regex, $error);
+        return $value;
+    }
+
     public function fullPostFields()
     {
         return $_POST ? $_POST : [];
@@ -55,6 +79,16 @@ class LibRequest
     public function fullGetFields()
     {
         return $_GET ? $_GET : [];
+    }
+
+    public function fullCookieFields()
+    {
+        return $_COOKIE ? $_COOKIE : [];
+    }
+
+    public function fullHeaderFields()
+    {
+        return getallheaders();
     }
 
     /**

@@ -8,6 +8,11 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.3.4
+
+Composer Require "ralouphie/getallheaders";
+Better LibRequest.
+
 ## 1.3.3
 
 Add debug mode for Lamech.
