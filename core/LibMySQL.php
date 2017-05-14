@@ -12,6 +12,10 @@ class LibMySQL
 {
     private $pdo=null;
 
+    /**
+     * LibMySQL constructor.
+     * @param null|array $params
+     */
     public function __construct($params = null)
     {
         if (empty($params)) {
@@ -33,6 +37,13 @@ class LibMySQL
         $this->pdo->query("set names utf8");
     }
 
+    /**
+     * @param $host
+     * @param $port
+     * @param $username
+     * @param $password
+     * @param $database
+     */
     public function setConnection($host, $port, $username, $password, $database)
     {
         $this->pdo = new \PDO(
@@ -44,6 +55,10 @@ class LibMySQL
         $this->pdo->query("set names utf8");
     }
 
+    /**
+     * @param $sql
+     * @return array
+     */
     public function getAll($sql)
     {
         $stmt=$this->pdo->query($sql);
@@ -52,6 +67,10 @@ class LibMySQL
         return $rows;
     }
 
+    /**
+     * @param $sql
+     * @return array
+     */
     public function getCol($sql)
     {
         $stmt=$this->pdo->query($sql);
@@ -66,6 +85,10 @@ class LibMySQL
         return $col;
     }
 
+    /**
+     * @param $sql
+     * @return array|bool
+     */
     public function getRow($sql)
     {
         $stmt = $this->pdo->query($sql);
@@ -77,6 +100,10 @@ class LibMySQL
         return false;
     }
 
+    /**
+     * @param $sql
+     * @return mixed|bool
+     */
     public function getOne($sql)
     {
         //FETCH_BOTH
@@ -94,6 +121,10 @@ class LibMySQL
         return false;
     }
 
+    /**
+     * @param $sql
+     * @return int affected row count
+     */
     public function exec($sql)
     {
         $this->logSql($sql, true);
@@ -101,6 +132,10 @@ class LibMySQL
         return $rows;
     }
 
+    /**
+     * @param $sql
+     * @return bool|string
+     */
     public function insert($sql)
     {
         $this->logSql($sql, true);
@@ -111,37 +146,69 @@ class LibMySQL
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function beginTransaction()
     {
         return $this->pdo->beginTransaction();
     }
+
+    /**
+     * @return bool
+     */
     public function commit()
     {
         return $this->pdo->commit();
     }
+
+    /**
+     * @return bool
+     */
     public function rollBack()
     {
         return $this->pdo->rollBack();
     }
+
+    /**
+     * @return bool
+     */
     public function inTransaction()
     {
         return $this->pdo->inTransaction();
     }
 
+    /**
+     * @return mixed
+     */
     public function errorCode()
     {
         return $this->pdo->errorCode();
     }
+
+    /**
+     * @return array
+     */
     public function errorInfo()
     {
         return $this->pdo->errorInfo();
     }
 
+    /**
+     * @param $string
+     * @param int $parameterType
+     * @return string
+     */
     public function quote($string, $parameterType = \PDO::PARAM_STR)
     {
         return $this->pdo->quote($string, $parameterType);
     }
 
+    /**
+     * @param $sql
+     * @param $stmt
+     * @throws \Exception
+     */
     private function logSql($sql, $stmt)
     {
         if (!$stmt) {
@@ -149,6 +216,12 @@ class LibMySQL
         }
     }
 
+    /**
+     * @param $sql
+     * @param array $values
+     * @param int $fetchStyle
+     * @return array
+     */
     public function safeQueryAll($sql, $values = array(), $fetchStyle = \PDO::FETCH_ASSOC)
     {
         $sth = $this->pdo->prepare($sql);
@@ -156,6 +229,12 @@ class LibMySQL
         $rows = $sth->fetchAll($fetchStyle);
         return $rows;
     }
+
+    /**
+     * @param $sql
+     * @param array $values
+     * @return mixed
+     */
     public function safeQueryRow($sql, $values = array())
     {
         $sth = $this->pdo->prepare($sql);
@@ -163,6 +242,12 @@ class LibMySQL
         $row=$sth->fetch(\PDO::FETCH_ASSOC);
         return $row;
     }
+
+    /**
+     * @param $sql
+     * @param array $values
+     * @return string
+     */
     public function safeQueryOne($sql, $values = array())
     {
         $sth = $this->pdo->prepare($sql);
@@ -171,6 +256,13 @@ class LibMySQL
         return $col;
     }
 
+    /**
+     * @param $sql
+     * @param array $values
+     * @param int $insertedId
+     * @param null $pk
+     * @return bool
+     */
     public function safeInsertOne($sql, $values = array(), &$insertedId = 0, $pk = null)
     {
         $sth = $this->pdo->prepare($sql);
