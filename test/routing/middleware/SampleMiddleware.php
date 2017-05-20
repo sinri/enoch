@@ -13,7 +13,7 @@ use sinri\enoch\mvc\MiddlewareInterface;
 
 class SampleMiddleware extends MiddlewareInterface
 {
-    public function shouldAcceptRequest($path, $method, $params)
+    public function shouldAcceptRequest($path, $method, $params, &$preparedData = null)
     {
         //print_r([$path,$method,$params]);
         if ($params[1] == 0) {
