@@ -16,6 +16,9 @@ class LibResponse
     const AJAX_JSON_CODE_OK = "OK";
     const AJAX_JSON_CODE_FAIL = "FAIL";
 
+    /**
+     * @param $anything
+     */
     public function json($anything)
     {
         echo json_encode($anything);
@@ -30,6 +33,11 @@ class LibResponse
         echo json_encode(["code" => $code, "data" => $data]);
     }
 
+    /**
+     * @param $filepath
+     * @param array $params
+     * @throws BaseCodedException
+     */
     public function displayPage($filepath, $params = [])
     {
         extract($params);
@@ -39,6 +47,11 @@ class LibResponse
         require $filepath;
     }
 
+    /**
+     * @param string $message
+     * @param null $exception
+     * @param null $viewPath
+     */
     public function errorPage($message = '', $exception = null, $viewPath = null)
     {
         if (empty($viewPath) || !file_exists($viewPath) || !is_file($viewPath)) {

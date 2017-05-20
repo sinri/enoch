@@ -527,7 +527,7 @@ class Lamech
             //if (!empty($params)) array_shift($params);
 
             $middleware_instance = MiddlewareInterface::MiddlewareFactory($middleware);
-            if (!$middleware_instance->shouldAcceptRequest($path_string, $this->request->getRequestMethod(), $params)) {
+            if (!$middleware_instance->shouldAcceptRequest($path_string, $this->request->getRequestMethod(), $params, $preparedData)) {
                 //header('HTTP/1.0 403 Forbidden');
                 throw new BaseCodedException(
                     "Rejected by Middleware " . $middleware,
@@ -539,6 +539,9 @@ class Lamech
                 $class_instance = $callable[0];
                 //print_r(get_class_methods($class_instance));
                 $class_instance = new $class_instance();
+                if (method_exists($class_instance, '_acceptMiddlewarePreparedData')) {
+                    $class_instance->_acceptMiddlewarePreparedData($preparedData);
+                }
                 $callable[0] = $class_instance;
             }
             call_user_func_array($callable, $params);
@@ -559,6 +562,42 @@ class Lamech
                 print_r($exception);
                 echo "</pre>" . PHP_EOL;
             }
+        }
+    }
+
+    /**
+     * Automatically load controllers as Adah Router for Lamech (CI-Style)
+     * @since 1.3.6
+     * @param string $directory __DIR__ . '/../controller'
+     * @param string $urlBase "XX/"
+     * @param string $controllerNamespaceBase '\leqee\yiranoc\controller\\'
+     * @param string $middlewareNamespaceBase '\leqee\yiranoc\middleware\AuthMiddleware'
+     */
+    public function loadAllControllersInDirectoryAsCI($directory, $urlBase = '', $controllerNamespaceBase = '', $middlewareNamespaceBase = '')
+    {
+        if ($handle = opendir($directory)) {
+            while (false !== ($entry = readdir($handle))) {
+                if ($entry != "." && $entry != "..") {
+                    if (is_dir($directory . '/' . $entry)) {
+                        //DIR,
+                        $this->loadAllControllersInDirectoryAsCI(
+                            $urlBase . $entry . '/',
+                            $controllerNamespaceBase . $entry . '\\',
+                            $middlewareNamespaceBase
+                        );
+                    } else {
+                        //FILE
+                        $list = explode('.', $entry);
+                        $name = isset($list[0]) ? $list[0] : '';
+                        $this->getRouter()->loadController(
+                            $urlBase . $name . '/',
+                            $controllerNamespaceBase . $name,
+                            $middlewareNamespaceBase
+                        );
+                    }
+                }
+            }
+            closedir($handle);
         }
     }
 }

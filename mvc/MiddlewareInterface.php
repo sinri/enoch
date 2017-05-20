@@ -27,12 +27,14 @@ class MiddlewareInterface
      * Check request data with $_REQUEST, $_SESSION, $_SERVER, etc.
      * And decide if the request should be accepted.
      * If return false, the request would be thrown.
+     * You can pass anything into $preparedData, that controller might use it (not sure, by the realization)
      * @param $path
      * @param $method
      * @param $params
+     * @param null $preparedData @since 1.3.6
      * @return bool
      */
-    public function shouldAcceptRequest($path, $method, $params)
+    public function shouldAcceptRequest($path, $method, $params, &$preparedData = null)
     {
         return true;
     }

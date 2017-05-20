@@ -29,63 +29,124 @@ class LibRequest
         $this->helper = new CommonHelper();
     }
 
+    /**
+     * @param $name
+     * @param null $default
+     * @param null $regex
+     * @param int $error
+     * @return mixed
+     */
     public function getRequest($name, $default = null, $regex = null, &$error = 0)
     {
         $value = $this->helper->safeReadArray($_REQUEST, $name, $default, $regex, $error);
         return $value;
     }
 
+    /**
+     * @param $name
+     * @param null $default
+     * @param null $regex
+     * @param int $error
+     * @return mixed
+     */
     public function get($name, $default = null, $regex = null, &$error = 0)
     {
         $value = $this->helper->safeReadArray($_GET, $name, $default, $regex, $error);
         return $value;
     }
 
+    /**
+     * @param $name
+     * @param null $default
+     * @param null $regex
+     * @param int $error
+     * @return mixed
+     */
     public function post($name, $default = null, $regex = null, &$error = 0)
     {
         $value = $this->helper->safeReadArray($_POST, $name, $default, $regex, $error);
         return $value;
     }
 
+    /**
+     * @param $name
+     * @param null $default
+     * @param null $regex
+     * @param int $error
+     * @return mixed
+     */
     public function getCookie($name, $default = null, $regex = null, &$error = 0)
     {
         $value = $this->helper->safeReadArray($_COOKIE, $name, $default, $regex, $error);
         return $value;
     }
 
+    /**
+     * @param $name
+     * @param null $default
+     * @param null $regex
+     * @param int $error
+     * @return mixed
+     */
     public function getServerVar($name, $default = null, $regex = null, &$error = 0)
     {
         $value = $this->helper->safeReadArray($_SERVER, $name, $default, $regex, $error);
         return $value;
     }
 
+    /**
+     * @param $name
+     * @param null $default
+     * @param null $regex
+     * @param int $error
+     * @return mixed
+     */
     public function getSessionVar($name, $default = null, $regex = null, &$error = 0)
     {
         $value = $this->helper->safeReadArray($_SESSION, $name, $default, $regex, $error);
         return $value;
     }
 
+    /**
+     * @param $name
+     * @param null $default
+     * @param null $regex
+     * @param int $error
+     * @return mixed
+     */
     public function getHeader($name, $default = null, $regex = null, &$error = 0)
     {
         $value = $this->helper->safeReadArray($this->fullHeaderFields(), $name, $default, $regex, $error);
         return $value;
     }
 
+    /**
+     * @return array
+     */
     public function fullPostFields()
     {
         return $_POST ? $_POST : [];
     }
 
+    /**
+     * @return array
+     */
     public function fullGetFields()
     {
         return $_GET ? $_GET : [];
     }
 
+    /**
+     * @return array
+     */
     public function fullCookieFields()
     {
         return $_COOKIE ? $_COOKIE : [];
     }
 
+    /**
+     * @return array|false|string
+     */
     public function fullHeaderFields()
     {
         return getallheaders();
@@ -93,6 +154,7 @@ class LibRequest
 
     /**
      * 是否是AJAx提交的
+     * @return bool
      */
     public function isAjax()
     {
@@ -106,6 +168,7 @@ class LibRequest
 
     /**
      * 是否是GET提交的
+     * @return bool
      */
     public function isGet()
     {
@@ -114,6 +177,7 @@ class LibRequest
 
     /**
      * 是否是POST提交
+     * @return bool
      */
     public function isPost()
     {
@@ -132,6 +196,9 @@ class LibRequest
         return $this->isCLI() ? self::METHOD_CLI : false;
     }
 
+    /**
+     * @return bool
+     */
     public function isCLI()
     {
         return (php_sapi_name() === 'cli') ? true : false;

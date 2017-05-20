@@ -16,6 +16,7 @@ namespace sinri\enoch\core;
  */
 class LibLog
 {
+    const LOG_DEBUG = "DEBUG";
     const LOG_INFO = 'INFO';
     const LOG_WARNING = 'WARNING';
     const LOG_ERROR = 'ERROR';
@@ -24,6 +25,12 @@ class LibLog
 
     protected $targetLogDir = null;
     protected $prefix = 'enoch';
+
+    function __construct($targetLogDir = null, $prefix = '')
+    {
+        $this->targetLogDir = $targetLogDir;
+        $this->prefix = $prefix;
+    }
 
     /**
      * @param string $prefix
@@ -39,12 +46,6 @@ class LibLog
     public function setTargetLogDir($targetLogDir)
     {
         $this->targetLogDir = $targetLogDir;
-    }
-
-    function __construct($targetLogDir = null, $prefix = '')
-    {
-        $this->targetLogDir = $targetLogDir;
-        $this->prefix = $prefix;
     }
 
     /**
@@ -63,13 +64,40 @@ class LibLog
         $this->useColoredTerminalOutput = $useColoredTerminalOutput;
     }
 
-    final public function generateLog($level, $message, $object = '')
+    /**
+     * This could be overrode for customized log output
+     * @param $level
+     * @param $message
+     * @param string $object
+     */
+    public function log($level, $message, $object = '')
+    {
+        $msg = $this->generateLog($level, $message, $object);
+        $target_file = $this->decideTargetFile();
+        if (!$target_file) {
+            echo $msg;
+            return;
+        }
+        @file_put_contents($target_file, $msg, FILE_APPEND);
+    }
+
+    /**
+     * Return the string format log content
+     * @param $level
+     * @param $message
+     * @param string $object
+     * @return string
+     */
+    public function generateLog($level, $message, $object = '')
     {
         $now = date('Y-m-d H:i:s');
         $level_string = "[{$level}]";
         if ($this->useColoredTerminalOutput) {
             $lcc = new LibConsoleColor();
             switch ($level) {
+                case self::LOG_DEBUG:
+                    $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Blue);
+                    break;
                 case self::LOG_ERROR:
                     $level_string = $lcc->getColorWord("[{$level}]", LibConsoleColor::Red);
                     break;
@@ -90,22 +118,10 @@ class LibLog
     }
 
     /**
-     * This could be overrode for customized log output
-     * @param $level
-     * @param $message
-     * @param string $object
+     * Return the target file path which log would be written into.
+     * If target log directory not set, return false.
+     * @return bool|string
      */
-    public function log($level, $message, $object = '')
-    {
-        $msg = $this->generateLog($level, $message, $object);
-        $target_file = $this->decideTargetFile();
-        if (!$target_file) {
-            echo $msg;
-            return;
-        }
-        @file_put_contents($target_file, $msg, FILE_APPEND);
-    }
-
     public function decideTargetFile()
     {
         if (empty($this->targetLogDir)) {

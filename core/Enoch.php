@@ -44,6 +44,10 @@ abstract class Enoch
         $this->config=$config;
     }
 
+    /**
+     * The unique function to start work
+     * @return bool
+     */
     public function start()
     {
         if (!isset($this->config['walkers']) || empty($this->config['walkers'])) {
@@ -63,6 +67,10 @@ abstract class Enoch
         return true;
     }
 
+    /**
+     * @param $walkerName
+     * @return bool|mixed
+     */
     public function walkWith($walkerName)
     {
         $class_file = $this->projectBase . '/' . $walkerName . 'Walker.php';
@@ -85,5 +93,9 @@ abstract class Enoch
         }
     }
 
+    /**
+     * @param $walkerName
+     * @return Walker
+     */
     abstract protected function getWalkerInstance($walkerName);
 }

@@ -134,14 +134,15 @@ class LibMySQL
 
     /**
      * @param $sql
+     * @param null $pk @since 1.3.6
      * @return bool|string
      */
-    public function insert($sql)
+    public function insert($sql, $pk = null)
     {
         $this->logSql($sql, true);
         $rows = $this->pdo->exec($sql);
         if ($rows) {
-            return $this->pdo->lastInsertId();
+            return $this->pdo->lastInsertId($pk);
         }
         return false;
     }

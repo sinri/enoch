@@ -34,6 +34,9 @@ class LibMail
         $this->mail = new PHPMailer();
     }
 
+    /**
+     * @param array $params
+     */
     public function setUpSMTP($params)
     {
         $this->smtpInfo['host'] = $this->helper->safeReadArray($params, 'host', '');
@@ -111,7 +114,7 @@ class LibMail
     }
 
     /**
-     * @return $this LibMail
+     * @return LibMail
      */
     public function prepareSMTP()
     {
@@ -132,7 +135,7 @@ class LibMail
     /**
      * @param $address
      * @param string $name
-     * @return $this LibMail
+     * @return LibMail
      */
     public function addReceiver($address, $name = '')
     {
@@ -143,7 +146,7 @@ class LibMail
     /**
      * @param $address
      * @param $name
-     * @return $this LibMail
+     * @return LibMail
      */
     public function addReplyAddress($address, $name)
     {
@@ -154,7 +157,7 @@ class LibMail
     /**
      * @param $address
      * @param $name
-     * @return $this LibMail
+     * @return LibMail
      */
     public function addCCAddress($address, $name)
     {
@@ -165,7 +168,7 @@ class LibMail
     /**
      * @param $address
      * @param $name
-     * @return $this LibMail
+     * @return LibMail
      */
     public function addBCCAddress($address, $name)
     {
@@ -176,7 +179,7 @@ class LibMail
     /**
      * @param $filepath
      * @param string $name
-     * @return $this LibMail
+     * @return LibMail
      */
     public function addAttachment($filepath, $name = '')
     {
@@ -186,7 +189,7 @@ class LibMail
 
     /**
      * @param $subject
-     * @return $this LibMail
+     * @return LibMail
      */
     public function addSubject($subject)
     {
@@ -196,7 +199,7 @@ class LibMail
 
     /**
      * @param $text
-     * @return $this LibMail
+     * @return LibMail
      */
     public function addTextBody($text)
     {
@@ -206,7 +209,7 @@ class LibMail
 
     /**
      * @param $htmlCode
-     * @return $this LibMail
+     * @return LibMail
      */
     public function addHTMLBody($htmlCode)
     {
