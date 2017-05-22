@@ -10,7 +10,7 @@ Stable Release Version on Packagist:
 
 ## 1.3.7
 
-Add `safeReadNDArray` and `turnListToMapping` to CommonHelper.
+Add `safeReadNDArray` and `turnListToMapping` to `CommonHelper`.
 
 ## 1.3.6
 
