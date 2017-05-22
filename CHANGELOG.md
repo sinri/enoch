@@ -8,6 +8,14 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.3.7
+
+Add `safeReadNDArray` and `turnListToMapping` to CommonHelper.
+
+## 1.3.6
+
+Lamech add function to load controller directory recycly.
+
 ## 1.3.5 
 
 Event Service.

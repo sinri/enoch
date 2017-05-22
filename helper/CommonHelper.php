@@ -39,6 +39,7 @@ class CommonHelper
     const REQUEST_NO_ERROR = 0;
     const REQUEST_FIELD_NOT_FOUND = 1;
     const REQUEST_REGEX_NOT_MATCH = 2;
+    const REQUEST_SOURCE_ERROR = 3;
 
     /**
      * @param $target
@@ -51,6 +52,13 @@ class CommonHelper
     public function safeReadArray($target, $name, $default = null, $regex = null, &$error = 0)
     {
         $error = self::REQUEST_NO_ERROR;
+
+        // @since 1.3.7
+        if (empty($target) || !is_array($target)) {
+            $error = self::REQUEST_SOURCE_ERROR;
+            return $default;
+        }
+
         if (!isset($target[$name])) {
             $error = self::REQUEST_FIELD_NOT_FOUND;
             return $default;
@@ -64,6 +72,32 @@ class CommonHelper
             return $default;
         }
         return $value;
+    }
+
+    /**
+     * Safe read ND-Array with keychain
+     * @since 1.3.7
+     * @param array $array
+     * @param array $keychain
+     * @param mixed $default
+     * @param null|string $regex
+     * @param int $error
+     * @return mixed|null
+     */
+    public function safeReadNDArray($array, $keychain, $default = null, $regex = null, &$error = 0)
+    {
+        if (!is_array($keychain)) {
+            return $this->safeReadArray($array, $keychain, $default, $regex, $error);
+        }
+        $headKey = array_shift($keychain);
+        if (empty($keychain)) {
+            return $this->safeReadArray($array, $headKey, $default, $regex, $error);
+        }
+        $sub_array = $this->safeReadArray($array, $headKey, [], null, $error);
+        if ($error !== self::REQUEST_NO_ERROR) {
+            return $default;
+        }
+        return $this->safeReadNDArray($sub_array, $keychain, $default, $regex, $error);
     }
 
     /**
@@ -180,5 +214,27 @@ class CommonHelper
             }
             throw new BaseCodedException($exception_error);
         }
+    }
+
+    /**
+     * @since 1.3.7
+     * @param $list
+     * @param $keyField
+     * @return array
+     * @throws BaseCodedException
+     */
+    public function turnListToMapping($list, $keyField)
+    {
+        if (empty($list) || !is_array($list)) {
+            return [];
+        }
+        $map = [];
+        foreach ($list as $key => $item) {
+            if (!isset($item[$keyField])) {
+                throw new BaseCodedException("Key Field not exists");
+            }
+            $map[$item[$keyField]] = $item;
+        }
+        return $map;
     }
 }

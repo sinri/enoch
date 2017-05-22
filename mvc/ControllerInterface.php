@@ -20,7 +20,7 @@ interface ControllerInterface
      * And use in the Controller
      * @since 1.3.6
      * @param $data
-     * @return mixed
+     * @return bool
      */
     public function _acceptMiddlewarePreparedData($data);
 }
