@@ -69,6 +69,26 @@ class LibRequest
     }
 
     /**
+     * @since 1.3.8
+     * @return bool|string
+     */
+    public function getRequestContent()
+    {
+        return file_get_contents('php://input');
+    }
+
+    /**
+     * @since 1.3.8
+     * @param bool $assoc
+     * @return mixed
+     */
+    public function getRequestContentAsJson($assoc = true)
+    {
+        $text = $this->getRequestContent();
+        return @json_decode($text, $assoc);
+    }
+
+    /**
      * @param $name
      * @param null $default
      * @param null $regex

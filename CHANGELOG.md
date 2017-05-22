@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.3.8
+
+`LibRequest` can parse JSON body now.
+
 ## 1.3.7
 
 Add `safeReadNDArray` and `turnListToMapping` to `CommonHelper`.
