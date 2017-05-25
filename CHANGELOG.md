@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.4.0
+
+Composer China Mirror not refresh.
+
 ## 1.3.9
 
 `LibRequest` add IP address checker.
