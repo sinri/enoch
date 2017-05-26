@@ -8,6 +8,12 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.4.1
+
+Add support of Non-Required Parameters of Method in CI-Controller-Style Auto Router to `Adah`.
+Note, required parameter should not appear after non-required parameter.
+Also, the parameters received from URL query string would be decoded from URL-ENCODING.
+
 ## 1.4.0
 
 Composer China Mirror not refresh.

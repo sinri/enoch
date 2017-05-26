@@ -51,7 +51,7 @@ class SampleHandler extends ApiInterface
         echo "Method: " . $this->request->getRequestMethod() . '; ' . __METHOD__;
     }
 
-    public function adah($p, $q)
+    public function adah($p, $q = 'Q')
     {
         echo __METHOD__ . " p=$p, q=$q";
         $this->logger->log(LibLog::LOG_INFO, __METHOD__, [$p, $q]);
@@ -66,5 +66,10 @@ class SampleHandler extends ApiInterface
     public function groupMinus($x, $y)
     {
         echo "$x - $y = " . ($x - $y);
+    }
+
+    public function defulatValue($a, $b = 4, $c = 5, $d = 6)
+    {
+        echo $a . $b . $c . $d;
     }
 }

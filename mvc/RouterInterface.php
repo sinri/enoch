@@ -19,12 +19,23 @@ abstract class RouterInterface
     protected $error_handler = null;
     protected $routes = [];
 
+    protected $debug = false;
+
+    /**
+     * @param bool $debug
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
+    }
+
     public function __construct()
     {
         $this->request = new LibRequest();
         $this->response = new LibResponse();
         $this->error_handler = null;
         $this->routes = [];
+        $this->debug = false;
     }
 
     /**

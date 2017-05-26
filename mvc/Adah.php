@@ -43,8 +43,14 @@ class Adah extends RouterInterface
      */
     protected function registerRoute($method, $path, $callback, $middleware = null)
     {
+        if ($this->debug) {
+            echo __METHOD__ . "(" . json_encode($method) . ", " . json_encode($path) . ", " . json_encode($callback) . ", " . json_encode($middleware) . PHP_EOL;
+        }
         $regex = [];
         $param_names = [];
+
+        /*
+        // METHOD 1
         $list = explode('/', $path);
         if (empty($list)) {
             $list = [];
@@ -59,12 +65,31 @@ class Adah extends RouterInterface
         }
         $regex = implode('\/', $regex);
         $regex = '/^\/' . $regex . '$/';
-        array_unshift($this->routes, [
+        */
+
+        // METHOD 2
+        $path = preg_replace('/\//', '\/', $path);
+        $matched = preg_match_all('/\{([^\/]+)\}/', $path, $matches);
+        if ($matched) {
+            if ($this->debug) {
+                print_r($matches);
+            }
+            $regex = preg_replace('/\{([^\/]+)\}/', '([^\/]+)', $path);
+        } else {
+            $regex = $path;
+        }
+        $regex = '/^\/' . $regex . '$/';
+
+        $new_route = [
             self::ROUTE_PARAM_METHOD => $method,
             self::ROUTE_PARAM_PATH => $regex,
             self::ROUTE_PARAM_CALLBACK => $callback,
             self::ROUTE_PARAM_MIDDLEWARE => $middleware,
-        ]);
+        ];
+        if ($this->debug) {
+            print_r($new_route);
+        }
+        array_unshift($this->routes, $new_route);
     }
 
     public function get($path, $callback, $middleware = null)
@@ -108,19 +133,36 @@ class Adah extends RouterInterface
         foreach ($this->routes as $route) {
             $route_regex = $route[self::ROUTE_PARAM_PATH];
             $route_method = $route[self::ROUTE_PARAM_METHOD];
-            //echo "[$route_method][$route_regex][$path]";
+            if ($this->debug) {
+                echo __METHOD__ . " TRY TO MATCH RULE: [$route_method][$route_regex][$path]" . PHP_EOL;
+            }
             if (!empty($route_method) && stripos($route_method, $method) === false) {
-                //echo "ROUTE METHOD NOT MATCH [$method]".PHP_EOL;
+                if ($this->debug) {
+                    echo __METHOD__ . " ROUTE METHOD NOT MATCH [$method]" . PHP_EOL;
+                }
                 continue;
             }
             if (preg_match($route_regex, $path, $matches)) {
                 // @since 1.2.8 the shift job moved here
                 if (!empty($matches)) array_shift($matches);
+                $matches = array_filter($matches, function ($v) {
+                    return substr($v, 0, 1) != '/';
+                });
+                $matches = array_values($matches);
+                array_walk($matches, function (&$v, $k) {
+                    $v = urldecode($v);
+                });
                 $route[self::ROUTE_PARSED_PARAMETERS] = $matches;
+                if ($this->debug) {
+                    echo __METHOD__ . " MATACHED with " . json_encode($matches) . PHP_EOL;
+                }
                 return $route;
             }
         }
-        throw new BaseCodedException("No route matched.", BaseCodedException::NO_MATCHED_ROUTE);
+        throw new BaseCodedException(
+            "No route matched: path={$path} method={$method}",
+            BaseCodedException::NO_MATCHED_ROUTE
+        );
     }
 
     /**
@@ -174,10 +216,21 @@ class Adah extends RouterInterface
             }
             $path = $basePath . $method;
             $parameters = $reflector->getMethod($method)->getParameters();
+            $after_string = "";
+            $came_in_default_area = false;
             if (!empty($parameters)) {
                 foreach ($parameters as $param) {
+                    if ($param->isDefaultValueAvailable()) {
+                        $path .= "(";
+                        $after_string .= ")?";
+                        $came_in_default_area = true;
+                    } elseif ($came_in_default_area) {
+                        //non-default after default
+                        throw new BaseCodedException("ROUTE SETTING ERROR: required-parameter after non-required-parameter");
+                    }
                     $path .= '/{' . $param->name . '}';
                 }
+                $path .= $after_string;
             }
             $this->registerRoute(null, $path, [$controllerClass, $method], $middleware);
         }

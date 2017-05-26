@@ -16,7 +16,7 @@ class SampleMiddleware extends MiddlewareInterface
     public function shouldAcceptRequest($path, $method, $params, &$preparedData = null)
     {
         //print_r([$path,$method,$params]);
-        if ($params[1] == 0) {
+        if ($params[1] == 100) {
             return false;
         }
         return true;

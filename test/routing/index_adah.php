@@ -20,6 +20,7 @@ $lamech->setControllerDir(__DIR__ . '/controller');
 $lamech->setViewDir(__DIR__ . '/view');
 
 $lamech->useAdahAsRouter();
+//$lamech->getRouter()->setDebug(true);
 
 $lamech->getRouter()->get("", ['\sinri\enoch\test\routing\controller\SampleHandler', 'handleCommonRequest']);
 $lamech->getRouter()->get("adah/{p}/{q}", ['\sinri\enoch\test\routing\controller\SampleHandler', 'adah']);
