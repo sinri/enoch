@@ -571,11 +571,23 @@ class Lamech
      * @param string $directory __DIR__ . '/../controller'
      * @param string $urlBase "XX/"
      * @param string $controllerNamespaceBase '\leqee\yiranoc\controller\\'
-     * @param string $middlewareNamespaceBase '\leqee\yiranoc\middleware\AuthMiddleware'
+     * @param string $middleware '\leqee\yiranoc\middleware\AuthMiddleware'
      */
-    public function loadAllControllersInDirectoryAsCI($directory, $urlBase = '', $controllerNamespaceBase = '', $middlewareNamespaceBase = '')
+    public function loadAllControllersInDirectoryAsCI($directory, $urlBase = '', $controllerNamespaceBase = '', $middleware = '')
     {
         if ($handle = opendir($directory)) {
+            if (
+                $this->default_controller_name
+                && file_exists($directory . '/' . $this->default_controller_name . '.php')
+                && $this->default_method_name
+                && method_exists($controllerNamespaceBase . $this->default_controller_name, $this->default_method_name)
+            ) {
+                $this->getRouter()->any(
+                    $urlBase . '?',
+                    [$controllerNamespaceBase . $this->default_controller_name, $this->default_method_name],
+                    $middleware
+                );
+            }
             while (false !== ($entry = readdir($handle))) {
                 if ($entry != "." && $entry != "..") {
                     if (is_dir($directory . '/' . $entry)) {
@@ -583,16 +595,28 @@ class Lamech
                         $this->loadAllControllersInDirectoryAsCI(
                             $urlBase . $entry . '/',
                             $controllerNamespaceBase . $entry . '\\',
-                            $middlewareNamespaceBase
+                            $middleware
                         );
                     } else {
                         //FILE
                         $list = explode('.', $entry);
                         $name = isset($list[0]) ? $list[0] : '';
+                        //$ppp=method_exists($controllerNamespaceBase . $name,$this->default_method_name);
+                        //echo "ppp=".json_encode($ppp).PHP_EOL;
+                        if (
+                            $this->default_method_name
+                            && method_exists($controllerNamespaceBase . $name, $this->default_method_name)
+                        ) {
+                            $this->getRouter()->any(
+                                $urlBase . $name . '/?',
+                                [$controllerNamespaceBase . $name, $this->default_method_name],
+                                $middleware
+                            );
+                        }
                         $this->getRouter()->loadController(
                             $urlBase . $name . '/',
                             $controllerNamespaceBase . $name,
-                            $middlewareNamespaceBase
+                            $middleware
                         );
                     }
                 }

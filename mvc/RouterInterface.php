@@ -67,6 +67,14 @@ abstract class RouterInterface
 
     abstract public function seekRoute($path, $method);
 
+    /**
+     * @since 1.4.2
+     * @param $path
+     * @param $callback
+     * @param null $middleware
+     */
+    abstract public function any($path, $callback, $middleware = null);
+
     abstract public function get($path, $callback, $middleware = null);
 
     abstract public function post($path, $callback, $middleware = null);

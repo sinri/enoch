@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.4.2
+
+Add root support in CI-Controller-Style Auto Router to `Adah`.
+
 ## 1.4.1
 
 Add support of Non-Required Parameters of Method in CI-Controller-Style Auto Router to `Adah`.

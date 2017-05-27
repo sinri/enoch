@@ -23,6 +23,11 @@ class SampleHandler extends ApiInterface
         $this->logger = new LibLog(__DIR__ . '/../log', 'SampleHandler');
     }
 
+    public function index()
+    {
+        echo __METHOD__;
+    }
+
     public function handleCommonRequest($parts = [])
     {
         echo __METHOD__ . PHP_EOL;

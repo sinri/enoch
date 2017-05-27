@@ -205,6 +205,7 @@ class Adah extends RouterInterface
      * @param string $basePath controller/base/
      * @param string $controllerClass app/controller/controllerA
      * @param null|MiddlewareInterface $middleware as is
+     * @throws BaseCodedException
      */
     public function loadController($basePath, $controllerClass, $middleware = null)
     {
@@ -234,5 +235,17 @@ class Adah extends RouterInterface
             }
             $this->registerRoute(null, $path, [$controllerClass, $method], $middleware);
         }
+    }
+
+    /**
+     * @since 1.4.2
+     * @param $path
+     * @param $callback
+     * @param null $middleware
+     * @return void
+     */
+    public function any($path, $callback, $middleware = null)
+    {
+        $this->registerRoute(null, $path, $callback, $middleware);
     }
 }
