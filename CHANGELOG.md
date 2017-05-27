@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.4.3
+
+Refine LibMySQL
+
 ## 1.4.2
 
 Add root support in CI-Controller-Style Auto Router to `Adah`.

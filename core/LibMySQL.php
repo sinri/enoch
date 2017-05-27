@@ -8,6 +8,8 @@
 
 namespace sinri\enoch\core;
 
+use sinri\enoch\mvc\BaseCodedException;
+
 class LibMySQL
 {
     private $pdo=null;
@@ -208,12 +210,12 @@ class LibMySQL
     /**
      * @param $sql
      * @param $stmt
-     * @throws \Exception
+     * @throws BaseCodedException
      */
     private function logSql($sql, $stmt)
     {
         if (!$stmt) {
-            throw new \Exception("Failed to prepare SQL: ".$sql, 1);
+            throw new BaseCodedException("Failed to prepare SQL: " . $sql);
         }
     }
 
@@ -226,6 +228,7 @@ class LibMySQL
     public function safeQueryAll($sql, $values = array(), $fetchStyle = \PDO::FETCH_ASSOC)
     {
         $sth = $this->pdo->prepare($sql);
+        $this->logSql($sql, $sth);
         $sth->execute($values);
         $rows = $sth->fetchAll($fetchStyle);
         return $rows;
@@ -239,6 +242,7 @@ class LibMySQL
     public function safeQueryRow($sql, $values = array())
     {
         $sth = $this->pdo->prepare($sql);
+        $this->logSql($sql, $sth);
         $sth->execute($values);
         $row=$sth->fetch(\PDO::FETCH_ASSOC);
         return $row;
@@ -252,6 +256,7 @@ class LibMySQL
     public function safeQueryOne($sql, $values = array())
     {
         $sth = $this->pdo->prepare($sql);
+        $this->logSql($sql, $sth);
         $sth->execute($values);
         $col=$sth->fetchColumn(0);
         return $col;
@@ -267,6 +272,7 @@ class LibMySQL
     public function safeInsertOne($sql, $values = array(), &$insertedId = 0, $pk = null)
     {
         $sth = $this->pdo->prepare($sql);
+        $this->logSql($sql, $sth);
         $done = $sth->execute($values);
         $insertedId = $this->pdo->lastInsertId($pk);
         return $done;
@@ -281,6 +287,7 @@ class LibMySQL
     public function safeExecute($sql, $values = array(), &$sth = null)
     {
         $sth = $this->pdo->prepare($sql);
+        $this->logSql($sql, $sth);
         $done = $sth->execute($values);
         return $done;
     }
