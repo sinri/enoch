@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.4.4
+
+Baruch, the simple wiki system framework.
+
 ## 1.4.3
 
 Refine LibMySQL

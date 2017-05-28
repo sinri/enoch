@@ -10,3 +10,5 @@ composer.lock
 /test/queue/queue_item_dir/
 /test/cache/cache_dir/
 /test/routing/log/
+/test/Baruch/.htaccess
+/test/Baruch/storage/
