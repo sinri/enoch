@@ -24,6 +24,8 @@ class Baruch
     protected $storage;
     protected $request;
     protected $response;
+    protected $extension;
+    protected $homepage;
 
     public function __construct()
     {
@@ -31,6 +33,25 @@ class Baruch
         $this->storage = __DIR__ . '/storage';
         $this->request = new LibRequest();
         $this->response = new LibResponse();
+        $this->extension = "";
+        $this->homepage = "index";
+    }
+
+    /**
+     * @param string $homepage
+     */
+    public function setHomepage($homepage)
+    {
+        $this->homepage = $homepage;
+    }
+
+    /**
+     * Default as "", you can set as ".md" or ".txt", etc.
+     * @param string $extension
+     */
+    public function setExtension($extension)
+    {
+        $this->extension = $extension;
     }
 
     /**
@@ -95,10 +116,16 @@ class Baruch
     protected function seekTargetFile($components = [])
     {
         if (empty($components)) {
-            $components = ["index"];
+            $components = [$this->homepage];
         }
         $file = implode("/", $components);
-        $file = $this->storage . '/' . $file . '.md';
+        $dir = $this->storage . '/' . $file;
+        $file = $this->storage . '/' . $file . $this->extension;
+        if (file_exists($file) && is_dir($file)) {
+            $file .= "/" . $this->homepage . $this->extension;
+        } elseif (!file_exists($file) && file_exists($dir) && is_dir($dir)) {
+            $file = $dir . "/" . $this->homepage . $this->extension;
+        }
         return $file;
     }
 

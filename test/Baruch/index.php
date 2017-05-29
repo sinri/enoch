@@ -11,4 +11,5 @@ require_once __DIR__ . '/../../autoload.php';
 
 $baruch = new \sinri\enoch\mvc\Baruch();
 $baruch->setStorage(__DIR__ . '/storage');
+$baruch->setExtension(".md");
 $baruch->handleWiki();

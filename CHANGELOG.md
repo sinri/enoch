@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.4.5
+
+Make directory auto index page function to Baruch.
+
 ## 1.4.4
 
 Baruch, the simple wiki system framework.
