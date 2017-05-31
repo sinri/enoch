@@ -8,11 +8,15 @@
 
 namespace sinri\enoch\core;
 
+use sinri\enoch\helper\CommonHelper;
 use sinri\enoch\mvc\BaseCodedException;
 
 class LibMySQL
 {
-    private $pdo=null;
+    /**
+     * @var \PDO
+     */
+    private $pdo;
 
     /**
      * LibMySQL constructor.
@@ -24,19 +28,16 @@ class LibMySQL
             return;
         }
 
-        $host=$params['host'];
-        $port=$params['port'];
-        $username=$params['username'];
-        $password=$params['password'];
-        $database=$params['database'];
+        $helper = new CommonHelper();
 
-        $this->pdo = new \PDO(
-            'mysql:host='.$host.';port='.$port.';dbname='.$database.';charset=utf8',
-            $username,
-            $password,
-            array(\PDO::ATTR_EMULATE_PREPARES => false)
-        );
-        $this->pdo->query("set names utf8");
+        $host = $helper->safeReadArray($params, 'host');
+        $port = $helper->safeReadArray($params, 'port');
+        $username = $helper->safeReadArray($params, 'username');
+        $password = $helper->safeReadArray($params, 'password');
+        $database = $helper->safeReadArray($params, 'database');
+        $charset = $helper->safeReadArray($params, "charset", "utf8");
+
+        $this->setConnection($host, $port, $username, $password, $database, $charset);
     }
 
     /**
@@ -45,16 +46,28 @@ class LibMySQL
      * @param $username
      * @param $password
      * @param $database
+     * @param string $charset
      */
-    public function setConnection($host, $port, $username, $password, $database)
+    public function setConnection($host, $port, $username, $password, $database, $charset = 'utf8')
     {
         $this->pdo = new \PDO(
-            'mysql:host=' . $host . ';port=' . $port . ';dbname=' . $database . ';charset=utf8',
+            'mysql:host=' . $host . ';port=' . $port . ';dbname=' . $database . ';charset=' . $charset,
             $username,
             $password,
             array(\PDO::ATTR_EMULATE_PREPARES => false)
         );
-        $this->pdo->query("set names utf8");
+        if (!empty($charset)) {
+            $this->pdo->query("set names " . $charset);
+        }
+    }
+
+    /**
+     * @since 1.4.6
+     * @return \PDO
+     */
+    public function getPdo()
+    {
+        return $this->pdo;
     }
 
     /**
@@ -63,10 +76,22 @@ class LibMySQL
      */
     public function getAll($sql)
     {
-        $stmt=$this->pdo->query($sql);
+        $stmt = $this->pdo->query($sql);
         $this->logSql($sql, $stmt);
-        $rows=$stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         return $rows;
+    }
+
+    /**
+     * @param $sql
+     * @param $stmt
+     * @throws BaseCodedException
+     */
+    private function logSql($sql, $stmt)
+    {
+        if (!$stmt) {
+            throw new BaseCodedException("Failed to prepare SQL: " . $sql);
+        }
     }
 
     /**
@@ -75,13 +100,13 @@ class LibMySQL
      */
     public function getCol($sql)
     {
-        $stmt=$this->pdo->query($sql);
+        $stmt = $this->pdo->query($sql);
         $this->logSql($sql, $stmt);
-        $rows=$stmt->fetchAll(\PDO::FETCH_BOTH);
-        $col=array();
+        $rows = $stmt->fetchAll(\PDO::FETCH_BOTH);
+        $col = array();
         if ($rows) {
             foreach ($rows as $row) {
-                $col[]=$row[0];
+                $col[] = $row[0];
             }
         }
         return $col;
@@ -130,7 +155,7 @@ class LibMySQL
     public function exec($sql)
     {
         $this->logSql($sql, true);
-        $rows=$this->pdo->exec($sql);
+        $rows = $this->pdo->exec($sql);
         return $rows;
     }
 
@@ -209,18 +234,6 @@ class LibMySQL
 
     /**
      * @param $sql
-     * @param $stmt
-     * @throws BaseCodedException
-     */
-    private function logSql($sql, $stmt)
-    {
-        if (!$stmt) {
-            throw new BaseCodedException("Failed to prepare SQL: " . $sql);
-        }
-    }
-
-    /**
-     * @param $sql
      * @param array $values
      * @param int $fetchStyle
      * @return array
@@ -244,7 +257,7 @@ class LibMySQL
         $sth = $this->pdo->prepare($sql);
         $this->logSql($sql, $sth);
         $sth->execute($values);
-        $row=$sth->fetch(\PDO::FETCH_ASSOC);
+        $row = $sth->fetch(\PDO::FETCH_ASSOC);
         return $row;
     }
 
@@ -258,7 +271,7 @@ class LibMySQL
         $sth = $this->pdo->prepare($sql);
         $this->logSql($sql, $sth);
         $sth->execute($values);
-        $col=$sth->fetchColumn(0);
+        $col = $sth->fetchColumn(0);
         return $col;
     }
 

@@ -73,17 +73,38 @@ class Baruch
     public function handleWiki()
     {
         $components = $this->getPathComponents();
-        $file = $this->seekTargetFile($components);
+        $file = $this->seekTargetFile($components, $tail);
 
         $act = $this->request->getRequest("act", "read");
         $data = $this->request->getRequest("data", "");
         if ($act === "read") {
+            if ('' !== $tail) {
+                $handled = $this->specialForAutoCompletedPath($components, $tail);
+                if ($handled) {
+                    return;
+                }
+            }
             $this->actRead($file);
         } elseif ($act === 'write') {
             $this->actWrite($file, $data);
         } else {
             throw new BaseCodedException("no such act type");
         }
+    }
+
+    /**
+     * @param $components
+     * @param $tail
+     * @return bool false for continue, true for handled
+     */
+    protected function specialForAutoCompletedPath($components, $tail)
+    {
+        $url = $_SERVER['REQUEST_URI'];
+        if (substr($url, -1, 1) === '/') {
+            $url = substr($url, 0, strlen($url) - 1);
+        }
+        header("Location: " . $url . $tail);
+        return true;
     }
 
     protected function getPathComponents()
@@ -113,19 +134,24 @@ class Baruch
         return substr($_SERVER['REQUEST_URI'], strlen($prefix));
     }
 
-    protected function seekTargetFile($components = [])
+    protected function seekTargetFile($components = [], &$tail = '')
     {
         if (empty($components)) {
-            $components = [$this->homepage];
+            $components = [];//[$this->homepage];
         }
-        $file = implode("/", $components);
-        $dir = $this->storage . '/' . $file;
-        $file = $this->storage . '/' . $file . $this->extension;
-        if (file_exists($file) && is_dir($file)) {
-            $file .= "/" . $this->homepage . $this->extension;
-        } elseif (!file_exists($file) && file_exists($dir) && is_dir($dir)) {
-            $file = $dir . "/" . $this->homepage . $this->extension;
+        $dir = $this->storage . '/' . implode("/", $components);// dir: a/b
+        $file = $dir . $this->extension;// file: a/b.md
+        $tail = "";
+        if (file_exists($file)) {
+            $tail = '';
+        } elseif (
+            file_exists($dir) && is_dir($dir)
+            && file_exists($dir . '/' . $this->homepage . $this->extension)
+        ) {
+            $tail = "/" . $this->homepage;
+            $file = $dir . $tail . $this->extension;
         }
+
         return $file;
     }
 

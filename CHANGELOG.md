@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.4.6
+
+Baruch auto-complete mode changes to Redirect Mode.
+
 ## 1.4.5
 
 Make directory auto index page function to Baruch.
