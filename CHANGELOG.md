@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.4.7
+
+Baruch Auto Index API.
+
 ## 1.4.6
 
 Baruch auto-complete mode changes to Redirect Mode.

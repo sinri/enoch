@@ -87,6 +87,8 @@ class Baruch
             $this->actRead($file);
         } elseif ($act === 'write') {
             $this->actWrite($file, $data);
+        } elseif ($act === 'index') {
+            $this->actIndex();
         } else {
             throw new BaseCodedException("no such act type");
         }
@@ -187,5 +189,35 @@ class Baruch
         } else {
             $this->response->jsonForAjax(LibResponse::AJAX_JSON_CODE_FAIL, "failed");
         }
+    }
+
+    protected function actIndex()
+    {
+        $tree = $this->getIndexTree();
+        echo json_encode($tree, JSON_PRETTY_PRINT);
+    }
+
+    private function getIndexTree($relative_path = "")
+    {
+        $root_dir = $this->storage . '/' . $relative_path;
+        $tree = [];
+        if ($handle = opendir($root_dir)) {
+            while (false !== ($entry = readdir($handle))) {
+                if ($entry === '.' || $entry === '..') {
+                    continue;
+                }
+                if (is_dir($root_dir . '/' . $entry)) {
+                    $temp = $this->getIndexTree($relative_path . '/' . $entry);
+                    if (!empty($temp)) {
+                        $tree[$entry] = $temp;
+                    }
+                } else {
+                    $tree[$entry] = $relative_path . '/' . $entry;
+                }
+            }
+
+            closedir($handle);
+        }
+        return $tree;
     }
 }
