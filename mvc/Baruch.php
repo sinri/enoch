@@ -197,7 +197,7 @@ class Baruch
         echo json_encode($tree, JSON_PRETTY_PRINT);
     }
 
-    private function getIndexTree($relative_path = "")
+    protected function getIndexTree($relative_path = "")
     {
         $root_dir = $this->storage . '/' . $relative_path;
         $tree = [];

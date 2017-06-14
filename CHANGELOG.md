@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.4.8
+
+Baruch Auto Index Lower API.
+
 ## 1.4.7
 
 Baruch Auto Index API.
