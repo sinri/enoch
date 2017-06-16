@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.4.9
+
+Markdown Baruch preview version.
+
 ## 1.4.8
 
 Baruch Auto Index Lower API.

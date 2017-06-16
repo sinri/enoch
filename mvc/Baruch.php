@@ -27,6 +27,9 @@ class Baruch
     protected $extension;
     protected $homepage;
 
+    /**
+     * Baruch constructor.
+     */
     public function __construct()
     {
         $this->gateway = "index.php";
@@ -70,6 +73,9 @@ class Baruch
         $this->gateway = $gateway;
     }
 
+    /**
+     * @throws BaseCodedException
+     */
     public function handleWiki()
     {
         $components = $this->getPathComponents();
@@ -109,6 +115,9 @@ class Baruch
         return true;
     }
 
+    /**
+     * @return array
+     */
     protected function getPathComponents()
     {
         $string = $this->getPathString();
@@ -123,7 +132,10 @@ class Baruch
         return $components;
     }
 
-    protected function getPathString()
+    /**
+     * @return bool|string
+     */
+    protected function getURLRootString()
     {
         $prefix = $_SERVER['SCRIPT_NAME'];
         if (
@@ -132,10 +144,23 @@ class Baruch
         ) {
             $prefix = substr($prefix, 0, strlen($prefix) - 10);
         }
+        return $prefix;
+    }
 
+    /**
+     * @return bool|string
+     */
+    protected function getPathString()
+    {
+        $prefix = $this->getURLRootString();
         return substr($_SERVER['REQUEST_URI'], strlen($prefix));
     }
 
+    /**
+     * @param array $components
+     * @param string $tail
+     * @return string
+     */
     protected function seekTargetFile($components = [], &$tail = '')
     {
         if (empty($components)) {
@@ -157,6 +182,10 @@ class Baruch
         return $file;
     }
 
+    /**
+     * @param $file
+     * @return bool
+     */
     protected function actRead($file)
     {
         if (!file_exists($file)) {
@@ -168,11 +197,19 @@ class Baruch
         return true;
     }
 
+    /**
+     * @param $file
+     */
     protected function pageNotFound($file)
     {
         echo "File not found: {$file}";
     }
 
+    /**
+     * @param $file
+     * @param $data
+     * @throws BaseCodedException
+     */
     protected function actWrite($file, $data)
     {
         if (!file_exists($file)) {
@@ -191,12 +228,19 @@ class Baruch
         }
     }
 
+    /**
+     * Auto index
+     */
     protected function actIndex()
     {
         $tree = $this->getIndexTree();
         echo json_encode($tree, JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @param string $relative_path
+     * @return array
+     */
     protected function getIndexTree($relative_path = "")
     {
         $root_dir = $this->storage . '/' . $relative_path;
@@ -220,4 +264,6 @@ class Baruch
         }
         return $tree;
     }
+
+
 }
