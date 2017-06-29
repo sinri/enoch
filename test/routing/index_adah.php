@@ -64,7 +64,7 @@ $lamech->loadAllControllersInDirectoryAsCI(
     __DIR__ . '/controller',
     'ci/',
     '\sinri\enoch\test\routing\controller\\',
-    '\sinri\enoch\test\routing\middleware\SampleMiddleware'
+    ['\sinri\enoch\test\routing\middleware\SampleMiddleware', '\sinri\enoch\test\routing\middleware\SecondMiddleware']
 );
 
 $lamech->handleRequestThroughAdah();

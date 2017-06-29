@@ -391,18 +391,22 @@ class Lamech
      * @deprecated since v1.2.0
      * alias of handleRequestWithNaamah
      * @param string $apiNamespace
+     * @throws BaseCodedException
      */
     public function handleRequestWithRoutes($apiNamespace = "\\")
     {
+        //throw new BaseCodedException("Router Naamah removed since v2.0", BaseCodedException::DEPRECATED_REMOVED);
         $this->handleRequestWithNaamah($apiNamespace);
     }
 
     /**
      * @deprecated since v1.2.0
      * @param string $apiNamespace
+     * @throws BaseCodedException
      */
     public function handleRequestWithNaamah($apiNamespace = "\\")
     {
+        //throw new BaseCodedException("Router Naamah removed since v2.0", BaseCodedException::DEPRECATED_REMOVED);
         try {
             $parts = $this->dividePath($path_string);
             $route = $this->router->seekRoute($path_string, $this->request->getRequestMethod());
@@ -506,6 +510,7 @@ class Lamech
      */
     private function handleRouteWithView($target, $parts)
     {
+        //throw new BaseCodedException("Router Naamah removed since v2.0", BaseCodedException::DEPRECATED_REMOVED);
         $view_path = $this->view_dir . '/' . $target . ".php";
         if (!file_exists($view_path)) {
             throw new BaseCodedException("View missing", BaseCodedException::VIEW_NOT_EXISTS);
@@ -521,26 +526,40 @@ class Lamech
             $callable = $this->helper->safeReadArray($route, Adah::ROUTE_PARAM_CALLBACK);
             $params = $this->helper->safeReadArray($route, Adah::ROUTE_PARSED_PARAMETERS);
             // @since 1.2.8 as MiddlewareInterface
-            $middleware = $this->helper->safeReadArray($route, Adah::ROUTE_PARAM_MIDDLEWARE);
+            $middleware_chain = $this->helper->safeReadArray($route, Adah::ROUTE_PARAM_MIDDLEWARE);
 
             // @since 1.2.8 the shift job moved to Adah
             //if (!empty($params)) array_shift($params);
 
-            $middleware_instance = MiddlewareInterface::MiddlewareFactory($middleware);
-            if (!$middleware_instance->shouldAcceptRequest($path_string, $this->request->getRequestMethod(), $params, $preparedData)) {
-                //header('HTTP/1.0 403 Forbidden');
-                throw new BaseCodedException(
-                    "Rejected by Middleware " . $middleware,
-                    BaseCodedException::REQUEST_FILTER_REJECT
-                );
+            // @since 1.5.0 the middleware support chain-style
+            if (!is_array($middleware_chain)) {
+                $middleware_chain = [$middleware_chain];
+            }
+            $preparedData = null;
+            foreach ($middleware_chain as $middleware) {
+                $middleware_instance = MiddlewareInterface::MiddlewareFactory($middleware);
+                $mw_passed = $middleware_instance->shouldAcceptRequest($path_string, $this->request->getRequestMethod(), $params, $preparedData);
+                if (!$mw_passed) {
+                    //header('HTTP/1.0 403 Forbidden');
+                    throw new BaseCodedException(
+                        "Rejected by Middleware " . $middleware,
+                        BaseCodedException::REQUEST_FILTER_REJECT
+                    );
+                }
             }
 
             if (is_array($callable) && isset($callable[0])) {
                 $class_instance = $callable[0];
                 //print_r(get_class_methods($class_instance));
-                $class_instance = new $class_instance();
-                if (method_exists($class_instance, '_acceptMiddlewarePreparedData')) {
-                    $class_instance->_acceptMiddlewarePreparedData($preparedData);
+                // SethInterface Available @since 1.5.0
+                $reflectionOfClassName = new \ReflectionClass($class_instance);
+                if (in_array('sinri\enoch\mvc\SethInterface', $reflectionOfClassName->getInterfaceNames())) {
+                    $class_instance = new $class_instance($preparedData);
+                } else {
+                    $class_instance = new $class_instance();
+                    if (method_exists($class_instance, '_acceptMiddlewarePreparedData')) {
+                        $class_instance->_acceptMiddlewarePreparedData($preparedData);
+                    }
                 }
                 $callable[0] = $class_instance;
             }

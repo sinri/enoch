@@ -32,6 +32,7 @@ class Naamah extends RouterInterface
     public function __construct()
     {
         parent::__construct();
+        //throw new BaseCodedException("Router Naamah removed since v2.0",BaseCodedException::DEPRECATED_REMOVED);
     }
 
     /**

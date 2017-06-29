@@ -12,6 +12,7 @@ namespace sinri\enoch\mvc;
  * Interface ControllerInterface
  * @since 1.3.6
  * @package sinri\enoch\mvc
+ * @deprecated since 1.5.0 Use SethInterface Instead
  */
 interface ControllerInterface
 {

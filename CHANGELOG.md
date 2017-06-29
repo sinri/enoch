@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.5.0
+
+Adah add chained middleware support and SethInterface for easier controller construction.
+
 ## 1.4.9
 
 Markdown Baruch preview version.
