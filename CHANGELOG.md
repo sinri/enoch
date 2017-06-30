@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.5.1 
+
+Fix Lamech Session Storage Directory settings bug.
+
 ## 1.5.0
 
 Adah add chained middleware support and SethInterface for easier controller construction.

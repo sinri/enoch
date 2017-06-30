@@ -188,8 +188,8 @@ class Lamech
         // instead of this
         //LibSession::sessionStart($this->session_dir);
 
-        if (!empty($session_dir)) {
-            session_save_path($session_dir);
+        if (!empty($this->session_dir)) {
+            session_save_path($this->session_dir);
         }
         //指定LibSession为会话处理代理
         $handler = new LibSession();
