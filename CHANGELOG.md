@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.5.2
+
+Add method `hasWeChatUserAgent` to LibRequest.
+
 ## 1.5.1 
 
 Fix Lamech Session Storage Directory settings bug.

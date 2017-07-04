@@ -179,6 +179,24 @@ class LibRequest
     }
 
     /**
+     * @param null $wechatVersion
+     * @return bool
+     */
+    public function hasWeChatUserAgent(&$wechatVersion = null)
+    {
+        $isFromWechat = false;
+        $user_agent = $this->getHeader('User-Agent', '');
+        if (stripos($user_agent, 'MicroMessenger') !== false) {
+            $isFromWechat = true;
+        }
+        preg_match('/MicroMessenger\/([\d\.]+)/', $user_agent, $match);
+        if (is_array($match) && isset($match[1])) {
+            $wechatVersion = $match[1];
+        }
+        return $isFromWechat;
+    }
+
+    /**
      * 是否是AJAx提交的
      * @return bool
      */
