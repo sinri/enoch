@@ -45,6 +45,16 @@ class LibRequest
     public function getRequest($name, $default = null, $regex = null, &$error = 0)
     {
         $value = $this->helper->safeReadArray($_REQUEST, $name, $default, $regex, $error);
+        try {
+            if (
+                $this->getHeader("content-type") === 'application/json'
+                && is_array($this->getRequestContentAsJson(true))
+            ) {
+                $value = $this->jsonPost($name, $default, $regex, $error);
+            }
+        } catch (\Exception $exception) {
+            // actually do nothing.
+        }
         return $value;
     }
 
@@ -92,6 +102,20 @@ class LibRequest
     {
         $text = $this->getRequestContent();
         return @json_decode($text, $assoc);
+    }
+
+    /**
+     * @since 1.5.4
+     * @param $keyChain
+     * @param null $default
+     * @param null $regex
+     * @param int $error
+     * @return mixed|null
+     */
+    public function jsonPost($keyChain, $default = null, $regex = null, &$error = 0)
+    {
+        $json = $this->getRequestContentAsJson(true);
+        return $this->helper->safeReadNDArray($json, $keyChain, $default, $regex, $error);
     }
 
     /**

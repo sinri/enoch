@@ -8,6 +8,11 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.5.4
+
+Added `jsonPost` to LibRequest to hand content type `application/json`.
+Make `getRequest` compatible with it.
+
 ## 1.5.3
 
 Enos Framework for Yii-like cron job worker. 
