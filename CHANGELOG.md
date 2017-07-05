@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.5.3
+
+Enos Framework for Yii-like cron job worker. 
+
 ## 1.5.2
 
 Add method `hasWeChatUserAgent` to LibRequest.
