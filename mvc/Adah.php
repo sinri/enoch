@@ -46,11 +46,11 @@ class Adah extends RouterInterface
         if ($this->debug) {
             echo __METHOD__ . "(" . json_encode($method) . ", " . json_encode($path) . ", " . json_encode($callback) . ", " . json_encode($middleware) . PHP_EOL;
         }
-        $regex = [];
-        $param_names = [];
 
         /*
         // METHOD 1
+        $regex = [];
+        $param_names = [];
         $list = explode('/', $path);
         if (empty($list)) {
             $list = [];

@@ -19,7 +19,7 @@ class LibResponse
     /**
      * @param $anything
      */
-    public function json($anything)
+    public static function json($anything)
     {
         echo json_encode($anything);
     }
@@ -28,7 +28,7 @@ class LibResponse
      * @param string $code OK or FAIL
      * @param mixed $data
      */
-    public function jsonForAjax($code = self::AJAX_JSON_CODE_OK, $data = '')
+    public static function jsonForAjax($code = self::AJAX_JSON_CODE_OK, $data = '')
     {
         echo json_encode(["code" => $code, "data" => $data]);
     }
@@ -38,7 +38,7 @@ class LibResponse
      * @param array $params
      * @throws BaseCodedException
      */
-    public function displayPage($filepath, $params = [])
+    public static function displayPage($filepath, $params = [])
     {
         extract($params);
         if (!file_exists($filepath)) {
@@ -52,7 +52,7 @@ class LibResponse
      * @param null $exception
      * @param null $viewPath
      */
-    public function errorPage($message = '', $exception = null, $viewPath = null)
+    public static function errorPage($message = '', $exception = null, $viewPath = null)
     {
         if (empty($viewPath) || !file_exists($viewPath) || !is_file($viewPath)) {
             echo "<h3>ERROR</h3><hr>" . PHP_EOL;
@@ -68,6 +68,50 @@ class LibResponse
             echo "<p>Powered by Enoch Project</p>" . PHP_EOL;
             return;
         }
-        $this->displayPage($viewPath, ['message' => $message, "exception" => $exception]);
+        self::displayPage($viewPath, ['message' => $message, "exception" => $exception]);
+    }
+
+    /**
+     * 文件下载
+     * @param $file
+     * @param null $down_name
+     * @param BaseCodedException $error
+     * @return bool
+     */
+    public static function downloadFileAsName($file, $down_name = null, &$error = null)
+    {
+        //判断给定的文件存在与否
+        if (!file_exists($file)) {
+            //throw new BaseCodedException("No such file there",BaseCodedException::RESOURCE_NOT_EXISTS);
+            $error = new BaseCodedException("No such file there", BaseCodedException::RESOURCE_NOT_EXISTS);
+            //"您要下载的文件已不存在，可能是被删除";
+            return false;
+        }
+
+        if ($down_name !== null && $down_name !== false) {
+            $suffix = substr($file, strrpos($file, '.')); //获取文件后缀
+            $down_name = $down_name . $suffix; //新文件名，就是下载后的名字
+        } else {
+            $k = pathinfo($file);
+            $down_name = $k['filename'] . '.' . $k['extension'];
+        }
+
+        $fp = fopen($file, "r");
+        $file_size = filesize($file);
+        //下载文件需要用到的头
+        header("Content-type: application/octet-stream");
+        header("Accept-Ranges: bytes");
+        header("Accept-Length:" . $file_size);
+        header("Content-Disposition: attachment; filename=" . $down_name);
+        $buffer = 1024;
+        $file_count = 0;
+        //向浏览器返回数据
+        while (!feof($fp) && $file_count < $file_size) {
+            $file_con = fread($fp, $buffer);
+            $file_count += $buffer;
+            echo $file_con;
+        }
+        fclose($fp);
+        return true;
     }
 }

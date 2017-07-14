@@ -8,7 +8,6 @@
 
 namespace sinri\enoch\core;
 
-use sinri\enoch\helper\CommonHelper;
 use sinri\enoch\mvc\BaseCodedException;
 
 /**
@@ -23,13 +22,11 @@ abstract class Enos
 {
     protected $logger;
     protected $config;
-    protected $helper;
 
     public function __construct()
     {
         $this->logger = $this->loadLogger();
         $this->config = $this->readConfig();
-        $this->helper = new CommonHelper();
     }
 
     /**

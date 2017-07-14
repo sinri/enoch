@@ -20,3 +20,6 @@ INSTALL: `composer require sinri/enoch`
 >
 >  Genesis 5:21-24 KJV
 
+# About Version ^2.0
+
+* To make usage more simple, use more static declarations.

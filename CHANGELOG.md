@@ -6,6 +6,19 @@ GitHub Release:
 Stable Release Version on Packagist:
 [![Packagist](https://img.shields.io/packagist/v/sinri/enoch.svg)](https://packagist.org/packages/sinri/enoch)
 
+# Revolution to next generation
+
+NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
+
+## 2.0.0
+
+Add BaseCodedException::ASSERT_FAILED
+
+## 2.0.0-beta
+
+Less new instances by make sharable method static. 
+Drop out the markdown parser and let it be set by user.
+
 # Changing Note
 
 ## 1.5.4

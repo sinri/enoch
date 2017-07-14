@@ -7,6 +7,4 @@
  */
 define("GATEWAY_NAME", "index.php");
 date_default_timezone_set("Asia/Shanghai");
-//require_once __DIR__ . '/index_naamah.php';
-//require_once __DIR__.'/index_ci.php';
 require_once __DIR__ . '/index_adah.php';

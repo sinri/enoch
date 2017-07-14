@@ -10,16 +10,17 @@ namespace sinri\enoch\test\routing\controller;
 
 
 use sinri\enoch\core\LibLog;
-use sinri\enoch\mvc\ApiInterface;
+use sinri\enoch\core\LibRequest;
+use sinri\enoch\mvc\SethController;
 
-class SampleHandler extends ApiInterface
+class SampleHandler extends SethController
 {
     protected $inner = 'lalala';
     protected $logger = null;
 
-    public function __construct()
+    public function __construct($initData = null)
     {
-        parent::__construct();
+        parent::__construct($initData);
         $this->logger = new LibLog(__DIR__ . '/../log', 'SampleHandler');
     }
 
@@ -33,7 +34,7 @@ class SampleHandler extends ApiInterface
         echo __METHOD__ . PHP_EOL;
         echo "(" . implode(',', $parts) . ")" . PHP_EOL;
         echo $this->inner . PHP_EOL;
-        echo $this->request->get('k') . PHP_EOL;
+        echo LibRequest::get('k') . PHP_EOL;
     }
 
     public function handleErrorRequest()
@@ -43,17 +44,17 @@ class SampleHandler extends ApiInterface
 
     public function handleGetRequest()
     {
-        echo "Method: " . $this->request->getRequestMethod() . '; ' . __METHOD__;
+        echo "Method: " . LibRequest::getRequestMethod() . '; ' . __METHOD__;
     }
 
     public function handlePostRequest()
     {
-        echo "Method: " . $this->request->getRequestMethod() . '; ' . __METHOD__;
+        echo "Method: " . LibRequest::getRequestMethod() . '; ' . __METHOD__;
     }
 
     public function handleOtherRequest()
     {
-        echo "Method: " . $this->request->getRequestMethod() . '; ' . __METHOD__;
+        echo "Method: " . LibRequest::getRequestMethod() . '; ' . __METHOD__;
     }
 
     public function adah($p, $q = 'Q')
