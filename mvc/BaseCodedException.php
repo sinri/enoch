@@ -13,6 +13,7 @@ class BaseCodedException extends \Exception
     const DEFAULT_ERROR = 0;
     const NOT_IMPLEMENT_ERROR = 1;
     const DEPRECATED_REMOVED = 2;
+    const ASSERT_FAILED = 3;
 
     const USER_NOT_LOGIN = 101;
     const USER_NOT_ADMIN = 102;

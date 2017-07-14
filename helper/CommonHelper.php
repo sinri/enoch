@@ -177,7 +177,7 @@ class CommonHelper
             if ($exception_error === null) {
                 $exception_error = __FUNCTION__;
             }
-            throw new BaseCodedException($exception_error);
+            throw new BaseCodedException($exception_error, BaseCodedException::ASSERT_FAILED);
         }
     }
 
@@ -195,7 +195,7 @@ class CommonHelper
             if ($exception_error === null) {
                 $exception_error = __FUNCTION__;
             }
-            throw new BaseCodedException($exception_error);
+            throw new BaseCodedException($exception_error, BaseCodedException::ASSERT_FAILED);
         }
     }
 
@@ -213,7 +213,7 @@ class CommonHelper
             if ($exception_error === null) {
                 $exception_error = __FUNCTION__;
             }
-            throw new BaseCodedException($exception_error);
+            throw new BaseCodedException($exception_error, BaseCodedException::ASSERT_FAILED);
         }
     }
 
