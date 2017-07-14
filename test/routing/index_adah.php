@@ -15,11 +15,6 @@ require_once __DIR__ . '/../../autoload.php';
 $lamech = new  \sinri\enoch\mvc\Lamech();
 
 $lamech->setDebug(true);
-
-$lamech->setControllerDir(__DIR__ . '/controller');
-$lamech->setViewDir(__DIR__ . '/view');
-
-$lamech->useAdahAsRouter();
 //$lamech->getRouter()->setDebug(true);
 
 $lamech->getRouter()->get("", ['\sinri\enoch\test\routing\controller\SampleHandler', 'handleCommonRequest']);
@@ -67,4 +62,4 @@ $lamech->loadAllControllersInDirectoryAsCI(
     ['\sinri\enoch\test\routing\middleware\SampleMiddleware', '\sinri\enoch\test\routing\middleware\SecondMiddleware']
 );
 
-$lamech->handleRequestThroughAdah();
+$lamech->handleRequest();

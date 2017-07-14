@@ -10,6 +10,8 @@ require_once __DIR__ . '/../../autoload.php';
 
 $helper = new \sinri\enoch\helper\CommonHelper();
 
+echo \sinri\enoch\helper\CommonHelper::safeReadArray(["asd" => "123"], "asd");// this is correct for ^2.0
+echo $helper->safeReadArray(["asd" => "123"], "asdd", '333'); // this is for ^1.0 but also available in ^2.0
 
 // SAFE ARRAY READER
 

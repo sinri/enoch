@@ -17,14 +17,14 @@ class CommonHelper
 {
     /**
      * 按照PSR-0规范
-     * @since 1.2.9
+     * @since 2.0.0 turn to static
      * @param string $class_name such as sinri\enoch\test\routing\controller\SampleHandler
      * @param string $base_namespace such as sinri\enoch
      * @param string $base_path /code/sinri/enoch
      * @param string $extension
      * @return null|string
      */
-    public function getFilePathOfClassNameWithPSR0($class_name, $base_namespace, $base_path, $extension = '.php')
+    public static function getFilePathOfClassNameWithPSR0($class_name, $base_namespace, $base_path, $extension = '.php')
     {
         if (strpos($class_name, $base_namespace) === 0) {
             $class_file = str_replace($base_namespace, $base_path, $class_name);
@@ -42,6 +42,7 @@ class CommonHelper
     const REQUEST_SOURCE_ERROR = 3;
 
     /**
+     * @since 2.0.0 turn to static
      * @param $target
      * @param $name
      * @param null $default
@@ -49,7 +50,7 @@ class CommonHelper
      * @param int $error
      * @return mixed
      */
-    public function safeReadArray($target, $name, $default = null, $regex = null, &$error = 0)
+    public static function safeReadArray($target, $name, $default = null, $regex = null, &$error = 0)
     {
         $error = self::REQUEST_NO_ERROR;
 
@@ -76,7 +77,7 @@ class CommonHelper
 
     /**
      * Safe read ND-Array with keychain
-     * @since 1.3.7
+     * @since 2.0.0 turn to static
      * @param array $array
      * @param array $keychain
      * @param mixed $default
@@ -84,24 +85,24 @@ class CommonHelper
      * @param int $error
      * @return mixed|null
      */
-    public function safeReadNDArray($array, $keychain, $default = null, $regex = null, &$error = 0)
+    public static function safeReadNDArray($array, $keychain, $default = null, $regex = null, &$error = 0)
     {
         if (!is_array($keychain)) {
-            return $this->safeReadArray($array, $keychain, $default, $regex, $error);
+            return self::safeReadArray($array, $keychain, $default, $regex, $error);
         }
         $headKey = array_shift($keychain);
         if (empty($keychain)) {
-            return $this->safeReadArray($array, $headKey, $default, $regex, $error);
+            return self::safeReadArray($array, $headKey, $default, $regex, $error);
         }
-        $sub_array = $this->safeReadArray($array, $headKey, [], null, $error);
+        $sub_array = self::safeReadArray($array, $headKey, [], null, $error);
         if ($error !== self::REQUEST_NO_ERROR) {
             return $default;
         }
-        return $this->safeReadNDArray($sub_array, $keychain, $default, $regex, $error);
+        return self::safeReadNDArray($sub_array, $keychain, $default, $regex, $error);
     }
 
     /**
-     * @since 1.3.6
+     * @since 2.0.0 turn to static
      * @param $method
      * @param $url
      * @param null|array|string $data
@@ -111,7 +112,7 @@ class CommonHelper
      * @param null|LibLog $logger
      * @return mixed
      */
-    public function executeCurl($method, $url, $data = null, $headers = [], $cookies = [], $bodyAsJson = false, $logger = null)
+    public static function executeCurl($method, $url, $data = null, $headers = [], $cookies = [], $bodyAsJson = false, $logger = null)
     {
         //$logger = $this->getFileLogger();
         $ch = curl_init();
@@ -165,12 +166,12 @@ class CommonHelper
     }
 
     /**
-     * @since 1.3.6
+     * @since 2.0.0 turn to static
      * @param $object
      * @param null $exception_error
      * @throws BaseCodedException
      */
-    public function assertNotEmpty($object, $exception_error = null)
+    public static function assertNotEmpty($object, $exception_error = null)
     {
         if (empty($object)) {
             if ($exception_error === null) {
@@ -181,14 +182,14 @@ class CommonHelper
     }
 
     /**
-     * @since 1.3.6
+     * @since 2.0.0 turn to static
      * @param array $array
      * @param $key
      * @param null $exception_error
      * @throws BaseCodedException
      * @internal param $object
      */
-    public function assertArrayItemNotEmpty($array, $key, $exception_error = null)
+    public static function assertArrayItemNotEmpty($array, $key, $exception_error = null)
     {
         if (!is_array($array) || !isset($array[$key]) || empty($array[$key])) {
             if ($exception_error === null) {
@@ -199,14 +200,14 @@ class CommonHelper
     }
 
     /**
-     * @since 1.3.6
+     * @since 2.0.0 turn to static
      * @param object $object
      * @param $key
      * @param null $exception_error
      * @throws BaseCodedException
      * @internal param $object
      */
-    public function assertObjectItemNotEmpty($object, $key, $exception_error = null)
+    public static function assertObjectItemNotEmpty($object, $key, $exception_error = null)
     {
         if (!is_object($object) || !isset($object->$key) || empty($object->$key)) {
             if ($exception_error === null) {
@@ -217,13 +218,13 @@ class CommonHelper
     }
 
     /**
-     * @since 1.3.7
+     * @since 2.0.0 turn to static
      * @param $list
      * @param $keyField
      * @return array
      * @throws BaseCodedException
      */
-    public function turnListToMapping($list, $keyField)
+    public static function turnListToMapping($list, $keyField)
     {
         if (empty($list) || !is_array($list)) {
             return [];

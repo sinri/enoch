@@ -9,12 +9,29 @@
 namespace sinri\enoch\wiki;
 
 
-use cebe\markdown\GithubMarkdown;
+//use cebe\markdown\GithubMarkdown;
 use sinri\enoch\mvc\Baruch;
 
 class MarkdownBaruch extends Baruch
 {
     protected $parser;
+
+    /**
+     * @return mixed
+     */
+    public function getParser()
+    {
+        return $this->parser;
+    }
+
+    /**
+     * Set the Markdown Code Parse, Such as `cebe\markdown\GithubMarkdown`
+     * @param $parser
+     */
+    public function setParser($parser)
+    {
+        $this->parser = $parser;
+    }
 
     protected $wikiTitle;
     protected $wikiHost;
@@ -29,8 +46,8 @@ class MarkdownBaruch extends Baruch
     public function __construct($wikiTitle = "Baruch Wiki", $wikiHost = "Public Domain", $wikiHostLink = "#")
     {
         parent::__construct();
-        $this->parser = new GithubMarkdown();
-        $this->parser->html5 = true;
+        //$this->parser = new GithubMarkdown();
+        //$this->parser->html5 = true;
         //$this->configReader = new ConfigReader();
 
         $this->wikiTitle = $wikiTitle;
@@ -49,7 +66,8 @@ class MarkdownBaruch extends Baruch
             return false;
         }
         $content = file_get_contents($file);
-        $content = $this->parser->parse($content);
+        //$content = $this->parser->parse($content);
+        $content = call_user_func_array([$this->parser, 'parse'], [$content]);
 
         $components = $this->getPathComponents();
         array_unshift($components, "Root");
