@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.0.1
+
+Fix override bug in SQL-Related library.
+
 ## 2.0.0
 
 Add BaseCodedException::ASSERT_FAILED
