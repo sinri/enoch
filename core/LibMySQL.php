@@ -17,11 +17,6 @@ namespace sinri\enoch\core;
 class LibMySQL extends LibPDO
 {
     /**
-     * @var \PDO
-     */
-    private $pdo;
-
-    /**
      * LibMySQL constructor.
      * @param null|array $params
      */

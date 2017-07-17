@@ -17,7 +17,7 @@ class LibPDO
     /**
      * @var \PDO
      */
-    private $pdo;
+    protected $pdo;
 
     /**
      * LibMySQL constructor.
