@@ -1,6 +1,6 @@
 # Enoch 
 
-[WIKI OF ENOCH PROJECT](https://sinri.cc/wiki.php/enoch/index)
+[WIKI OF ENOCH PROJECT](https://sinri.cc/wiki/index.php/enoch/index)
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/sinri/enoch/master/LICENSE) 
 [![GitHub release](https://img.shields.io/github/release/sinri/enoch.svg)](https://github.com/sinri/enoch/releases)
