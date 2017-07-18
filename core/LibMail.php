@@ -10,13 +10,18 @@ namespace sinri\enoch\core;
 
 
 use sinri\enoch\helper\CommonHelper;
-use sinri\enoch\SmallPHPMail\PHPMailer;
+use sinri\smallphpmailer\library\PHPMailer;
 
+/**
+ * Note, @since v2.0.2 embedded `PHPMailer` library changed to `sinri\smallphpmailer`,
+ * To test this library class inside this package, vendor autoload file should be required first.
+ * Class LibMail
+ * @package sinri\enoch\core
+ */
 class LibMail
 {
     private $mail;
     private $smtpInfo;
-    private $helper;
 
     /**
      * LibMail constructor.
@@ -27,7 +32,6 @@ class LibMail
     public function __construct($params = [])
     {
         $this->smtpInfo = [];
-        $this->helper = new CommonHelper();
 
         $this->setUpSMTP($params);
 
@@ -39,13 +43,46 @@ class LibMail
      */
     public function setUpSMTP($params)
     {
-        $this->smtpInfo['host'] = $this->helper->safeReadArray($params, 'host', '');
-        $this->smtpInfo['smtp_auth'] = $this->helper->safeReadArray($params, 'smtp_auth', '');
-        $this->smtpInfo['username'] = $this->helper->safeReadArray($params, 'username', '');
-        $this->smtpInfo['password'] = $this->helper->safeReadArray($params, 'password', '');
-        $this->smtpInfo['smtp_secure'] = $this->helper->safeReadArray($params, 'smtp_secure', '');
-        $this->smtpInfo['port'] = $this->helper->safeReadArray($params, 'port', '');
-        $this->smtpInfo['display_name'] = $this->helper->safeReadArray($params, 'display_name', '');
+        $this->smtpInfo['host'] = CommonHelper::safeReadArray($params, 'host', '');
+        $this->smtpInfo['smtp_auth'] = CommonHelper::safeReadArray($params, 'smtp_auth', '');
+        $this->smtpInfo['username'] = CommonHelper::safeReadArray($params, 'username', '');
+        $this->smtpInfo['password'] = CommonHelper::safeReadArray($params, 'password', '');
+        $this->smtpInfo['smtp_secure'] = CommonHelper::safeReadArray($params, 'smtp_secure', '');
+        $this->smtpInfo['port'] = CommonHelper::safeReadArray($params, 'port', '');
+        $this->smtpInfo['display_name'] = CommonHelper::safeReadArray($params, 'display_name', '');
+    }
+
+    /**
+     * @param int $target 0 for no debug, 4 for full debug
+     * @return LibMail
+     */
+    public function setDebug($target = 0)
+    {
+        $this->mail->SMTPDebug = $target;
+        return $this;
+    }
+
+    /**
+     * If you are using OSX and PHP 5.6 and find error in debug, you might try on this.
+     * This is the solution given by PHPMail Official GitHub Developer.
+     *
+     * 2017-07-18 06:00:18     Connection failed. Error #2: stream_socket_client(): SSL operation failed with code 1. OpenSSL Error messages:
+     * error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed [/Users/Sinri/Codes/Leqee/fundament/enoch/SmallPHPMail/SMTP.php line 294]
+     * 2017-07-18 06:00:18     Connection failed. Error #2: stream_socket_client(): Failed to enable crypto [/Users/Sinri/Codes/Leqee/fundament/enoch/SmallPHPMail/SMTP.php line 294]
+     * 2017-07-18 06:00:18     Connection failed. Error #2: stream_socket_client(): unable to connect to ssl://smtp.exmail.qq.com:465 (Unknown error) [/Users/Sinri/Codes/Leqee/fundament/enoch/SmallPHPMail/SMTP.php line 294]
+     *
+     * @return LibMail
+     */
+    public function stopSSLVerify()
+    {
+        $this->mail->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
+        return $this;
     }
 
     /**
@@ -220,11 +257,13 @@ class LibMail
     }
 
     /**
+     * @param null $error
      * @return bool
      */
-    public function finallySend()
+    public function finallySend($error = null)
     {
         $done = $this->mail->send();
+        $error = $this->mail->ErrorInfo;
         return $done;
     }
 }

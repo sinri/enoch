@@ -14,7 +14,8 @@
   ],
   "require": {
     "php": ">=5.4.0",
-    "ralouphie/getallheaders": "^2.0"
+    "ralouphie/getallheaders": "^2.0",
+    "sinri/smallphpmailer": "^1.0.1"
   },
   "require-dev": {
     "cebe/markdown": "^1.1"

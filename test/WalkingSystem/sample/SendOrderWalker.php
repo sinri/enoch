@@ -69,13 +69,19 @@ class SendOrderWalker extends Walker
         $done=$mailer->sendMail($mail_info);
         */
 
+        print_r(openssl_get_cert_locations());
+
+
+        $mail_error = null;
         $done = $mailer->prepareSMTP()
+            //->setDebug(4)
+            ->stopSSLVerify()
             ->addReceiver("ljni@leqee.com", "ljni")
             ->addSubject("Enoch Test Mail")
             ->addHTMLBody("And Enoch walked with God: and he <i>[was]</i> not; for God took him.")
-            ->finallySend();
+            ->finallySend($mail_error);
 
 
-        $this->logger->log(($done ? LibLog::LOG_INFO : LibLog::LOG_ERROR), "Sending mail", $done);
+        $this->logger->log(($done ? LibLog::LOG_INFO : LibLog::LOG_ERROR), "Sending mail " . json_encode($done), $mail_error);
     }
 }

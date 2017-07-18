@@ -10,6 +10,13 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.0.2
+
+Remove embedded PHPMailer-based SmallPHPMail Component.
+Use `sinri\smallphpmailer` instead, 
+which is a derivative work of original PHPMailer library licensed under LGPLv2.1 as well.
+This upgrade might make this library light, and lessen risk on law.
+
 ## 2.0.1
 
 Fix override bug in SQL-Related library.
