@@ -12,6 +12,11 @@ $host = '';
 $password = '';
 $port = 6379;
 $database = 255;
+
+if (file_exists(__DIR__ . '/redis_config.php')) {
+    require __DIR__ . '/redis_config.php';
+}
+
 $cache = new \sinri\enoch\service\RedisCache($host, $port, $database, $password);
 
 $cache->saveObject('A', 'Apple', 5);
