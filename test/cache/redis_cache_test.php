@@ -30,3 +30,13 @@ echo "[should be Amazing]: " . $a . PHP_EOL;
 sleep(5);
 $a = $cache->getObject('A');
 echo "[should be FALSE]: " . json_encode($a) . PHP_EOL;
+
+$a = ["name" => "A", "value" => "ALPHA"];
+$cache->saveObject("A", $a);
+$a = $cache->getObject("A");
+echo "[should be an KV array]: " . json_encode($a) . PHP_EOL;
+
+$a = [123, 124, 3523];
+$cache->saveObject("A", $a);
+$a = $cache->getObject("A");
+echo "[should be an ordered array]: " . json_encode($a) . PHP_EOL;
