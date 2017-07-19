@@ -8,6 +8,7 @@
 
 namespace sinri\enoch\mvc;
 
+use sinri\enoch\core\LibLog;
 use sinri\enoch\core\LibRequest;
 use sinri\enoch\core\LibSession;
 use sinri\enoch\helper\CommonHelper;
@@ -225,7 +226,81 @@ class Lamech
         return $sub_paths;
     }
 
+    /**
+     * @since 2.1.0 CLI handler support added along with WEB handler.
+     */
     public function handleRequest()
+    {
+        if (LibRequest::isCLI()) {
+            $this->handleRequestForCLI();
+            return;
+        }
+        $this->handleRequestForWeb();
+    }
+
+    /**
+     * @since 2.1.0 CLI handler here.
+     */
+    public function handleRequestForCLI()
+    {
+        global $argc;
+        global $argv;
+        $logger = (new LibLog());
+        try {
+            // php index.php [PATH] [ARGV]
+            $path = CommonHelper::safeReadArray($argv, 1, null);
+            if ($path === null) {
+                $logger->log(LibLog::LOG_ERROR, "PATH EMPTY", $path);
+                return;
+            }
+            $arguments = [];
+            for ($i = 2; $i < $argc; $i++) {
+                $arguments[] = $argv[$i];
+            }
+            $route = $this->router->seekRoute($path, LibRequest::getRequestMethod());
+            $callable = CommonHelper::safeReadArray($route, Adah::ROUTE_PARAM_CALLBACK);
+            $middleware_chain = CommonHelper::safeReadArray($route, Adah::ROUTE_PARAM_MIDDLEWARE);
+
+            if (!is_array($middleware_chain)) {
+                $middleware_chain = [$middleware_chain];
+            }
+            $preparedData = null;
+            foreach ($middleware_chain as $middleware) {
+                $middleware_instance = MiddlewareInterface::MiddlewareFactory($middleware);
+                $mw_passed = $middleware_instance->shouldAcceptRequest($path, LibRequest::getRequestMethod(), $arguments, $preparedData);
+                if (!$mw_passed) {
+                    //header('HTTP/1.0 403 Forbidden');
+                    throw new BaseCodedException(
+                        "Rejected by Middleware " . $middleware,
+                        BaseCodedException::REQUEST_FILTER_REJECT
+                    );
+                }
+            }
+
+            if (is_array($callable) && isset($callable[0])) {
+                $class_instance = $callable[0];
+                $reflectionOfClassName = new \ReflectionClass($class_instance);
+                if (in_array('sinri\enoch\mvc\SethInterface', $reflectionOfClassName->getInterfaceNames())) {
+                    $class_instance = new $class_instance($preparedData);
+                } else {
+                    // this branch is for free-style controller... as a backdoor.
+                    $class_instance = new $class_instance();
+                    if (method_exists($class_instance, '_acceptMiddlewarePreparedData')) {
+                        $class_instance->_acceptMiddlewarePreparedData($preparedData);
+                    }
+                }
+                $callable[0] = $class_instance;
+            }
+            call_user_func_array($callable, $arguments);
+        } catch (\Exception $exception) {
+            $logger->log(LibLog::LOG_ERROR, "Exception in " . __METHOD__ . " : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * @since 2.1.0 WEB handler became independent
+     */
+    public function handleRequestForWeb()
     {
         try {
             $this->dividePath($path_string);

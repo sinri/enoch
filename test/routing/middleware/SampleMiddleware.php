@@ -9,16 +9,18 @@
 namespace sinri\enoch\test\routing\middleware;
 
 
+use sinri\enoch\helper\CommonHelper;
 use sinri\enoch\mvc\MiddlewareInterface;
 
 class SampleMiddleware extends MiddlewareInterface
 {
     public function shouldAcceptRequest($path, $method, $params, &$preparedData = null)
     {
-        //print_r([$path,$method,$params]);
-        if ($params[1] == 100) {
+        //print_r(["PATH"=>$path,"METHOD"=>$method,"PARAMS"=>$params]);
+        $sample_issue_value = CommonHelper::safeReadArray($params, 1, -1);
+        if ($sample_issue_value == 100) {
             return false;
-        } elseif ($params[1] == 50) {
+        } elseif ($sample_issue_value == 50) {
             $preparedData = 50;
         } else {
             $preparedData = 10;

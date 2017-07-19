@@ -63,3 +63,6 @@ $lamech->loadAllControllersInDirectoryAsCI(
 );
 
 $lamech->handleRequest();
+
+// e.g. for CLI
+// php test/routing/index.php /ci/SethHandler/index 1

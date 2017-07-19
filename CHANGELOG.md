@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.0
+
+Add CLI handler in Lamech.
+
 ## 2.0.2
 
 Remove embedded PHPMailer-based SmallPHPMail Component.
