@@ -25,14 +25,16 @@ $queue = new \sinri\enoch\service\RedisQueue($key, $host, $port, $database, $pas
 $item = new \sinri\enoch\service\RedisQueueItem(["name" => 'Ein']);
 
 echo "push " . json_encode($item) . PHP_EOL;
-$done = $queue->addToQueueTail($item);
-var_dump($done);
+$index = $queue->addToQueueTail($item);
+$item->setQueueItemIndex($index);
+var_dump($index);
 
 $item = new \sinri\enoch\service\RedisQueueItem(["name" => 'Zwie']);
 
 echo "push " . json_encode($item) . PHP_EOL;
-$done = $queue->addToQueueTail($item);
-var_dump($done);
+$index = $queue->addToQueueTail($item);
+$item->setQueueItemIndex($index);
+var_dump($index);
 
 echo "pop one" . PHP_EOL;
 $item = $queue->takeFromQueueHead();

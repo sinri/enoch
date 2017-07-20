@@ -67,7 +67,7 @@ class RedisQueue implements QueueInterface
      */
     public function queueLength()
     {
-        return $this->client->llen($this->client);
+        return $this->client->llen($this->listKey);
     }
 
     /**
