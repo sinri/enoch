@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.2
+
+Redis Queue Support.
+
 ## 2.1.1
 
 Redis Cache Support.
