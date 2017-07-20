@@ -44,6 +44,7 @@ echo "pop one" . PHP_EOL;
 $item = $queue->takeFromQueueHead();
 if ($item) {
     $item->handle();
+    echo PHP_EOL;
 } else {
     echo "item is not available" . PHP_EOL;
 }
