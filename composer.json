@@ -1,7 +1,9 @@
 {
   "name": "sinri/enoch",
   "description": "PHP Framework for integrating",
-  "keywords": ["Database","SQL","PHP","SFTP"],
+  "keywords": [
+    "php-framework"
+  ],
   "homepage": "https://github.com/sinri/enoch",
   "license": "MIT",
   "authors": [
