@@ -13,3 +13,4 @@ composer.lock
 /test/Baruch/.htaccess
 /test/Baruch/storage/
 /test/cache/redis_config.php
+/test/queue/redis_config.php
