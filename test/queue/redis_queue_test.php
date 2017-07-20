@@ -18,7 +18,9 @@ if (file_exists(__DIR__ . '/redis_config.php')) {
     require __DIR__ . '/redis_config.php';
 }
 
-$queue = new \sinri\enoch\service\RedisQueue($host, $port, $database, $password);
+$key = __METHOD__;
+
+$queue = new \sinri\enoch\service\RedisQueue($key, $host, $port, $database, $password);
 
 $item = new \sinri\enoch\test\queue\SimpleRedisQueueItem(["name" => 'Ein']);
 
