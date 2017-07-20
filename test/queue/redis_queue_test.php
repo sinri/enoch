@@ -22,13 +22,13 @@ $key = __METHOD__;
 
 $queue = new \sinri\enoch\service\RedisQueue($key, $host, $port, $database, $password);
 
-$item = new \sinri\enoch\test\queue\SimpleRedisQueueItem(["name" => 'Ein']);
+$item = new \sinri\enoch\service\RedisQueueItem(["name" => 'Ein']);
 
 echo "push " . json_encode($item) . PHP_EOL;
 $done = $queue->addToQueueTail($item);
 var_dump($done);
 
-$item = new \sinri\enoch\test\queue\SimpleRedisQueueItem(["name" => 'Zwie']);
+$item = new \sinri\enoch\service\RedisQueueItem(["name" => 'Zwie']);
 
 echo "push " . json_encode($item) . PHP_EOL;
 $done = $queue->addToQueueTail($item);

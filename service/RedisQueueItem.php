@@ -9,8 +9,6 @@
 namespace sinri\enoch\service;
 
 
-use sinri\enoch\mvc\BaseCodedException;
-
 class RedisQueueItem extends QueueItem
 {
     /**
@@ -33,10 +31,11 @@ class RedisQueueItem extends QueueItem
 
     /**
      * @return bool
-     * @throws BaseCodedException
      */
     public function handle()
     {
-        throw new BaseCodedException("Not implement", BaseCodedException::NOT_IMPLEMENT_ERROR);
+        //throw new BaseCodedException("Not implement", BaseCodedException::NOT_IMPLEMENT_ERROR);
+        print_r($this->queueItemData);
+        return true;
     }
 }
