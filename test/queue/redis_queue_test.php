@@ -20,13 +20,13 @@ if (file_exists(__DIR__ . '/redis_config.php')) {
 
 $queue = new \sinri\enoch\service\RedisQueue($host, $port, $database, $password);
 
-$item = new \sinri\enoch\service\RedisQueueItem(["name" => 'Ein']);
+$item = new \sinri\enoch\test\queue\SimpleRedisQueueItem(["name" => 'Ein']);
 
 echo "push " . json_encode($item) . PHP_EOL;
 $done = $queue->addToQueueTail($item);
 var_dump($done);
 
-$item = new \sinri\enoch\service\RedisQueueItem(["name" => 'Zwie']);
+$item = new \sinri\enoch\test\queue\SimpleRedisQueueItem(["name" => 'Zwie']);
 
 echo "push " . json_encode($item) . PHP_EOL;
 $done = $queue->addToQueueTail($item);
