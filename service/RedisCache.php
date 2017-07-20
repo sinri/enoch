@@ -27,6 +27,14 @@ class RedisCache implements CacheInterface
     }
 
     /**
+     * @return null|Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
      * @param string $key
      * @param mixed $object
      * @param int $life 0 for no limit, or seconds
@@ -65,5 +73,30 @@ class RedisCache implements CacheInterface
     {
         // REDIS WOULD DO THIS...
         return true;
+    }
+
+    public function increase($key, $by = 1)
+    {
+        $this->client->incrby($key, $by);
+    }
+
+    public function decrease($key, $by = 1)
+    {
+        $this->client->decrby($key, $by);
+    }
+
+    public function increaseFloat($key, $by = 1.0)
+    {
+        $this->client->incrbyfloat($key, $by);
+    }
+
+    /**
+     * 如果 key 已经存在并且是一个字符串， APPEND 命令将 $tail 追加到 key 原来的值的末尾。
+     * @param $key
+     * @param $tail
+     */
+    public function append($key, $tail)
+    {
+        $this->client->append($key, $tail);
     }
 }

@@ -27,15 +27,41 @@ $cache->saveObject('A', "Amazing", 3);
 $a = $cache->getObject('A');
 echo "[should be Amazing]: " . $a . PHP_EOL;
 
-$a = ["name" => "A", "value" => "ALPHA"];
-$cache->saveObject("A", $a);
-$a = $cache->getObject("A");
-echo "[should be an KV array]: " . json_encode($a) . PHP_EOL;
+$cache->append('A', ' Grace');
+$a = $cache->getObject('A');
+echo "[should be Amazing Grace]: " . $a . PHP_EOL;
 
-$a = [123, 124, 3523];
-$cache->saveObject("A", $a);
-$a = $cache->getObject("A");
-echo "[should be an ordered array]: " . json_encode($a) . PHP_EOL;
+// you cannot set array to redis...
+//$a = ["name" => "A", "value" => "ALPHA"];
+//$cache->saveObject("A", $a);
+//$a = $cache->getObject("A");
+//echo "[should be an KV array]: " . json_encode($a) . PHP_EOL;
+//
+//$a = [123, 124, 3523];
+//$cache->saveObject("A", $a);
+//$a = $cache->getObject("A");
+//echo "[should be an ordered array]: " . json_encode($a) . PHP_EOL;
+
+
+$cache->removeObject('A');
+$a = $cache->getObject('A');
+echo "[should be FALSE]: " . json_encode($a) . PHP_EOL;
+
+$cache->increase('A', 1);
+$a = $cache->getObject('A');
+echo "[should be 1]: " . $a . PHP_EOL;
+
+$cache->increase('A', 2);
+$a = $cache->getObject('A');
+echo "[should be 3]: " . $a . PHP_EOL;
+
+$cache->decrease('A', 1);
+$a = $cache->getObject('A');
+echo "[should be 2]: " . $a . PHP_EOL;
+
+$cache->increaseFloat('A', 1.5);
+$a = $cache->getObject('A');
+echo "[should be 3.5]: " . $a . PHP_EOL;
 
 sleep(5);
 $a = $cache->getObject('A');
