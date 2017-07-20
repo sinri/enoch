@@ -22,6 +22,10 @@ $key = __METHOD__;
 
 $queue = new \sinri\enoch\service\RedisQueue($key, $host, $port, $database, $password);
 
+echo "clean ..." . PHP_EOL;
+$done = $queue->deleteQueue();
+var_dump($done);
+
 $item = new \sinri\enoch\service\RedisQueueItem(["name" => 'Ein']);
 
 echo "push " . json_encode($item) . PHP_EOL;
@@ -50,7 +54,7 @@ for ($i = 0; $i < 3; $i++) {
     echo "index at " . $i . PHP_EOL;
     $item = $queue->objectAtIndex($i);
     if ($item) {
-        $item->handle();
+        echo "view object at " . $item->getQueueItemIndex() . " : " . $item->getQueueItemData() . PHP_EOL;
     } else {
         echo "item is not available" . PHP_EOL;
     }
@@ -60,6 +64,7 @@ echo "pop one" . PHP_EOL;
 $item = $queue->takeFromQueueHead();
 if ($item) {
     $item->handle();
+    echo PHP_EOL;
 } else {
     echo "item is not available" . PHP_EOL;
 }

@@ -77,6 +77,16 @@ class RedisQueue implements QueueInterface
     public function objectAtIndex($index)
     {
         $string = $this->client->lindex($this->listKey, $index);
-        return RedisQueueItem::newItemFromDataString($string);
+        $item = RedisQueueItem::newItemFromDataString($string);
+        $item->setQueueItemIndex($index);
+        return $item;
+    }
+
+    /**
+     * @return int
+     */
+    public function deleteQueue()
+    {
+        return $this->client->del($this->listKey);
     }
 }
