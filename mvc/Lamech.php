@@ -19,13 +19,15 @@ class Lamech
     protected $session_dir;
     protected $router;
     protected $debug = false;
-    private $default_controller_name = 'Welcome';
-    private $default_method_name = 'index';
+    //private $default_controller_name = 'Welcome';
+    //private $default_method_name = 'index';
+
+    //protected static $routerType=Adah::ROUTER_TYPE_REGEX;
 
     public function __construct($sessionDir = null)
     {
         $this->session_dir = $sessionDir;
-        $this->router = new Adah();
+        $this->router = new Adah(Adah::ROUTER_TYPE_REGEX);
         $this->debug = false;
     }
 
@@ -63,34 +65,38 @@ class Lamech
 
     /**
      * @return string
+     * @deprecated moved to Adah
      */
     public function getDefaultControllerName()
     {
-        return $this->default_controller_name;
+        return $this->router->getDefaultControllerName();
     }
 
     /**
      * @param string $defaultControllerName
+     * @deprecated moved to Adah
      */
     public function setDefaultControllerName($defaultControllerName)
     {
-        $this->default_controller_name = $defaultControllerName;
+        $this->router->setDefaultControllerName($defaultControllerName);
     }
 
     /**
      * @return string
+     * @deprecated moved to Adah
      */
     public function getDefaultMethodName()
     {
-        return $this->default_method_name;
+        return $this->router->getDefaultMethodName();
     }
 
     /**
      * @param string $defaultMethodName
+     * @deprecated moved to Adah
      */
     public function setDefaultMethodName($defaultMethodName)
     {
-        $this->default_method_name = $defaultMethodName;
+        $this->router->setDefaultMethodName($defaultMethodName);
     }
 
     /**
@@ -137,7 +143,7 @@ class Lamech
             return $this->getControllerForCLI($subPaths);
         }
 
-        $controller_name = $this->default_controller_name;
+        $controller_name = $this->router->getDefaultControllerName();
         $subPaths = [];
         $controllerIndex = $this->getControllerIndex();
         $pattern = '/^\/([^\?]*)(\?|$)/';
@@ -158,7 +164,7 @@ class Lamech
         }
 
         if (empty($controller_name)) {
-            $controller_name = $this->default_controller_name;
+            $controller_name = $this->router->getDefaultControllerName();
         }
         return $controller_name;
     }
@@ -167,7 +173,7 @@ class Lamech
     {
         global $argv;
         global $argc;
-        $controller_name = $this->default_controller_name;
+        $controller_name = $this->router->getDefaultControllerName();
         $subPaths = [];
         $subPaths = array();
         for ($i = 1; $i < $argc; $i++) {
@@ -310,6 +316,10 @@ class Lamech
             // @since 1.2.8 as MiddlewareInterface
             $middleware_chain = CommonHelper::safeReadArray($route, Adah::ROUTE_PARAM_MIDDLEWARE);
 
+            if ($this->debug) {
+//                var_dump([$route, $callable, $params, $middleware_chain]);
+            }
+
             // @since 1.2.8 the shift job moved to Adah
             //if (!empty($params)) array_shift($params);
 
@@ -377,6 +387,9 @@ class Lamech
      */
     public function loadAllControllersInDirectoryAsCI($directory, $urlBase = '', $controllerNamespaceBase = '', $middleware = '')
     {
+        $this->router->loadAllControllersInDirectoryAsCI($directory, $urlBase, $controllerNamespaceBase, $middleware);
+        /*
+        // Implementation moved to Adah
         if ($handle = opendir($directory)) {
             if (
                 $this->default_controller_name
@@ -384,11 +397,23 @@ class Lamech
                 && $this->default_method_name
                 && method_exists($controllerNamespaceBase . $this->default_controller_name, $this->default_method_name)
             ) {
-                $this->getRouter()->any(
-                    $urlBase . '?',
-                    [$controllerNamespaceBase . $this->default_controller_name, $this->default_method_name],
-                    $middleware
-                );
+                if($this->routerType===Adah::ROUTER_TYPE_TREE){
+                    $urlBaseX=$urlBase;
+                    if(strlen($urlBaseX)>0){
+                        $urlBaseX=substr($urlBaseX,0,strlen($urlBaseX)-1);
+                    }
+                    $this->getRouter()->any(
+                        $urlBaseX,
+                        [$controllerNamespaceBase . $this->default_controller_name, $this->default_method_name],
+                        $middleware
+                    );
+                }else {
+                    $this->getRouter()->any(
+                        $urlBase . '?',
+                        [$controllerNamespaceBase . $this->default_controller_name, $this->default_method_name],
+                        $middleware
+                    );
+                }
             }
             while (false !== ($entry = readdir($handle))) {
                 if ($entry != "." && $entry != "..") {
@@ -409,11 +434,20 @@ class Lamech
                             $this->default_method_name
                             && method_exists($controllerNamespaceBase . $name, $this->default_method_name)
                         ) {
-                            $this->getRouter()->any(
-                                $urlBase . $name . '/?',
-                                [$controllerNamespaceBase . $name, $this->default_method_name],
-                                $middleware
-                            );
+                            if($this->routerType===Adah::ROUTER_TYPE_TREE) {
+                                $urlBaseX=$urlBase.$name;
+                                $this->getRouter()->any(
+                                    $urlBaseX,
+                                    [$controllerNamespaceBase . $name, $this->default_method_name],
+                                    $middleware
+                                );
+                            }else {
+                                $this->getRouter()->any(
+                                    $urlBase . $name . '/?',
+                                    [$controllerNamespaceBase . $name, $this->default_method_name],
+                                    $middleware
+                                );
+                            }
                         }
                         $this->getRouter()->loadController(
                             $urlBase . $name . '/',
@@ -425,5 +459,6 @@ class Lamech
             }
             closedir($handle);
         }
+        */
     }
 }

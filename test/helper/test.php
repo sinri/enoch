@@ -22,16 +22,24 @@ $array = [
 ];
 
 $result = $helper->safeReadArray($array, "Ein", 100, null, $error);
-if (!($result === 1 && $error === \sinri\enoch\helper\CommonHelper::REQUEST_NO_ERROR))
-    throw new \sinri\enoch\mvc\BaseCodedException("ERROR");
+if (!($result === 1 && $error === \sinri\enoch\helper\CommonHelper::REQUEST_NO_ERROR)) {
+//    throw new \sinri\enoch\mvc\BaseCodedException("ERROR");
+    echo __LINE__ . PHP_EOL;
+}
 
 $result = $helper->safeReadNDArray($array, ["A", "B", "C"], "E", null, $error);
-if (!($result === "D" && $error === \sinri\enoch\helper\CommonHelper::REQUEST_NO_ERROR))
-    throw new \sinri\enoch\mvc\BaseCodedException("ERROR");
+if (!($result === "D" && $error === \sinri\enoch\helper\CommonHelper::REQUEST_NO_ERROR)) {
+//    throw new \sinri\enoch\mvc\BaseCodedException("ERROR");
+    echo __LINE__ . PHP_EOL;
+}
 
 
 $result = $helper->safeReadNDArray($array, ["A", "B", "C"], "E", '/^F$/', $error);
 if (!($result === "D" && $error === \sinri\enoch\helper\CommonHelper::REQUEST_NO_ERROR)) {
     var_dump($error);
-    throw new \sinri\enoch\mvc\BaseCodedException("ERROR");
+//    throw new \sinri\enoch\mvc\BaseCodedException("ERROR");
+    echo __LINE__ . PHP_EOL;
 }
+
+\sinri\enoch\helper\CommonHelper::safeWriteNDArray($array, ['a', 'b', 'c'], 1);
+var_dump($array);

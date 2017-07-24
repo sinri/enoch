@@ -13,6 +13,8 @@ use sinri\enoch\helper\CommonHelper;
 
 class LibRequest
 {
+    const METHOD_ANY = "ANY";//since v2.1.3 for TreeRouter
+
     const METHOD_HEAD = "HEAD";//since v1.3.0
     const METHOD_GET = "GET";//since v1.3.0
     const METHOD_POST = "POST";//since v1.3.0

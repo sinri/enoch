@@ -7,8 +7,7 @@
  */
 require_once __DIR__ . '/helper/CommonHelper.php';
 spl_autoload_register(function ($class_name) {
-    $ch = new \sinri\enoch\helper\CommonHelper();
-    $file_path = $ch->getFilePathOfClassNameWithPSR0(
+    $file_path = \sinri\enoch\helper\CommonHelper::getFilePathOfClassNameWithPSR0(
         $class_name,
         'sinri\enoch',
         __DIR__,

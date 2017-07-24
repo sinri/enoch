@@ -19,6 +19,42 @@ abstract class RouterInterface
     protected $error_handler = null;
     protected $routes = [];
 
+    protected $default_controller_name = null;
+    protected $default_method_name = null;
+
+    /**
+     * @return null
+     */
+    public function getDefaultControllerName()
+    {
+        return $this->default_controller_name;
+    }
+
+    /**
+     * @param null $default_controller_name
+     */
+    public function setDefaultControllerName($default_controller_name)
+    {
+        $this->default_controller_name = $default_controller_name;
+    }
+
+    /**
+     * @return null
+     */
+    public function getDefaultMethodName()
+    {
+        return $this->default_method_name;
+    }
+
+    /**
+     * @param null $default_method_name
+     */
+    public function setDefaultMethodName($default_method_name)
+    {
+        $this->default_method_name = $default_method_name;
+    }
+
+
     protected $debug = false;
 
     /**
