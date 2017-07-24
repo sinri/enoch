@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.4
+
+Move Tree Route Support to new Router Zillah and clean code of Adah.
+
 ## 2.1.3
 
 Tree Route and its benchmark, with not accept conclusion.

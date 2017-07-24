@@ -125,12 +125,6 @@ abstract class RouterInterface
 
     abstract public function head($path, $callback, $middleware = null);
 
-    /**
-     * @since 1.3.1
-     * @param $shared
-     * @param $list
-     * @return mixed
-     */
     abstract public function group($shared, $list);
 
     abstract public function loadController($basePath, $controllerClass, $middleware = null);

@@ -19,15 +19,11 @@ class Lamech
     protected $session_dir;
     protected $router;
     protected $debug = false;
-    //private $default_controller_name = 'Welcome';
-    //private $default_method_name = 'index';
-
-    //protected static $routerType=Adah::ROUTER_TYPE_REGEX;
 
     public function __construct($sessionDir = null)
     {
         $this->session_dir = $sessionDir;
-        $this->router = new Adah(Adah::ROUTER_TYPE_REGEX);
+        $this->router = new Adah();
         $this->debug = false;
     }
 
@@ -316,13 +312,6 @@ class Lamech
             // @since 1.2.8 as MiddlewareInterface
             $middleware_chain = CommonHelper::safeReadArray($route, Adah::ROUTE_PARAM_MIDDLEWARE);
 
-            if ($this->debug) {
-//                var_dump([$route, $callable, $params, $middleware_chain]);
-            }
-
-            // @since 1.2.8 the shift job moved to Adah
-            //if (!empty($params)) array_shift($params);
-
             // @since 1.5.0 the middleware support chain-style
             if (!is_array($middleware_chain)) {
                 $middleware_chain = [$middleware_chain];
@@ -332,7 +321,6 @@ class Lamech
                 $middleware_instance = MiddlewareInterface::MiddlewareFactory($middleware);
                 $mw_passed = $middleware_instance->shouldAcceptRequest($path_string, LibRequest::getRequestMethod(), $params, $preparedData);
                 if (!$mw_passed) {
-                    //header('HTTP/1.0 403 Forbidden');
                     throw new BaseCodedException(
                         "Rejected by Middleware " . $middleware,
                         BaseCodedException::REQUEST_FILTER_REJECT
@@ -342,7 +330,6 @@ class Lamech
 
             if (is_array($callable) && isset($callable[0])) {
                 $class_instance = $callable[0];
-                //print_r(get_class_methods($class_instance));
                 // SethInterface Available @since 1.5.0
                 $reflectionOfClassName = new \ReflectionClass($class_instance);
                 if (in_array('sinri\enoch\mvc\SethInterface', $reflectionOfClassName->getInterfaceNames())) {
@@ -384,81 +371,10 @@ class Lamech
      * @param string $urlBase "XX/"
      * @param string $controllerNamespaceBase '\leqee\yiranoc\controller\\'
      * @param string $middleware '\leqee\yiranoc\middleware\AuthMiddleware'
+     * @deprecated moved to Adah
      */
     public function loadAllControllersInDirectoryAsCI($directory, $urlBase = '', $controllerNamespaceBase = '', $middleware = '')
     {
         $this->router->loadAllControllersInDirectoryAsCI($directory, $urlBase, $controllerNamespaceBase, $middleware);
-        /*
-        // Implementation moved to Adah
-        if ($handle = opendir($directory)) {
-            if (
-                $this->default_controller_name
-                && file_exists($directory . '/' . $this->default_controller_name . '.php')
-                && $this->default_method_name
-                && method_exists($controllerNamespaceBase . $this->default_controller_name, $this->default_method_name)
-            ) {
-                if($this->routerType===Adah::ROUTER_TYPE_TREE){
-                    $urlBaseX=$urlBase;
-                    if(strlen($urlBaseX)>0){
-                        $urlBaseX=substr($urlBaseX,0,strlen($urlBaseX)-1);
-                    }
-                    $this->getRouter()->any(
-                        $urlBaseX,
-                        [$controllerNamespaceBase . $this->default_controller_name, $this->default_method_name],
-                        $middleware
-                    );
-                }else {
-                    $this->getRouter()->any(
-                        $urlBase . '?',
-                        [$controllerNamespaceBase . $this->default_controller_name, $this->default_method_name],
-                        $middleware
-                    );
-                }
-            }
-            while (false !== ($entry = readdir($handle))) {
-                if ($entry != "." && $entry != "..") {
-                    if (is_dir($directory . '/' . $entry)) {
-                        //DIR,
-                        $this->loadAllControllersInDirectoryAsCI(
-                            $urlBase . $entry . '/',
-                            $controllerNamespaceBase . $entry . '\\',
-                            $middleware
-                        );
-                    } else {
-                        //FILE
-                        $list = explode('.', $entry);
-                        $name = isset($list[0]) ? $list[0] : '';
-                        //$ppp=method_exists($controllerNamespaceBase . $name,$this->default_method_name);
-                        //echo "ppp=".json_encode($ppp).PHP_EOL;
-                        if (
-                            $this->default_method_name
-                            && method_exists($controllerNamespaceBase . $name, $this->default_method_name)
-                        ) {
-                            if($this->routerType===Adah::ROUTER_TYPE_TREE) {
-                                $urlBaseX=$urlBase.$name;
-                                $this->getRouter()->any(
-                                    $urlBaseX,
-                                    [$controllerNamespaceBase . $name, $this->default_method_name],
-                                    $middleware
-                                );
-                            }else {
-                                $this->getRouter()->any(
-                                    $urlBase . $name . '/?',
-                                    [$controllerNamespaceBase . $name, $this->default_method_name],
-                                    $middleware
-                                );
-                            }
-                        }
-                        $this->getRouter()->loadController(
-                            $urlBase . $name . '/',
-                            $controllerNamespaceBase . $name,
-                            $middleware
-                        );
-                    }
-                }
-            }
-            closedir($handle);
-        }
-        */
     }
 }
