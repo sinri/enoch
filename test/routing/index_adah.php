@@ -26,6 +26,12 @@ $lamech->getRouter()->get(
     '\sinri\enoch\test\routing\middleware\SampleMiddleware'
 );
 
+$lamech->getRouter()->get(
+    "default/{p}/{q?}",
+    ['\sinri\enoch\test\routing\controller\SampleHandler', 'adah'],
+    '\sinri\enoch\test\routing\middleware\SampleMiddleware'
+);
+
 //such as http://localhost/leqee/fundament/enoch/test/routing/group/add/3/4
 $lamech->getRouter()->group(
     [

@@ -102,6 +102,33 @@ class CommonHelper
     }
 
     /**
+     * @param array $array
+     * @param array $keychain
+     * @param mixed $value
+     */
+    public static function safeWriteNDArray(&$array, $keychain, $value)
+    {
+        if (!is_array($array)) {
+            $array = [];
+        }
+        if (!is_array($keychain)) {
+            $keychain = [$keychain];
+        }
+
+        $headKey = array_shift($keychain);
+        if (empty($keychain)) {
+            //last
+            $array[$headKey] = $value;
+        } else {
+            //not last
+            if (!isset($array[$headKey])) {
+                $array[$headKey] = [];
+            }
+            CommonHelper::safeWriteNDArray($array[$headKey], $keychain, $value);
+        }
+    }
+
+    /**
      * @since 2.0.0 turn to static
      * @param $method
      * @param $url
