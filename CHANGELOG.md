@@ -10,6 +10,11 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.5
+
+According to [StackOverflow](https://stackoverflow.com/questions/41118475/segmentation-fault-on-fopen-using-sftp-and-ssh2).
+It seems since this PHP update(PHP 5.6.28), you have to surround your host part (result of `ssh2_sftp()`) with `intval()`.
+
 ## 2.1.4
 
 Move Tree Route Support to new Router Zillah and clean code of Adah.

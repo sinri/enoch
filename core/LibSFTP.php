@@ -69,7 +69,9 @@ class LibSFTP
             $remote_path = $remoteDir . '/' . $filename;
             $local_path = $localDir . '/' . $filename;
 
-            $sftpStream = fopen('ssh2.sftp://' . $resSFTP . $remote_path, 'w');
+            //added intval process 20170802 by Sinri
+            //https://stackoverflow.com/questions/41118475/segmentation-fault-on-fopen-using-sftp-and-ssh2
+            $sftpStream = fopen('ssh2.sftp://' . intval($resSFTP) . $remote_path, 'w');
 
             if (!$sftpStream) {
                 throw new \Exception("Could not open remote file: " . $remote_path);
@@ -111,7 +113,7 @@ class LibSFTP
             }
 
             //$file_name = '';
-            $handler = opendir('ssh2.sftp://' . $resSFTP . $remoteDir);
+            $handler = opendir('ssh2.sftp://' . intval($resSFTP) . $remoteDir);
 
             $i = 0;
             $files = array();
@@ -123,7 +125,7 @@ class LibSFTP
                     $local_file = $localPath . $file_name;
 
                     //将远程文件保存到本地
-                    $content = file_get_contents('ssh2.sftp://' . $resSFTP . $remoteDir . $file_name, 'rw');
+                    $content = file_get_contents('ssh2.sftp://' . intval($resSFTP) . $remoteDir . $file_name, 'rw');
                     //$result2 = '';
                     $get_content = iconv('gbk', 'utf-8', $content);
 
