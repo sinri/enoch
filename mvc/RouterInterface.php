@@ -98,7 +98,7 @@ abstract class RouterInterface
             call_user_func_array($this->error_handler, [$errorData]);
             return;
         }
-        $this->response->errorPage(__METHOD__);
+        $this->response->errorPage(json_encode($errorData));
     }
 
     abstract public function seekRoute($path, $method);
