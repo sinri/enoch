@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## Master
+
+Fix Issue #7.
+
 ## 2.1.5
 
 According to [StackOverflow](https://stackoverflow.com/questions/41118475/segmentation-fault-on-fopen-using-sftp-and-ssh2).

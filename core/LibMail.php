@@ -260,7 +260,7 @@ class LibMail
      * @param null $error
      * @return bool
      */
-    public function finallySend($error = null)
+    public function finallySend(&$error = null)
     {
         $done = $this->mail->send();
         $error = $this->mail->ErrorInfo;
