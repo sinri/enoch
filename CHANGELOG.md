@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## Master after 2.1.7
+
+Add `hasPrefixAmong` in `MiddlewareInterface`.
+
 ## 2.1.7
 
 Add `AbstractDataModel`.
