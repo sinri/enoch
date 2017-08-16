@@ -38,4 +38,24 @@ class MiddlewareInterface
     {
         return true;
     }
+
+    /**
+     * You can use this as `hasPrefixAmong($path,['/AdminSession/login','/FileAgent/getFile/'])`
+     * as the paths like '/AdminSession/login' and '/FileAgent/getFile/xxx' would return true.
+     * Only pure string (case sensitive) would be taken as check rule.
+     * Anyway, you may think about the shared prefix, such as '/AdminSession/loginAgain', returns true too.
+     * But you should know, all the urls are designed by yourself, you can design them to avoid side effects.
+     * @param $path
+     * @param array $prefixList
+     * @return bool
+     */
+    public static function hasPrefixAmong($path, $prefixList = [])
+    {
+        foreach ($prefixList as $prefix) {
+            if (0 === strpos($path, $prefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
