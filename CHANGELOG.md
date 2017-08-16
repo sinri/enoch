@@ -10,7 +10,7 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
-## Master after 2.1.7
+## 2.1.8
 
 Add `hasPrefixAmong` in `MiddlewareInterface`.
 
