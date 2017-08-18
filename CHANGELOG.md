@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.9
+
+Add `LibFTP` for standard FTP and SSL-FTP. 
+
 ## 2.1.8
 
 Add `hasPrefixAmong` in `MiddlewareInterface`.

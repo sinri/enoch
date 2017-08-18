@@ -15,3 +15,4 @@ composer.lock
 /test/cache/redis_config.php
 /test/queue/redis_config.php
 /test/routing/benchmark/paths.json
+/test/FTP/config.php
