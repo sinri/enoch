@@ -26,7 +26,7 @@ abstract class Enos
     public function __construct()
     {
         $this->logger = $this->loadLogger();
-        $this->config = $this->readConfig();
+        $this->config = $this->loadConfig();
     }
 
     /**
@@ -35,6 +35,14 @@ abstract class Enos
     protected function loadLogger()
     {
         return new LibLog();
+    }
+
+    /**
+     * @return array
+     */
+    protected function loadConfig()
+    {
+        return [];
     }
 
     /**

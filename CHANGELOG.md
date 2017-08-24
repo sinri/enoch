@@ -10,6 +10,11 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.10
+
+Add `loadConfig` method for initialization in `Enos`.
+Add `setFtpUsePassive` method in `LibFTP`.
+
 ## 2.1.9
 
 Add `LibFTP` for standard FTP and SSL-FTP. 

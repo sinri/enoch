@@ -19,11 +19,21 @@ class LibFTP
     protected $ftpUsername;
     protected $ftpPassword;
     protected $ftpMode;
+    protected $ftpUsePassive;
 
     public function __construct()
     {
         $this->ftpConnectTimeout = 30;
         $this->ftpMode = FTP_BINARY;
+        $this->ftpUsePassive = true;
+    }
+
+    /**
+     * @param bool $ftpUsePassive
+     */
+    public function setFtpUsePassive($ftpUsePassive)
+    {
+        $this->ftpUsePassive = $ftpUsePassive;
     }
 
     /**
@@ -79,6 +89,26 @@ class LibFTP
     }
 
     /**
+     * @param string $filename
+     * @param string $remotePath
+     * @param bool $useSSL
+     * @return bool
+     */
+    public function sendFileToFTP($filename, $remotePath, $useSSL = false)
+    {
+        $mode = $this->ftpMode;
+        return $this->handleRequest(function ($connection, &$error = null) use ($filename, $remotePath, $mode) {
+            $result = ftp_put($connection, $remotePath, $filename, $mode);
+            if (!$result) {
+                //throw new BaseCodedException("FTP PUT Failed",BaseCodedException::DEFAULT_ERROR);
+                $error = "FTP PUT Failed";
+                return false;
+            }
+            return true;
+        }, $useSSL);
+    }
+
+    /**
      * You can do any thing on FTP based on the connection established.
      * Parameter `$requestAction` would be as callable instance,
      * With definition of `boolean function($connection,&$error=null)`.
@@ -99,7 +129,7 @@ class LibFTP
         }
         try {
             $auth_passed = ftp_login($connection, $this->ftpUsername, $this->ftpPassword);
-            ftp_pasv($connection, true);
+            ftp_pasv($connection, $this->ftpUsePassive);
             if (!$auth_passed) {
                 throw new BaseCodedException("FTP Login Failed", BaseCodedException::USER_NOT_PRIVILEGED);
             }
@@ -116,26 +146,6 @@ class LibFTP
             ftp_close($connection);
             return false;
         }
-    }
-
-    /**
-     * @param string $filename
-     * @param string $remotePath
-     * @param bool $useSSL
-     * @return bool
-     */
-    public function sendFileToFTP($filename, $remotePath, $useSSL = false)
-    {
-        $mode = $this->ftpMode;
-        return $this->handleRequest(function ($connection, &$error = null) use ($filename, $remotePath, $mode) {
-            $result = ftp_put($connection, $remotePath, $filename, $mode);
-            if (!$result) {
-                //throw new BaseCodedException("FTP PUT Failed",BaseCodedException::DEFAULT_ERROR);
-                $error = "FTP PUT Failed";
-                return false;
-            }
-            return true;
-        }, $useSSL);
     }
 
     /**

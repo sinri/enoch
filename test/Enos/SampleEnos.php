@@ -11,9 +11,14 @@ namespace sinri\enoch\test\Enos;
 
 use sinri\enoch\core\Enos;
 use sinri\enoch\core\LibLog;
+use sinri\enoch\helper\CommonHelper;
 
 class SampleEnos extends Enos
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
      * @return LibLog
@@ -24,6 +29,11 @@ class SampleEnos extends Enos
         // If you run this under CLI, no target file decided, use echo;
         // If you still want to write log into file directly, define a correct LigLog instance.
         return new LibLog();
+    }
+
+    protected function loadConfig()
+    {
+        return $this->readConfig(['actions']);
     }
 
     /**
@@ -44,7 +54,7 @@ class SampleEnos extends Enos
         if ($keyChain === null) {
             return $config;
         }
-        return $this->helper->safeReadNDArray($config, $keyChain, $default);
+        return CommonHelper::safeReadNDArray($config, $keyChain, $default);
     }
 
     public function actionStepA()

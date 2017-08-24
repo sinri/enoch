@@ -16,7 +16,7 @@ use sinri\enoch\mvc\BaseCodedException;
 class CommonHelper
 {
     /**
-     * 按照PSR-0规范
+     * 按照PSR-0规范，不过PSR-4看起来也是支持的
      * @since 2.0.0 turn to static
      * @param string $class_name such as sinri\enoch\test\routing\controller\SampleHandler
      * @param string $base_namespace such as sinri\enoch
@@ -34,7 +34,6 @@ class CommonHelper
         }
         return null;
     }
-
 
     const REQUEST_NO_ERROR = 0;
     const REQUEST_FIELD_NOT_FOUND = 1;
