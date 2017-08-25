@@ -128,6 +128,38 @@ class CommonHelper
     }
 
     /**
+     * @param $target
+     * @param $name
+     * @param null $default
+     * @param null $regex
+     * @param int $error
+     * @return null
+     */
+    public static function safeReadObject($target, $name, $default = null, $regex = null, &$error = 0)
+    {
+        $error = self::REQUEST_NO_ERROR;
+
+        if (empty($target) || !is_object($target)) {
+            $error = self::REQUEST_SOURCE_ERROR;
+            return $default;
+        }
+
+        if (!isset($target->$name)) {
+            $error = self::REQUEST_FIELD_NOT_FOUND;
+            return $default;
+        }
+        $value = $target->$name;
+        if ($regex === null) {
+            return $value;
+        }
+        if (!preg_match($regex, $value)) {
+            $error = self::REQUEST_REGEX_NOT_MATCH;
+            return $default;
+        }
+        return $value;
+    }
+
+    /**
      * @since 2.0.0 turn to static
      * @param $method
      * @param $url
