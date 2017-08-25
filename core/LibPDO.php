@@ -232,12 +232,36 @@ class LibPDO
 
     /**
      * @param $string
-     * @param int $parameterType
+     * @param int $parameterType \PDO::PARAM_STR or \PDO::PARAM_INT
      * @return string
      */
     public function quote($string, $parameterType = \PDO::PARAM_STR)
     {
+        if (!$this->pdo) {
+            if ($parameterType == \PDO::PARAM_INT) {
+                return intval($string);
+            }
+            return self::dryQuote($string);
+        }
         return $this->pdo->quote($string, $parameterType);
+    }
+
+    /**
+     * @since 2.1.11
+     * @param $inp
+     * @return array|mixed
+     */
+    public static function dryQuote($inp)
+    {
+        if (is_array($inp))
+            return array_map([__CLASS__, __METHOD__], $inp);
+
+        if (!empty($inp) && is_string($inp)) {
+            $x = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $inp);
+            return "'{$x}'";
+        }
+
+        return $inp;
     }
 
     /**
@@ -334,5 +358,117 @@ class LibPDO
     public function getAffectedRowCount($statement)
     {
         return $statement->rowCount();
+    }
+
+    /**
+     * 比PDO更加丧心病狂的SQL模板
+     * @since 2.1.11
+     *  Sample SQL:
+     * select key_field,value,`?`
+     * from `?`.`?`
+     * where key_field in (?)
+     * and status = ?
+     * limit [?] , [?]
+     *  RULE:
+     * (1) `?` => $p
+     * (2)  ?  => quote($p)
+     * (3) (?) => (quote($p[]),...)
+     * (4) [?] => integer_value($p)
+     * (5) {?} => float_value($p)
+     * @param $template
+     * @param array $parameters
+     * @return string
+     * @throws BaseCodedException
+     */
+    public function safeBuildSQL($template, $parameters = [])
+    {
+        $count = preg_match_all('/\?|`\?`|\(\?\)|\[\?\]|\{\?\}/', $template, $matches, PREG_OFFSET_CAPTURE);
+        //echo json_encode($count).PHP_EOL;print_r($matches);
+        if ($count === 0) {
+            return $template;
+        }
+        if (!$count) {
+            throw new BaseCodedException("The sql template is not correct.");
+        }
+        if ($count != count($parameters)) {
+            throw new BaseCodedException("The sql template has not correct number of parameters.");
+        }
+
+        $parts = [];
+        $currentIndex = 0;
+        for ($x = 0; $x < $count; $x++) {
+            $sought = $matches[0][$x];
+            $keyword = $sought[0];
+            $index = $sought[1];
+
+            if ($index != $currentIndex) {
+                $piece = substr($template, $currentIndex, $index - $currentIndex);
+                //echo __METHOD__.'@'.__LINE__." piece: ".$piece." // ".json_encode([$currentIndex,($index - $currentIndex)]).PHP_EOL;
+                $parts[] = $piece;
+                $currentIndex = $index;
+                //echo __METHOD__.'@'.__LINE__." current index -> ".$currentIndex.PHP_EOL;
+            }
+            $parts[] = $keyword;
+            $currentIndex = $currentIndex + strlen($keyword);
+            //echo __METHOD__.'@'.__LINE__." piece: ".$keyword.PHP_EOL;
+            //echo __METHOD__.'@'.__LINE__." current index -> ".$currentIndex.PHP_EOL;
+        }
+        if ($currentIndex < count($template)) {
+            $piece = substr($template, $currentIndex);
+            $parts[] = $piece;
+            //echo __METHOD__.'@'.__LINE__." piece: ".$piece.PHP_EOL;
+        }
+
+        //echo json_encode($parts).PHP_EOL;
+
+        $sql = "";
+        $ptr = 0;
+        foreach ($parts as $part) {
+            switch ($part) {
+                // RULE:
+                // (1) `?` => $p
+                case '`?`': {
+                    $sql .= '`' . $parameters[$ptr] . '`';
+                    $ptr++;
+                }
+                    break;
+                // (2)  ?  => quote($p)
+                case '?': {
+                    $sql .= $this->quote($parameters[$ptr]);
+                    $ptr++;
+                }
+                    break;
+                // (3) (?) => (quote($p[]),...)
+                case '(?)': {
+                    if (is_array($parameters[$ptr])) {
+                        $group = [];
+                        foreach ($parameters[$ptr] as $object) {
+                            $group[] = $this->quote($object);
+                        }
+                        $sql .= '(' . implode(",", $group) . ')';
+                    } else {
+                        $sql .= '(' . $parameters[$ptr] . ')';
+                    }
+                    $ptr++;
+                }
+                    break;
+                // (4) [?] => intval($p)
+                case '[?]': {
+                    $sql .= intval($parameters[$ptr], 10);
+                    $ptr++;
+                }
+                    break;
+                // (5) {?} => floatval($p)
+                case '{?}': {
+                    $sql .= floatval($parameters[$ptr]);
+                    $ptr++;
+                }
+                    break;
+                default:
+                    $sql .= $part;
+            }
+        }
+
+        return $sql;
     }
 }

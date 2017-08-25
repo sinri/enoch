@@ -13,6 +13,7 @@ NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 ## 2.1.11
 
 Add `safeReadObject` to `CommonHelper`.
+Add `dryQuote` and `safeBuildSQL` to `LibPDO`.
 
 ## 2.1.10
 
