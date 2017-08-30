@@ -8,6 +8,10 @@ Stable Release Version on Packagist:
 
 # Changing Note
 
+## 1.5.5
+
+Update `LibSFTP` and `LibFTP`.
+
 ## 1.5.4
 
 Added `jsonPost` to LibRequest to hand content type `application/json`.
