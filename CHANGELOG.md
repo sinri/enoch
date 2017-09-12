@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.12
+
+Fix #8 : Ignore Level for LibLog.
+
 ## 2.1.11
 
 Add `safeReadObject` to `CommonHelper`.

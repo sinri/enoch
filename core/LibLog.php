@@ -8,6 +8,8 @@
 
 namespace sinri\enoch\core;
 
+use sinri\enoch\helper\CommonHelper;
+
 
 /**
  * Class LibLog
@@ -26,10 +28,13 @@ class LibLog
     protected $targetLogDir = null;
     protected $prefix = 'enoch';
 
+    protected $ignoreLevel;
+
     function __construct($targetLogDir = null, $prefix = '')
     {
         $this->targetLogDir = $targetLogDir;
         $this->prefix = $prefix;
+        $this->ignoreLevel = self::LOG_DEBUG;
     }
 
     /**
@@ -49,6 +54,14 @@ class LibLog
     }
 
     /**
+     * @param string $ignoreLevel
+     */
+    public function setIgnoreLevel($ignoreLevel)
+    {
+        $this->ignoreLevel = $ignoreLevel;
+    }
+
+    /**
      * @return bool
      */
     public function isUseColoredTerminalOutput()
@@ -65,6 +78,26 @@ class LibLog
     }
 
     /**
+     * @param $level
+     * @return bool
+     */
+    protected function shouldIgnoreThisLog($level)
+    {
+        static $levelValue = [
+            self::LOG_DEBUG => 0,
+            self::LOG_INFO => 1,
+            self::LOG_WARNING => 2,
+            self::LOG_ERROR => 3,
+        ];
+        $coming = CommonHelper::safeReadArray($levelValue, $level, 4);
+        $limit = CommonHelper::safeReadArray($levelValue, $this->ignoreLevel, 0);
+        if ($coming < $limit) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * This could be overrode for customized log output
      * @param $level
      * @param $message
@@ -72,6 +105,9 @@ class LibLog
      */
     public function log($level, $message, $object = '')
     {
+        if ($this->shouldIgnoreThisLog($level)) {
+            return;
+        }
         $msg = $this->generateLog($level, $message, $object);
         $target_file = $this->decideTargetFile();
         if (!$target_file) {
