@@ -76,7 +76,17 @@ abstract class AbstractDataModel
         } elseif (is_array($conditions)) {
             $c = [];
             foreach ($conditions as $key => $value) {
-                $c[] = " `{$key}`=" . $this->db()->quote($value) . " ";
+                if (is_array($value)) {
+                    // here @since 2.1.14
+                    $x = [];
+                    foreach ($value as $value_piece) {
+                        $x[] = $this->db()->quote($value_piece);
+                    }
+                    $x = implode(",", $x);
+                    $c[] = " `{$key}` in (" . $x . ") ";
+                } else {
+                    $c[] = " `{$key}`=" . $this->db()->quote($value) . " ";
+                }
             }
             $condition_sql = implode($glue, $c);
         }

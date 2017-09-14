@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.14
+
+In AbstractDataModel, use an array as condition map value would lead to en IN clause for SQL.
+
 ## 2.1.13
 
 Now by default under CLI would not print to file but to standard output directly. 
