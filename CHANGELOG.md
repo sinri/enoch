@@ -10,6 +10,11 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.13
+
+Now by default under CLI would not print to file but to standard output directly. 
+But you can configure it.
+
 ## 2.1.12
 
 Fix #8 : Ignore Level for LibLog.

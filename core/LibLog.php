@@ -30,11 +30,14 @@ class LibLog
 
     protected $ignoreLevel;
 
+    protected $forceUseStandardOutputInCLI = true;
+
     function __construct($targetLogDir = null, $prefix = '')
     {
         $this->targetLogDir = $targetLogDir;
         $this->prefix = $prefix;
         $this->ignoreLevel = self::LOG_DEBUG;
+        $this->forceUseStandardOutputInCLI = true;
     }
 
     /**
@@ -161,6 +164,9 @@ class LibLog
     public function decideTargetFile()
     {
         if (empty($this->targetLogDir)) {
+            return false;
+        }
+        if ($this->forceUseStandardOutputInCLI && LibRequest::isCLI()) {
             return false;
         }
         if (!file_exists($this->targetLogDir)) {
