@@ -431,20 +431,20 @@ class LibPDO
 
             if ($index != $currentIndex) {
                 $piece = substr($template, $currentIndex, $index - $currentIndex);
-//                $this->debug(__METHOD__.'@'.__LINE__." piece: ".$piece,[$currentIndex,($index - $currentIndex)]);
+                //$this->debug(__METHOD__.'@'.__LINE__." piece: ".$piece,[$currentIndex,($index - $currentIndex)]);
                 $parts[] = $piece;
                 $currentIndex = $index;
-//                $this->debug(__METHOD__.'@'.__LINE__." current index -> ".$currentIndex);
+                //$this->debug(__METHOD__.'@'.__LINE__." current index -> ".$currentIndex);
             }
             $parts[] = $keyword;
             $currentIndex = $currentIndex + strlen($keyword);
-//            $this->debug(__METHOD__.'@'.__LINE__." piece: ",$keyword);
-//            $this->debug(__METHOD__.'@'.__LINE__." current index -> ",$currentIndex);
+            //$this->debug(__METHOD__.'@'.__LINE__." piece: ",$keyword);
+            //$this->debug(__METHOD__.'@'.__LINE__." current index -> ",$currentIndex);
         }
         if ($currentIndex < strlen($template)) {
             $piece = substr($template, $currentIndex);
             $parts[] = $piece;
-            $this->debug(__METHOD__ . '@' . __LINE__ . " piece: ", $piece);
+            //$this->debug(__METHOD__ . '@' . __LINE__ . " piece: ", $piece);
         }
 
         $this->debug("parts", $parts);
