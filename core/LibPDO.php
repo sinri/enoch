@@ -20,11 +20,20 @@ class LibPDO
     protected $pdo;
 
     /**
+     * @var LibLog
+     */
+    protected $logger;
+
+    /**
      * LibMySQL constructor.
      * @param null|array $params
      */
     public function __construct($params = null)
     {
+        $this->logger = null;
+        // debug
+        // $this->logger=new LibLog();
+
         if (empty($params)) {
             return;
         }
@@ -76,6 +85,24 @@ class LibPDO
     public function getPdo()
     {
         return $this->pdo;
+    }
+
+    /**
+     * @param null|LibLog $logger
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param $message
+     * @param string $object
+     */
+    protected function debug($message, $object = '')
+    {
+        if (!$this->logger) return;
+        $this->logger->log(LibLog::LOG_DEBUG, $message, $object);
     }
 
     /**
@@ -382,8 +409,9 @@ class LibPDO
      */
     public function safeBuildSQL($template, $parameters = [])
     {
+        $this->debug($template, $parameters);
         $count = preg_match_all('/\?|`\?`|\(\?\)|\[\?\]|\{\?\}/', $template, $matches, PREG_OFFSET_CAPTURE);
-        //echo json_encode($count).PHP_EOL;print_r($matches);
+        $this->debug("preg_match_all count=" . json_encode($count), $matches);
         if ($count === 0) {
             return $template;
         }
@@ -403,23 +431,23 @@ class LibPDO
 
             if ($index != $currentIndex) {
                 $piece = substr($template, $currentIndex, $index - $currentIndex);
-                //echo __METHOD__.'@'.__LINE__." piece: ".$piece." // ".json_encode([$currentIndex,($index - $currentIndex)]).PHP_EOL;
+//                $this->debug(__METHOD__.'@'.__LINE__." piece: ".$piece,[$currentIndex,($index - $currentIndex)]);
                 $parts[] = $piece;
                 $currentIndex = $index;
-                //echo __METHOD__.'@'.__LINE__." current index -> ".$currentIndex.PHP_EOL;
+//                $this->debug(__METHOD__.'@'.__LINE__." current index -> ".$currentIndex);
             }
             $parts[] = $keyword;
             $currentIndex = $currentIndex + strlen($keyword);
-            //echo __METHOD__.'@'.__LINE__." piece: ".$keyword.PHP_EOL;
-            //echo __METHOD__.'@'.__LINE__." current index -> ".$currentIndex.PHP_EOL;
+//            $this->debug(__METHOD__.'@'.__LINE__." piece: ",$keyword);
+//            $this->debug(__METHOD__.'@'.__LINE__." current index -> ",$currentIndex);
         }
-        if ($currentIndex < count($template)) {
+        if ($currentIndex < strlen($template)) {
             $piece = substr($template, $currentIndex);
             $parts[] = $piece;
-            //echo __METHOD__.'@'.__LINE__." piece: ".$piece.PHP_EOL;
+            $this->debug(__METHOD__ . '@' . __LINE__ . " piece: ", $piece);
         }
 
-        //echo json_encode($parts).PHP_EOL;
+        $this->debug("parts", $parts);
 
         $sql = "";
         $ptr = 0;
