@@ -62,12 +62,31 @@ class LibSqlite3 extends SQLite3
 
     /**
      * @param $query
+     * @param array $values
+     * @return bool|\SQLite3Result
+     */
+    public function safeExecute($query, $values = [])
+    {
+        $stmt = $this->prepare($query);
+        if (!$stmt) {
+            return false;
+        }
+        foreach ($values as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        $result = $stmt->execute();
+        return $result;
+    }
+
+    /**
+     * @param $query
+     * @param array $values
      * @param int $mode
      * @return array
      */
-    public function getAll($query, $mode = SQLITE3_ASSOC)
+    public function safeReadAll($query, $values = [], $mode = SQLITE3_ASSOC)
     {
-        $result = $this->query($query);
+        $result = $this->safeExecute($query, $values);
         $rows = [];
         while ($array = $result->fetchArray($mode)) {
             $rows[] = $array;
@@ -78,11 +97,12 @@ class LibSqlite3 extends SQLite3
 
     /**
      * @param $query
+     * @param array $values
      * @return array
      */
-    public function getCol($query)
+    public function safeReadCol($query, $values = [])
     {
-        $result = $this->query($query);
+        $result = $this->safeExecute($query, $values);
         $cols = [];
         while ($array = $result->fetchArray(SQLITE3_NUM)) {
             $cols[] = $array[0];
@@ -93,11 +113,12 @@ class LibSqlite3 extends SQLite3
 
     /**
      * @param $query
+     * @param array $values
      * @return array
      */
-    public function getRow($query)
+    public function safeReadRow($query, $values = [])
     {
-        $result = $this->query($query);
+        $result = $this->safeExecute($query, $values);
         $array = $result->fetchArray(SQLITE3_ASSOC);
         $result->finalize();
         return $array;
@@ -105,11 +126,12 @@ class LibSqlite3 extends SQLite3
 
     /**
      * @param $query
+     * @param array $values
      * @return mixed
      */
-    public function getOne($query)
+    public function safeReadOne($query, $values = [])
     {
-        $result = $this->query($query);
+        $result = $this->safeExecute($query, $values);
         $array = $result->fetchArray(SQLITE3_NUM);
         $result->finalize();
         return $array[0];
