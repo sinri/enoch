@@ -19,19 +19,28 @@ use sinri\enoch\core\LibResponse;
 class SethController implements SethInterface
 {
     protected $request_uuid;
+    protected $shouldSendJsonHeader = true;
 
     public function __construct($initData = null)
     {
         $this->request_uuid = uniqid();
     }
 
-    protected function _sayOK($data = "")
+    protected function _sayOK($data = "", $http_code = 200)
     {
+        if ($this->shouldSendJsonHeader) {
+            header("Content-Type: application/json");
+        }
+        http_response_code($http_code);
         LibResponse::jsonForAjax(LibResponse::AJAX_JSON_CODE_OK, $data);
     }
 
-    protected function _sayFail($error = "")
+    protected function _sayFail($error = "", $http_code = 200)
     {
+        if ($this->shouldSendJsonHeader) {
+            header("Content-Type: application/json");
+        }
+        http_response_code($http_code);
         LibResponse::jsonForAjax(LibResponse::AJAX_JSON_CODE_FAIL, $error);
     }
 }

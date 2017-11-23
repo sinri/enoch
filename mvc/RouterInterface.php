@@ -86,11 +86,12 @@ abstract class RouterInterface
      * @param array $errorData
      * @param int $http_code @since 1.2.8
      */
-    public function handleRouteError($errorData = [], $http_code = 200)
+    public function handleRouteError($errorData = [], $http_code = 404)
     {
         if ($http_code == 403) {
             header('HTTP/1.0 403 Forbidden');
         }
+        http_response_code($http_code);
         if (is_string($this->error_handler) && file_exists($this->error_handler)) {
             $this->response->displayPage($this->error_handler, $errorData);
             return;

@@ -10,6 +10,12 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.16
+
+Support library for LibSqlite3.
+Add http status code and configurable `application/json` header in `_sayOK` and `_sayFail` methods of SethController.
+Make http status code 404 as default for Lamech Route Not Matchable situation.
+
 ## 2.1.15
 
 Fix Issue [#9](https://github.com/sinri/enoch/issues/9) .
