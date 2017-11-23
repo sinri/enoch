@@ -345,7 +345,7 @@ class Lamech
             }
             call_user_func_array($callable, $params);
         } catch (\Exception $exception) {
-            $http_code = 200;
+            $http_code = 404;
             if ($exception->getCode() == BaseCodedException::REQUEST_FILTER_REJECT) {
                 $http_code = 403;
             }

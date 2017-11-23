@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.17
+
+Refine: Make http status code 404 as default for Lamech Route Not Matchable situation. 
+
 ## 2.1.16
 
 Support library for LibSqlite3.
