@@ -32,12 +32,21 @@ class LibLog
 
     protected $forceUseStandardOutputInCLI = true;
 
-    function __construct($targetLogDir = null, $prefix = '')
+
+    function __construct($targetLogDir = null, $prefix = '', $forceUseStandardOutputInCLI = true)
     {
         $this->targetLogDir = $targetLogDir;
         $this->prefix = $prefix;
         $this->ignoreLevel = self::LOG_DEBUG;
-        $this->forceUseStandardOutputInCLI = true;
+        $this->forceUseStandardOutputInCLI = $forceUseStandardOutputInCLI;
+    }
+
+    /**
+     * @param bool $forceUseStandardOutputInCLI
+     */
+    public function setForceUseStandardOutputInCLI($forceUseStandardOutputInCLI)
+    {
+        $this->forceUseStandardOutputInCLI = $forceUseStandardOutputInCLI;
     }
 
     /**
