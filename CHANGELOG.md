@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.18
+
+Make `forceUseStandardOutputInCLI` settable for LibLog.
+
 ## 2.1.17
 
 Refine: Make http status code 404 as default for Lamech Route Not Matchable situation. 
