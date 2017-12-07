@@ -54,7 +54,6 @@ class RedisQueue implements QueueInterface
 
     /**
      * @param null|int $index
-     * @return bool
      * @throws BaseCodedException
      */
     public function removeQueueItem($index = null)

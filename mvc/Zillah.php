@@ -29,6 +29,12 @@ class Zillah extends RouterInterface
 
     const ROUTE_PARSED_PARAMETERS = "PARSED";// only used in sought result
 
+    /**
+     * @param $path
+     * @param $method
+     * @return bool
+     * @throws BaseCodedException
+     */
     public function seekRoute($path, $method)
     {
         // a possible fix in 2.1.4
@@ -38,6 +44,12 @@ class Zillah extends RouterInterface
         return $this->seekRouteByTree($path, $method);
     }
 
+    /**
+     * @param $path
+     * @param $method
+     * @return bool
+     * @throws BaseCodedException
+     */
     protected function seekRouteByTree($path, $method)
     {
         if ($this->debug) {
@@ -58,6 +70,14 @@ class Zillah extends RouterInterface
         );
     }
 
+    /**
+     * @param $tree
+     * @param $keychain
+     * @param $method
+     * @param array $params
+     * @return bool
+     * @throws BaseCodedException
+     */
     protected function seekRouteByTreeForKeychain($tree, $keychain, $method, &$params = [])
     {
         if ($this->debug) {

@@ -99,6 +99,8 @@ class LibMail
      * 6. subject: String
      * 7. html: Boolean true for default
      * 8. body: String
+     *
+     * @throws \sinri\smallphpmailer\library\phpmailerException
      */
     public function sendMail($params)
     {
@@ -151,21 +153,27 @@ class LibMail
     }
 
     /**
+     * @param null $error
      * @return LibMail
      */
-    public function prepareSMTP()
+    public function prepareSMTP(&$error = null)
     {
-        $this->mail = new PHPMailer();
-        $this->mail->Host = $this->smtpInfo['host'];// Specify main and backup SMTP servers
-        $this->mail->SMTPAuth = $this->smtpInfo['smtp_auth'];// Enable SMTP authentication
-        $this->mail->Username = $this->smtpInfo['username'];// SMTP username
-        $this->mail->Password = $this->smtpInfo['password'];// SMTP password
-        $this->mail->SMTPSecure = $this->smtpInfo['smtp_secure'];// Enable TLS encryption, `ssl` also accepted
-        $this->mail->Port = $this->smtpInfo['port'];// TCP port to connect to
+        try {
+            $this->mail = new PHPMailer();
+            $this->mail->Host = $this->smtpInfo['host'];// Specify main and backup SMTP servers
+            $this->mail->SMTPAuth = $this->smtpInfo['smtp_auth'];// Enable SMTP authentication
+            $this->mail->Username = $this->smtpInfo['username'];// SMTP username
+            $this->mail->Password = $this->smtpInfo['password'];// SMTP password
+            $this->mail->SMTPSecure = $this->smtpInfo['smtp_secure'];// Enable TLS encryption, `ssl` also accepted
+            $this->mail->Port = $this->smtpInfo['port'];// TCP port to connect to
 
-        $this->mail->setFrom($this->smtpInfo['username'], $this->smtpInfo['display_name']);
+            $this->mail->setFrom($this->smtpInfo['username'], $this->smtpInfo['display_name']);
 
-        $this->mail->isSMTP();
+            $this->mail->isSMTP();
+        } catch (\Exception $exception) {
+            // who care?
+            $error = $exception->getMessage();
+        }
         return $this;
     }
 
@@ -217,6 +225,7 @@ class LibMail
      * @param $filepath
      * @param string $name
      * @return LibMail
+     * @throws \sinri\smallphpmailer\library\phpmailerException
      */
     public function addAttachment($filepath, $name = '')
     {
@@ -262,7 +271,11 @@ class LibMail
      */
     public function finallySend(&$error = null)
     {
-        $done = $this->mail->send();
+        try {
+            $done = $this->mail->send();
+        } catch (\Exception $exception) {
+            $done = false;
+        }
         $error = $this->mail->ErrorInfo;
         return $done;
     }

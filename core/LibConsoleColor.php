@@ -33,16 +33,26 @@ class LibConsoleColor
         // do nothing
     }
 
+    /**
+     * @param $text
+     * @param $colorCode
+     * @return string
+     */
     public function getColorWord($text, $colorCode)
     {
         $color_text = $this->getColorStart($colorCode) . $text . $this->getColorEnd();
         return $color_text;
     }
 
+    /**
+     * @param $colorCode
+     * @return string
+     */
     protected function getColorStart($colorCode)
     {
         if (!preg_match('/^\d\d?;\d\d?$/', $colorCode)) {
-            throw new \Exception("Not a standard color code.");
+            //throw new \Exception("Not a standard color code.");
+            $colorCode = self::Blue;
         }
         return "\033[" . $colorCode . "m";
     }
@@ -62,6 +72,10 @@ class LibConsoleColor
         return self::$instance;
     }
 
+    /**
+     * @param $text
+     * @param $colorCode
+     */
     public static function output($text, $colorCode)
     {
         echo self::getInstance()->getColorWord($text, $colorCode);

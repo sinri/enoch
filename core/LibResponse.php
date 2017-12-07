@@ -51,6 +51,7 @@ class LibResponse
      * @param string $message
      * @param null $exception
      * @param null $viewPath
+     * @throws BaseCodedException
      */
     public static function errorPage($message = '', $exception = null, $viewPath = null)
     {

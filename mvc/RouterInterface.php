@@ -88,18 +88,21 @@ abstract class RouterInterface
      */
     public function handleRouteError($errorData = [], $http_code = 404)
     {
-        http_response_code($http_code);
-//        if ($http_code == 403) {
-//            header('HTTP/1.0 403 Forbidden');
-//        }
-        if (is_string($this->error_handler) && file_exists($this->error_handler)) {
-            $this->response->displayPage($this->error_handler, $errorData);
-            return;
-        } elseif (is_callable($this->error_handler)) {
-            call_user_func_array($this->error_handler, [$errorData]);
-            return;
+        try {
+            http_response_code($http_code);
+            if (is_string($this->error_handler) && file_exists($this->error_handler)) {
+                $this->response->displayPage($this->error_handler, $errorData);
+                return;
+            } elseif (is_callable($this->error_handler)) {
+                call_user_func_array($this->error_handler, [$errorData]);
+                return;
+            }
+            $this->response->errorPage(json_encode($errorData));
+        } catch (\Exception $exception) {
+            echo $exception->getMessage() . PHP_EOL;
+            echo $exception->getTraceAsString();
         }
-        $this->response->errorPage(json_encode($errorData));
+
     }
 
     abstract public function seekRoute($path, $method);

@@ -32,7 +32,6 @@ class Adah extends RouterInterface
 
     /**
      * Adah constructor.
-     * @param string $type TREE | REGEX
      */
     public function __construct()
     {
@@ -118,6 +117,12 @@ class Adah extends RouterInterface
         $this->registerRoute(null, $path, $callback, $middleware);
     }
 
+    /**
+     * @param $path
+     * @param $method
+     * @return mixed
+     * @throws BaseCodedException
+     */
     public function seekRoute($path, $method)
     {
         // a possible fix in 2.1.4
@@ -195,7 +200,6 @@ class Adah extends RouterInterface
      * @param string $basePath controller/base/
      * @param string $controllerClass app/controller/controllerA
      * @param null|MiddlewareInterface $middleware as is
-     * @throws BaseCodedException
      */
     public function loadController($basePath, $controllerClass, $middleware = null)
     {
@@ -218,7 +222,10 @@ class Adah extends RouterInterface
                         $came_in_default_area = true;
                     } elseif ($came_in_default_area) {
                         //non-default after default
-                        throw new BaseCodedException("ROUTE SETTING ERROR: required-parameter after non-required-parameter");
+                        if ($this->debug) {
+                            echo ("ROUTE SETTING ERROR: required-parameter after non-required-parameter") . PHP_EOL;
+                        }
+                        return;
                     }
                     $path .= '/{' . $param->name . '}';
                 }
@@ -245,6 +252,12 @@ class Adah extends RouterInterface
      */
     public function loadAllControllersInDirectoryAsCI($directory, $urlBase = '', $controllerNamespaceBase = '', $middleware = '')
     {
+        if (!file_exists($directory) || !is_dir($directory)) {
+            if ($this->debug) {
+                echo __METHOD__ . " warning: this is not a direcoty: " . $directory . PHP_EOL;
+            }
+            return;
+        }
         if ($handle = opendir($directory)) {
             if (
                 $this->default_controller_name

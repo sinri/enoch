@@ -406,7 +406,7 @@ class LibRequest
 
 
     /**
-     * @param ip
+     * @param string $ip
      * @return string IP_TYPE_V?
      */
     public static function ipVersion($ip)

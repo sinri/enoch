@@ -73,9 +73,6 @@ class Baruch
         $this->gateway = $gateway;
     }
 
-    /**
-     * @throws BaseCodedException
-     */
     public function handleWiki()
     {
         $components = $this->getPathComponents();
@@ -96,7 +93,7 @@ class Baruch
         } elseif ($act === 'index') {
             $this->actIndex();
         } else {
-            throw new BaseCodedException("no such act type");
+            echo("no such act type");
         }
     }
 
@@ -208,13 +205,12 @@ class Baruch
     /**
      * @param $file
      * @param $data
-     * @throws BaseCodedException
      */
     protected function actWrite($file, $data)
     {
         if (!file_exists($file)) {
             if (!preg_match('/^(.+)\/[^\/]*\.md$/', $file, $matches)) {
-                throw new BaseCodedException('no dir found');
+                $this->response->jsonForAjax(LibResponse::AJAX_JSON_CODE_FAIL, 'not a correct path to write');
             }
             if (isset($matches[1])) {
                 @mkdir($matches[1], 0777, true);

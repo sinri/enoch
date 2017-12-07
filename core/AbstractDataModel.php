@@ -96,6 +96,7 @@ abstract class AbstractDataModel
     /**
      * @param array|string $conditions
      * @return array|bool
+     * @throws \Exception
      */
     public function selectRow($conditions)
     {
@@ -115,6 +116,7 @@ abstract class AbstractDataModel
      * @param int $limit
      * @param int $offset
      * @return array|bool
+     * @throws \Exception
      */
     public function selectRows($conditions, $limit = 0, $offset = 0)
     {
@@ -138,6 +140,7 @@ abstract class AbstractDataModel
     /**
      * @param array|string $conditions
      * @return int
+     * @throws \Exception
      */
     public function selectRowsForCount($conditions)
     {
@@ -159,6 +162,7 @@ abstract class AbstractDataModel
      * @param int $offset
      * @param null|string $refKey normally PK or UK if you want to get map rather than list
      * @return array
+     * @throws \Exception
      */
     public function selectRowsWithSort($conditions, $sort = null, $limit = 0, $offset = 0, $refKey = null)
     {
@@ -192,6 +196,7 @@ abstract class AbstractDataModel
      * @param array $data
      * @param null $pk
      * @return bool|string
+     * @throws \Exception
      */
     public function insert($data, $pk = null)
     {
@@ -211,6 +216,7 @@ abstract class AbstractDataModel
     /**
      * @param array $data
      * @return bool|string
+     * @throws \Exception
      */
     public function replace($data)
     {
@@ -231,6 +237,7 @@ abstract class AbstractDataModel
      * @param $conditions
      * @param $data
      * @return int
+     * @throws \Exception
      */
     public function update($conditions, $data)
     {
@@ -247,6 +254,7 @@ abstract class AbstractDataModel
     /**
      * @param $conditions
      * @return int
+     * @throws \Exception
      */
     public function delete($conditions)
     {
