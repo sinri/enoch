@@ -32,9 +32,11 @@ class MiddlewareInterface
      * @param $method
      * @param $params
      * @param null $preparedData @since 1.3.6
+     * @param int $responseCode @since 2.2.0
+     * @param null $error @since 2.2.0
      * @return bool
      */
-    public function shouldAcceptRequest($path, $method, $params, &$preparedData = null)
+    public function shouldAcceptRequest($path, $method, $params, &$preparedData = null, &$responseCode = 200, &$error = null)
     {
         return true;
     }

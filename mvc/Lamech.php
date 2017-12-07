@@ -305,6 +305,8 @@ class Lamech
     public function handleRequestForWeb()
     {
         try {
+            $responseCode = 200;
+
             $this->dividePath($path_string);
             $route = $this->router->seekRoute($path_string, LibRequest::getRequestMethod());
             $callable = CommonHelper::safeReadArray($route, Adah::ROUTE_PARAM_CALLBACK);
@@ -319,11 +321,11 @@ class Lamech
             $preparedData = null;
             foreach ($middleware_chain as $middleware) {
                 $middleware_instance = MiddlewareInterface::MiddlewareFactory($middleware);
-                $mw_passed = $middleware_instance->shouldAcceptRequest($path_string, LibRequest::getRequestMethod(), $params, $preparedData);
+                $mw_passed = $middleware_instance->shouldAcceptRequest($path_string, LibRequest::getRequestMethod(), $params, $preparedData, $responseCode, $middlewareError);
                 if (!$mw_passed) {
                     throw new BaseCodedException(
-                        "Rejected by Middleware " . $middleware,
-                        BaseCodedException::REQUEST_FILTER_REJECT
+                        ($middlewareError === null ? "Rejected by Middleware " . $middleware : $middlewareError),
+                        $responseCode
                     );
                 }
             }
@@ -345,16 +347,9 @@ class Lamech
             }
             call_user_func_array($callable, $params);
         } catch (\Exception $exception) {
-            $http_code = 404;
-            if ($exception->getCode() == BaseCodedException::REQUEST_FILTER_REJECT) {
-                $http_code = 403;
-            }
             $this->router->handleRouteError(
-                [
-                    "error_code" => $exception->getCode(),
-                    "error_message" => $exception->getMessage(),
-                ],
-                $http_code
+                $exception->getMessage(),
+                $exception->getCode()
             );
             if ($this->debug) {
                 echo "<pre>" . PHP_EOL;
