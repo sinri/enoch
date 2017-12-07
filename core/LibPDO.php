@@ -46,7 +46,9 @@ class LibPDO
 
         $engine = CommonHelper::safeReadArray($params, "engine", "mysql");
 
-        $this->setConnection($engine, $host, $port, $username, $password, $database, $charset);
+        $options = CommonHelper::safeReadArray($params, "options", null);
+
+        $this->setConnection($engine, $host, $port, $username, $password, $database, $charset, $options);
     }
 
     /**
@@ -57,17 +59,23 @@ class LibPDO
      * @param $password
      * @param $database
      * @param string $charset
+     * @param null $options @since 2.1.19
      * @return bool
      */
-    public function setConnection($engine, $host, $port, $username, $password, $database, $charset = 'utf8')
+    public function setConnection($engine, $host, $port, $username, $password, $database, $charset = 'utf8', $options = null)
     {
         $engine = strtolower($engine);
         if ($engine === 'mysql') {
+            if ($options === null) {
+                $options = [
+                    \PDO::ATTR_EMULATE_PREPARES => false
+                ];
+            }
             $this->pdo = new \PDO(
                 'mysql:host=' . $host . ';port=' . $port . ';dbname=' . $database . ';charset=' . $charset,
                 $username,
                 $password,
-                array(\PDO::ATTR_EMULATE_PREPARES => false)
+                $options
             );
             if (!empty($charset)) {
                 $this->pdo->query("set names " . $charset);

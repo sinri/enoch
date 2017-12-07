@@ -10,6 +10,11 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.1.19
+
+Fewer Exceptions;
+Add parameter `options` to method `setConnection` of `LibPDO`. 
+
 ## 2.1.18
 
 Make `forceUseStandardOutputInCLI` settable for LibLog.
