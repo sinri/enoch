@@ -20,7 +20,7 @@ use sinri\smallphpmailer\library\PHPMailer;
  */
 class LibMail
 {
-    private $mail;
+    private $phpMailerInstance;
     private $smtpInfo;
 
     /**
@@ -35,7 +35,7 @@ class LibMail
 
         $this->setUpSMTP($params);
 
-        $this->mail = new PHPMailer();
+        $this->phpMailerInstance = new PHPMailer();
     }
 
     /**
@@ -53,12 +53,20 @@ class LibMail
     }
 
     /**
+     * @return PHPMailer
+     */
+    public function getPhpMailerInstance()
+    {
+        return $this->phpMailerInstance;
+    }
+
+    /**
      * @param int $target 0 for no debug, 4 for full debug
      * @return LibMail
      */
     public function setDebug($target = 0)
     {
-        $this->mail->SMTPDebug = $target;
+        $this->phpMailerInstance->SMTPDebug = $target;
         return $this;
     }
 
@@ -75,7 +83,7 @@ class LibMail
      */
     public function stopSSLVerify()
     {
-        $this->mail->SMTPOptions = array(
+        $this->phpMailerInstance->SMTPOptions = array(
             'ssl' => array(
                 'verify_peer' => false,
                 'verify_peer_name' => false,
@@ -105,7 +113,7 @@ class LibMail
     public function sendMail($params)
     {
         $this->prepareSMTP();
-        $this->mail->isSMTP();
+        $this->phpMailerInstance->isSMTP();
 
         foreach (['to', 'reply_to', 'cc', 'bcc', 'attachment'] as $item_name) {
             if (!isset($params[$item_name])) {
@@ -118,31 +126,56 @@ class LibMail
         }
 
         foreach ($params['to'] as $name => $mail) {
-            $this->mail->addAddress($mail, $name);
+            $this->phpMailerInstance->addAddress($mail, $name);
         }
         foreach ($params['reply_to'] as $name => $mail) {
-            $this->mail->addReplyTo($mail, $name);
+            $this->phpMailerInstance->addReplyTo($mail, $name);
         }
         foreach ($params['cc'] as $name => $mail) {
-            $this->mail->addCC($mail, $name);
+            $this->phpMailerInstance->addCC($mail, $name);
         }
         foreach ($params['bcc'] as $name => $mail) {
-            $this->mail->addBCC($mail, $name);
+            $this->phpMailerInstance->addBCC($mail, $name);
         }
         foreach ($params['attachment'] as $name => $file_path) {
-            $this->mail->addAttachment($file_path, $name);
+            $this->phpMailerInstance->addAttachment($file_path, $name);
         }
 
-        $this->mail->Subject = $params['subject'];
+        $this->phpMailerInstance->Subject = $params['subject'];
 
-        $this->mail->Body = $params['body'];
+        $this->phpMailerInstance->Body = $params['body'];
         if (!isset($params['html']) || $params['html'] === false) {
-            $this->mail->isHTML(true);// Set email format to HTML
-            $this->mail->AltBody = $this->turnHTML2TEXT($params['body']);
+            $this->phpMailerInstance->isHTML(true);// Set email format to HTML
+            $this->phpMailerInstance->AltBody = $this->turnHTML2TEXT($params['body']);
         }
 
-        $done = $this->mail->send();
+        $done = $this->phpMailerInstance->send();
         return $done;
+    }
+
+    /**
+     * @param null $error
+     * @return LibMail
+     */
+    public function prepareSMTP(&$error = null)
+    {
+        try {
+            $this->phpMailerInstance = new PHPMailer();
+            $this->phpMailerInstance->Host = $this->smtpInfo['host'];// Specify main and backup SMTP servers
+            $this->phpMailerInstance->SMTPAuth = $this->smtpInfo['smtp_auth'];// Enable SMTP authentication
+            $this->phpMailerInstance->Username = $this->smtpInfo['username'];// SMTP username
+            $this->phpMailerInstance->Password = $this->smtpInfo['password'];// SMTP password
+            $this->phpMailerInstance->SMTPSecure = $this->smtpInfo['smtp_secure'];// Enable TLS encryption, `ssl` also accepted
+            $this->phpMailerInstance->Port = $this->smtpInfo['port'];// TCP port to connect to
+
+            $this->phpMailerInstance->setFrom($this->smtpInfo['username'], $this->smtpInfo['display_name']);
+
+            $this->phpMailerInstance->isSMTP();
+        } catch (\Exception $exception) {
+            // who care?
+            $error = $exception->getMessage();
+        }
+        return $this;
     }
 
     private function turnHTML2TEXT($html)
@@ -153,38 +186,13 @@ class LibMail
     }
 
     /**
-     * @param null $error
-     * @return LibMail
-     */
-    public function prepareSMTP(&$error = null)
-    {
-        try {
-            $this->mail = new PHPMailer();
-            $this->mail->Host = $this->smtpInfo['host'];// Specify main and backup SMTP servers
-            $this->mail->SMTPAuth = $this->smtpInfo['smtp_auth'];// Enable SMTP authentication
-            $this->mail->Username = $this->smtpInfo['username'];// SMTP username
-            $this->mail->Password = $this->smtpInfo['password'];// SMTP password
-            $this->mail->SMTPSecure = $this->smtpInfo['smtp_secure'];// Enable TLS encryption, `ssl` also accepted
-            $this->mail->Port = $this->smtpInfo['port'];// TCP port to connect to
-
-            $this->mail->setFrom($this->smtpInfo['username'], $this->smtpInfo['display_name']);
-
-            $this->mail->isSMTP();
-        } catch (\Exception $exception) {
-            // who care?
-            $error = $exception->getMessage();
-        }
-        return $this;
-    }
-
-    /**
      * @param $address
      * @param string $name
      * @return LibMail
      */
     public function addReceiver($address, $name = '')
     {
-        $this->mail->addAddress($address, $name);
+        $this->phpMailerInstance->addAddress($address, $name);
         return $this;
     }
 
@@ -195,7 +203,7 @@ class LibMail
      */
     public function addReplyAddress($address, $name)
     {
-        $this->mail->addReplyTo($address, $name);
+        $this->phpMailerInstance->addReplyTo($address, $name);
         return $this;
     }
 
@@ -206,7 +214,7 @@ class LibMail
      */
     public function addCCAddress($address, $name)
     {
-        $this->mail->addCC($address, $name);
+        $this->phpMailerInstance->addCC($address, $name);
         return $this;
     }
 
@@ -217,7 +225,7 @@ class LibMail
      */
     public function addBCCAddress($address, $name)
     {
-        $this->mail->addBCC($address, $name);
+        $this->phpMailerInstance->addBCC($address, $name);
         return $this;
     }
 
@@ -229,7 +237,7 @@ class LibMail
      */
     public function addAttachment($filepath, $name = '')
     {
-        $this->mail->addAttachment($filepath, $name);
+        $this->phpMailerInstance->addAttachment($filepath, $name);
         return $this;
     }
 
@@ -239,7 +247,7 @@ class LibMail
      */
     public function addSubject($subject)
     {
-        $this->mail->Subject = $subject;
+        $this->phpMailerInstance->Subject = $subject;
         return $this;
     }
 
@@ -249,7 +257,7 @@ class LibMail
      */
     public function addTextBody($text)
     {
-        $this->mail->Body = $text;
+        $this->phpMailerInstance->Body = $text;
         return $this;
     }
 
@@ -259,9 +267,9 @@ class LibMail
      */
     public function addHTMLBody($htmlCode)
     {
-        $this->mail->isHTML(true);// Set email format to HTML
-        $this->mail->Body = $htmlCode;
-        $this->mail->AltBody = $this->turnHTML2TEXT($htmlCode);
+        $this->phpMailerInstance->isHTML(true);// Set email format to HTML
+        $this->phpMailerInstance->Body = $htmlCode;
+        $this->phpMailerInstance->AltBody = $this->turnHTML2TEXT($htmlCode);
         return $this;
     }
 
@@ -272,11 +280,11 @@ class LibMail
     public function finallySend(&$error = null)
     {
         try {
-            $done = $this->mail->send();
+            $done = $this->phpMailerInstance->send();
         } catch (\Exception $exception) {
             $done = false;
         }
-        $error = $this->mail->ErrorInfo;
+        $error = $this->phpMailerInstance->ErrorInfo;
         return $done;
     }
 }

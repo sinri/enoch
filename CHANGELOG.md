@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.2.1
+
+Add method `getPhpMailerInstance` to `LibMail`.
+
 ## 2.2.0 
 
 Make new respond design for Lamech
