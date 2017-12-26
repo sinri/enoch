@@ -10,6 +10,11 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.2.2
+
+Move unnecessary Exceptions thrown in the PDO and Model.
+New `DataModelCondition` for complex operators.
+
 ## 2.2.1
 
 Add method `getPhpMailerInstance` to `LibMail`.

@@ -117,7 +117,6 @@ class LibPDO
     /**
      * @param $sql
      * @return array
-     * @throws \Exception
      */
     public function getAll($sql)
     {
@@ -130,7 +129,6 @@ class LibPDO
     /**
      * @param $sql
      * @param $stmt
-     * @throws \Exception
      */
     private function logSql($sql, $stmt)
     {
@@ -138,14 +136,13 @@ class LibPDO
             if ($this->logger) {
                 $this->logger->log(LibLog::LOG_ERROR, "Failed to prepare SQL", $sql);
             }
-            throw new \Exception("Failed to prepare SQL: " . $sql);
+            //throw new \Exception("Failed to prepare SQL: " . $sql);
         }
     }
 
     /**
      * @param $sql
      * @return array
-     * @throws \Exception
      */
     public function getCol($sql)
     {
@@ -164,7 +161,6 @@ class LibPDO
     /**
      * @param $sql
      * @return array|bool
-     * @throws \Exception
      */
     public function getRow($sql)
     {
@@ -180,7 +176,6 @@ class LibPDO
     /**
      * @param $sql
      * @return mixed|bool
-     * @throws \Exception
      */
     public function getOne($sql)
     {
@@ -202,7 +197,6 @@ class LibPDO
     /**
      * @param $sql
      * @return int affected row count
-     * @throws \Exception
      */
     public function exec($sql)
     {
@@ -215,7 +209,6 @@ class LibPDO
      * @param $sql
      * @param null $pk @since 1.3.6
      * @return bool|string
-     * @throws \Exception
      */
     public function insert($sql, $pk = null)
     {
@@ -314,7 +307,6 @@ class LibPDO
      * @param array $values
      * @param int $fetchStyle
      * @return array
-     * @throws \Exception
      */
     public function safeQueryAll($sql, $values = array(), $fetchStyle = \PDO::FETCH_ASSOC)
     {
@@ -329,7 +321,6 @@ class LibPDO
      * @param $sql
      * @param array $values
      * @return mixed
-     * @throws \Exception
      */
     public function safeQueryRow($sql, $values = array())
     {
@@ -344,7 +335,6 @@ class LibPDO
      * @param $sql
      * @param array $values
      * @return string
-     * @throws \Exception
      */
     public function safeQueryOne($sql, $values = array())
     {
@@ -361,7 +351,6 @@ class LibPDO
      * @param int $insertedId
      * @param null $pk
      * @return bool
-     * @throws \Exception
      */
     public function safeInsertOne($sql, $values = array(), &$insertedId = 0, $pk = null)
     {
@@ -377,7 +366,6 @@ class LibPDO
      * @param array $values
      * @param null $sth @since 1.3.3
      * @return bool
-     * @throws \Exception
      */
     public function safeExecute($sql, $values = array(), &$sth = null)
     {

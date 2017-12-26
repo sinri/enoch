@@ -64,7 +64,8 @@ abstract class AbstractDataModel
     }
 
     /**
-     * @param $conditions
+     * @since 2.2.2 DataModelCondition[] supported
+     * @param DataModelCondition[]|array $conditions
      * @param string $glue
      * @return string
      */
@@ -76,16 +77,25 @@ abstract class AbstractDataModel
         } elseif (is_array($conditions)) {
             $c = [];
             foreach ($conditions as $key => $value) {
-                if (is_array($value)) {
-                    // here @since 2.1.14
-                    $x = [];
-                    foreach ($value as $value_piece) {
-                        $x[] = $this->db()->quote($value_piece);
+                if (is_a($value, 'sinri\enoch\core\DataModelCondition')) {
+                    // here @since 2.2.2
+                    try {
+                        $c[] = $value->makeConditionSQL();
+                    } catch (\Exception $e) {
+                        // ignore the error
                     }
-                    $x = implode(",", $x);
-                    $c[] = " `{$key}` in (" . $x . ") ";
                 } else {
-                    $c[] = " `{$key}`=" . $this->db()->quote($value) . " ";
+                    if (is_array($value)) {
+                        // here @since 2.1.14
+                        $x = [];
+                        foreach ($value as $value_piece) {
+                            $x[] = $this->db()->quote($value_piece);
+                        }
+                        $x = implode(",", $x);
+                        $c[] = " `{$key}` in (" . $x . ") ";
+                    } else {
+                        $c[] = " `{$key}`=" . $this->db()->quote($value) . " ";
+                    }
                 }
             }
             $condition_sql = implode($glue, $c);
@@ -96,7 +106,6 @@ abstract class AbstractDataModel
     /**
      * @param array|string $conditions
      * @return array|bool
-     * @throws \Exception
      */
     public function selectRow($conditions)
     {
@@ -107,7 +116,11 @@ abstract class AbstractDataModel
 
         $table = $this->getTableExpressForSQL();
         $sql = "SELECT * FROM {$table} WHERE {$condition_sql} LIMIT 1";
-        return $this->db()->getRow($sql);
+        try {
+            return $this->db()->getRow($sql);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
 
@@ -116,7 +129,6 @@ abstract class AbstractDataModel
      * @param int $limit
      * @param int $offset
      * @return array|bool
-     * @throws \Exception
      */
     public function selectRows($conditions, $limit = 0, $offset = 0)
     {
@@ -134,13 +146,16 @@ abstract class AbstractDataModel
                 $sql .= " offset {$offset} ";
             }
         }
-        return $this->db()->getAll($sql);
+        try {
+            return $this->db()->getAll($sql);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
      * @param array|string $conditions
-     * @return int
-     * @throws \Exception
+     * @return int|bool
      */
     public function selectRowsForCount($conditions)
     {
@@ -151,8 +166,12 @@ abstract class AbstractDataModel
         $table = $this->getTableExpressForSQL();
         $sql = "SELECT count(*) FROM {$table} WHERE {$condition_sql} ";
 
-        $count = $this->db()->getOne($sql);
-        return intval($count, 10);
+        try {
+            $count = $this->db()->getOne($sql);
+            return intval($count, 10);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -161,8 +180,7 @@ abstract class AbstractDataModel
      * @param int $limit
      * @param int $offset
      * @param null|string $refKey normally PK or UK if you want to get map rather than list
-     * @return array
-     * @throws \Exception
+     * @return array|bool
      */
     public function selectRowsWithSort($conditions, $sort = null, $limit = 0, $offset = 0, $refKey = null)
     {
@@ -185,18 +203,21 @@ abstract class AbstractDataModel
                 $sql .= " offset {$offset} ";
             }
         }
-        $all = $this->db()->getAll($sql);
-        if ($refKey) {
-            $all = CommonHelper::turnListToMapping($all, $refKey);
+        try {
+            $all = $this->db()->getAll($sql);
+            if ($refKey) {
+                $all = CommonHelper::turnListToMapping($all, $refKey);
+            }
+            return $all;
+        } catch (\Exception $exception) {
+            return false;
         }
-        return $all;
     }
 
     /**
      * @param array $data
      * @param null $pk
      * @return bool|string
-     * @throws \Exception
      */
     public function insert($data, $pk = null)
     {
@@ -210,13 +231,16 @@ abstract class AbstractDataModel
         $values = implode(",", $values);
         $table = $this->getTableExpressForSQL();
         $sql = "INSERT INTO {$table} ({$fields}) VALUES ({$values})";
-        return $this->db()->insert($sql, $pk);
+        try {
+            return $this->db()->insert($sql, $pk);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
      * @param array $data
      * @return bool|string
-     * @throws \Exception
      */
     public function replace($data)
     {
@@ -230,14 +254,17 @@ abstract class AbstractDataModel
         $values = implode(",", $values);
         $table = $this->getTableExpressForSQL();
         $sql = "replace INTO {$table} ({$fields}) VALUES ({$values})";
-        return $this->db()->insert($sql);
+        try {
+            return $this->db()->insert($sql);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
      * @param $conditions
      * @param $data
      * @return int
-     * @throws \Exception
      */
     public function update($conditions, $data)
     {
@@ -248,13 +275,16 @@ abstract class AbstractDataModel
         $data_sql = $this->buildCondition($data, ",");
         $table = $this->getTableExpressForSQL();
         $sql = "UPDATE {$table} SET {$data_sql} WHERE {$condition_sql}";
-        return $this->db()->exec($sql);
+        try {
+            return $this->db()->exec($sql);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
      * @param $conditions
      * @return int
-     * @throws \Exception
      */
     public function delete($conditions)
     {
@@ -264,6 +294,10 @@ abstract class AbstractDataModel
         }
         $table = $this->getTableExpressForSQL();
         $sql = "DELETE FROM {$table} WHERE {$condition_sql}";
-        return $this->db()->exec($sql);
+        try {
+            return $this->db()->exec($sql);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }
