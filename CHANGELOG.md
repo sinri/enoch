@@ -10,6 +10,12 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.2.3
+
+Refine HTTP header handle codes with RFC 7230 
+
+> Each header field consists of a case-insensitive field name followed by a colon (":"), optional leading whitespace, the field value, and optional trailing whitespace.
+
 ## 2.2.2
 
 Move unnecessary Exceptions thrown in the PDO and Model.

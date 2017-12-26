@@ -77,9 +77,10 @@ class LibResponse
      * @param $file
      * @param null $down_name
      * @param BaseCodedException $error
+     * @param null $content_type
      * @return bool
      */
-    public static function downloadFileAsName($file, $down_name = null, &$error = null)
+    public static function downloadFileAsName($file, $down_name = null, &$error = null, $content_type = null)
     {
         //判断给定的文件存在与否
         if (!file_exists($file)) {
@@ -99,8 +100,13 @@ class LibResponse
 
         $fp = fopen($file, "r");
         $file_size = filesize($file);
+
+        if ($content_type === null) {
+            $content_type = 'application/octet-stream';
+        }
+
         //下载文件需要用到的头
-        header("Content-type: application/octet-stream");
+        header("Content-Type: " . $content_type);
         header("Accept-Ranges: bytes");
         header("Accept-Length:" . $file_size);
         header("Content-Disposition: attachment; filename=" . $down_name);

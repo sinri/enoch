@@ -13,7 +13,7 @@ use sinri\enoch\mvc\MiddlewareInterface;
 
 class SecondMiddleware extends MiddlewareInterface
 {
-    public function shouldAcceptRequest($path, $method, $params, &$preparedData = null)
+    public function shouldAcceptRequest($path, $method, $params, &$preparedData = null, &$responseCode = 200, &$error = null)
     {
         if ($preparedData == 50) {
             return false;

@@ -14,7 +14,7 @@ use sinri\enoch\mvc\MiddlewareInterface;
 
 class SampleMiddleware extends MiddlewareInterface
 {
-    public function shouldAcceptRequest($path, $method, $params, &$preparedData = null)
+    public function shouldAcceptRequest($path, $method, $params, &$preparedData = null, &$responseCode = 200, &$error = null)
     {
         //print_r(["PATH"=>$path,"METHOD"=>$method,"PARAMS"=>$params]);
         $sample_issue_value = CommonHelper::safeReadArray($params, 1, -1);

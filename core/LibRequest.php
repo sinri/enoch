@@ -41,7 +41,7 @@ class LibRequest
         $value = CommonHelper::safeReadArray($_REQUEST, $name, $default, $regex, $error);
         try {
             if (
-                self::getHeader("content-type") === 'application/json'
+                self::getHeaderUpperCased("CONTENT-TYPE") === 'application/json'
                 && is_array(self::getRequestContentAsJson(true))
             ) {
                 $value = self::jsonPost($name, $default, $regex, $error);
@@ -162,6 +162,25 @@ class LibRequest
     }
 
     /**
+     * @param $name
+     * @param null $default
+     * @param null $regex
+     * @param int $error
+     * @return mixed
+     */
+    public static function getHeaderUpperCased($name, $default = null, $regex = null, &$error = 0)
+    {
+        $value = CommonHelper::safeReadArray(self::fullHeaderFields('UPPER_CASE'), $name, $default, $regex, $error);
+        return $value;
+    }
+
+    public static function getHeaderLowerCased($name, $default = null, $regex = null, &$error = 0)
+    {
+        $value = CommonHelper::safeReadArray(self::fullHeaderFields('lower_case'), $name, $default, $regex, $error);
+        return $value;
+    }
+
+    /**
      * @return array
      */
     public static function fullPostFields()
@@ -186,11 +205,26 @@ class LibRequest
     }
 
     /**
+     * @param string $unify_case
      * @return array|false|string
      */
-    public static function fullHeaderFields()
+    public static function fullHeaderFields($unify_case = '')
     {
-        return getallheaders();
+        $headers = getallheaders();
+        if ($unify_case === 'UPPER_CASE') {
+            $handled_headers = [];
+            foreach ($headers as $key => $value) {
+                $handled_headers[strtoupper($key)] = $value;
+            }
+            $headers = $handled_headers;
+        } elseif ($unify_case === 'lower_case') {
+            $handled_headers = [];
+            foreach ($headers as $key => $value) {
+                $handled_headers[strtolower($key)] = $value;
+            }
+            $headers = $handled_headers;
+        }
+        return $headers;
     }
 
     /**
