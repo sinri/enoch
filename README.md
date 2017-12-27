@@ -56,3 +56,11 @@ You can use them to deal with your various requirements, including
 * Session (based on file system)
 * Cache (File and Redis)
 * Queue (Redis)
+
+----
+
+# Donation
+
+bitcoin: 18wCjV8mnepDpLzASKdW7CGo6U8F9rPuV4
+
+bitcoin cash: 18wCjV8mnepDpLzASKdW7CGo6U8F9rPuV4
