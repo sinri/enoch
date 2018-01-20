@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.2.4
+
+Support more json header such as `application/json;charset=UTF-8` in LibRequest!
+
 ## 2.2.3
 
 Refine HTTP header handle codes with RFC 7230 

@@ -40,8 +40,9 @@ class LibRequest
     {
         $value = CommonHelper::safeReadArray($_REQUEST, $name, $default, $regex, $error);
         try {
+            $content_type = self::getHeaderUpperCased("CONTENT-TYPE");
             if (
-                self::getHeaderUpperCased("CONTENT-TYPE") === 'application/json'
+                preg_match('/^application\/json(;.+)?$/', $content_type)
                 && is_array(self::getRequestContentAsJson(true))
             ) {
                 $value = self::jsonPost($name, $default, $regex, $error);
