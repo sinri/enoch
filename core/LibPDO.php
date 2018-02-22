@@ -116,18 +116,6 @@ class LibPDO
 
     /**
      * @param $sql
-     * @return array
-     */
-    public function getAll($sql)
-    {
-        $stmt = $this->pdo->query($sql);
-        $this->logSql($sql, $stmt);
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        return $rows;
-    }
-
-    /**
-     * @param $sql
      * @param $stmt
      */
     private function logSql($sql, $stmt)
@@ -142,20 +130,40 @@ class LibPDO
 
     /**
      * @param $sql
-     * @return array
+     * @return array|bool
+     */
+    public function getAll($sql)
+    {
+        $stmt = $this->pdo->query($sql);
+        $this->logSql($sql, $stmt);
+        if($stmt) {
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            return $rows;
+        }else return false;
+    }
+
+
+
+    /**
+     * @param $sql
+     * @return array|bool
      */
     public function getCol($sql)
     {
         $stmt = $this->pdo->query($sql);
         $this->logSql($sql, $stmt);
-        $rows = $stmt->fetchAll(\PDO::FETCH_BOTH);
-        $col = array();
-        if ($rows) {
-            foreach ($rows as $row) {
-                $col[] = $row[0];
+        if($stmt) {
+            $rows = $stmt->fetchAll(\PDO::FETCH_BOTH);
+            $col = array();
+            if ($rows) {
+                foreach ($rows as $row) {
+                    $col[] = $row[0];
+                }
             }
+            return $col;
+        }else{
+            return false;
         }
-        return $col;
     }
 
     /**
@@ -166,9 +174,11 @@ class LibPDO
     {
         $stmt = $this->pdo->query($sql);
         $this->logSql($sql, $stmt);
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        if ($rows) {
-            return $rows[0];
+        if($stmt) {
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            if ($rows) {
+                return $rows[0];
+            }
         }
         return false;
     }
@@ -182,13 +192,15 @@ class LibPDO
         //FETCH_BOTH
         $stmt = $this->pdo->query($sql);
         $this->logSql($sql, $stmt);
-        // $rows=$stmt->fetchAll(\PDO::FETCH_BOTH);//var_dump($rows);
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);//var_dump($rows);
-        if ($rows) {
-            $row = $rows[0];
-            if ($row) {
-                $row = array_values($row);
-                return $row[0];
+        if($stmt) {
+            // $rows=$stmt->fetchAll(\PDO::FETCH_BOTH);//var_dump($rows);
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);//var_dump($rows);
+            if ($rows) {
+                $row = $rows[0];
+                if ($row) {
+                    $row = array_values($row);
+                    return $row[0];
+                }
             }
         }
         return false;
@@ -306,43 +318,49 @@ class LibPDO
      * @param $sql
      * @param array $values
      * @param int $fetchStyle
-     * @return array
+     * @return array|bool
      */
     public function safeQueryAll($sql, $values = array(), $fetchStyle = \PDO::FETCH_ASSOC)
     {
         $sth = $this->pdo->prepare($sql);
         $this->logSql($sql, $sth);
-        $sth->execute($values);
-        $rows = $sth->fetchAll($fetchStyle);
-        return $rows;
+        if($sth) {
+            $sth->execute($values);
+            $rows = $sth->fetchAll($fetchStyle);
+            return $rows;
+        }else return false;
     }
 
     /**
      * @param $sql
      * @param array $values
-     * @return mixed
+     * @return array|bool
      */
     public function safeQueryRow($sql, $values = array())
     {
         $sth = $this->pdo->prepare($sql);
         $this->logSql($sql, $sth);
-        $sth->execute($values);
-        $row = $sth->fetch(\PDO::FETCH_ASSOC);
-        return $row;
+        if($sth) {
+            $sth->execute($values);
+            $row = $sth->fetch(\PDO::FETCH_ASSOC);
+            return $row;
+        }else return false;
     }
 
     /**
      * @param $sql
      * @param array $values
-     * @return string
+     * @return string|bool
      */
     public function safeQueryOne($sql, $values = array())
     {
         $sth = $this->pdo->prepare($sql);
         $this->logSql($sql, $sth);
-        $sth->execute($values);
-        $col = $sth->fetchColumn(0);
-        return $col;
+        if($sth) {
+            $sth->execute($values);
+            $col = $sth->fetchColumn(0);
+            return $col;
+        }else return false;
     }
 
     /**
@@ -356,9 +374,11 @@ class LibPDO
     {
         $sth = $this->pdo->prepare($sql);
         $this->logSql($sql, $sth);
-        $done = $sth->execute($values);
-        $insertedId = $this->pdo->lastInsertId($pk);
-        return $done;
+        if($sth) {
+            $done = $sth->execute($values);
+            $insertedId = $this->pdo->lastInsertId($pk);
+            return $done;
+        }else return false;
     }
 
     /**
@@ -371,8 +391,10 @@ class LibPDO
     {
         $sth = $this->pdo->prepare($sql);
         $this->logSql($sql, $sth);
-        $done = $sth->execute($values);
-        return $done;
+        if($sth) {
+            $done = $sth->execute($values);
+            return $done;
+        }else return false;
     }
 
     /**

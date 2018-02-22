@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.2.5
+
+Make PDO component more safe when SQL is not correct. 
+
 ## 2.2.4
 
 Support more json header such as `application/json;charset=UTF-8` in LibRequest!
