@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.2.6
+
+Add allow email list function in LibMail.
+
 ## 2.2.5
 
 Make PDO component more safe when SQL is not correct. 
