@@ -57,7 +57,7 @@ class LibMail
     }
 
     /**
-     * @return null
+     * @return null|string[]
      */
     public function getAllowEmailList()
     {
@@ -65,7 +65,7 @@ class LibMail
     }
 
     /**
-     * @param null $allowEmailList
+     * @param null|string[] $allowEmailList
      */
     public function setAllowEmailList($allowEmailList)
     {
