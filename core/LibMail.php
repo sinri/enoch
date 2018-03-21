@@ -22,6 +22,7 @@ class LibMail
 {
     private $phpMailerInstance;
     private $smtpInfo;
+    private $allowEmailList;
 
     /**
      * LibMail constructor.
@@ -32,6 +33,8 @@ class LibMail
     public function __construct($params = [])
     {
         $this->smtpInfo = [];
+
+        $this->allowEmailList = null;
 
         $this->setUpSMTP($params);
 
@@ -50,6 +53,23 @@ class LibMail
         $this->smtpInfo['smtp_secure'] = CommonHelper::safeReadArray($params, 'smtp_secure', '');
         $this->smtpInfo['port'] = CommonHelper::safeReadArray($params, 'port', '');
         $this->smtpInfo['display_name'] = CommonHelper::safeReadArray($params, 'display_name', '');
+        $this->allowEmailList = CommonHelper::safeReadArray($params, 'allow_email_list', null);
+    }
+
+    /**
+     * @return null
+     */
+    public function getAllowEmailList()
+    {
+        return $this->allowEmailList;
+    }
+
+    /**
+     * @param null $allowEmailList
+     */
+    public function setAllowEmailList($allowEmailList)
+    {
+        $this->allowEmailList = $allowEmailList;
     }
 
     /**
@@ -126,16 +146,19 @@ class LibMail
         }
 
         foreach ($params['to'] as $name => $mail) {
-            $this->phpMailerInstance->addAddress($mail, $name);
+            if ($this->isInAllowEmailList($mail))
+                $this->phpMailerInstance->addAddress($mail, $name);
         }
         foreach ($params['reply_to'] as $name => $mail) {
             $this->phpMailerInstance->addReplyTo($mail, $name);
         }
         foreach ($params['cc'] as $name => $mail) {
-            $this->phpMailerInstance->addCC($mail, $name);
+            if ($this->isInAllowEmailList($mail))
+                $this->phpMailerInstance->addCC($mail, $name);
         }
         foreach ($params['bcc'] as $name => $mail) {
-            $this->phpMailerInstance->addBCC($mail, $name);
+            if ($this->isInAllowEmailList($mail))
+                $this->phpMailerInstance->addBCC($mail, $name);
         }
         foreach ($params['attachment'] as $name => $file_path) {
             $this->phpMailerInstance->addAttachment($file_path, $name);
@@ -192,7 +215,9 @@ class LibMail
      */
     public function addReceiver($address, $name = '')
     {
-        $this->phpMailerInstance->addAddress($address, $name);
+        if ($this->isInAllowEmailList($address)){
+            $this->phpMailerInstance->addAddress($address, $name);
+        }
         return $this;
     }
 
@@ -214,7 +239,9 @@ class LibMail
      */
     public function addCCAddress($address, $name)
     {
-        $this->phpMailerInstance->addCC($address, $name);
+        if ($this->isInAllowEmailList($address)){
+            $this->phpMailerInstance->addCC($address, $name);
+        }
         return $this;
     }
 
@@ -225,7 +252,9 @@ class LibMail
      */
     public function addBCCAddress($address, $name)
     {
-        $this->phpMailerInstance->addBCC($address, $name);
+        if ($this->isInAllowEmailList($address)){
+            $this->phpMailerInstance->addBCC($address, $name);
+        }
         return $this;
     }
 
@@ -286,5 +315,20 @@ class LibMail
         }
         $error = $this->phpMailerInstance->ErrorInfo;
         return $done;
+    }
+
+    /**
+     * @param string $address
+     * @return bool
+     */
+    private function isInAllowEmailList($address)
+    {
+        if ($this->allowEmailList === null){
+            return true;
+        }
+        if (is_array($this->allowEmailList) && in_array($address, $this->allowEmailList)){
+            return true;
+        }
+        return false;
     }
 }
