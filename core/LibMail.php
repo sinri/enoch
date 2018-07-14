@@ -9,8 +9,10 @@
 namespace sinri\enoch\core;
 
 
+use PHPMailer\PHPMailer\PHPMailer;
 use sinri\enoch\helper\CommonHelper;
-use sinri\smallphpmailer\library\PHPMailer;
+
+//use sinri\smallphpmailer\library\PHPMailer;
 
 /**
  * Note, @since v2.0.2 embedded `PHPMailer` library changed to `sinri\smallphpmailer`,
@@ -38,7 +40,7 @@ class LibMail
 
         $this->setUpSMTP($params);
 
-        $this->phpMailerInstance = new PHPMailer();
+        $this->phpMailerInstance = new PHPMailer(true);
     }
 
     /**
@@ -128,7 +130,7 @@ class LibMail
      * 7. html: Boolean true for default
      * 8. body: String
      *
-     * @throws \sinri\smallphpmailer\library\phpmailerException
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     public function sendMail($params)
     {
@@ -183,7 +185,7 @@ class LibMail
     public function prepareSMTP(&$error = null)
     {
         try {
-            $this->phpMailerInstance = new PHPMailer();
+            $this->phpMailerInstance = new PHPMailer(true);
             $this->phpMailerInstance->Host = $this->smtpInfo['host'];// Specify main and backup SMTP servers
             $this->phpMailerInstance->SMTPAuth = $this->smtpInfo['smtp_auth'];// Enable SMTP authentication
             $this->phpMailerInstance->Username = $this->smtpInfo['username'];// SMTP username
@@ -194,6 +196,9 @@ class LibMail
             $this->phpMailerInstance->setFrom($this->smtpInfo['username'], $this->smtpInfo['display_name']);
 
             $this->phpMailerInstance->isSMTP();
+
+            //debug
+            //$this->phpMailerInstance->SMTPDebug = 2;
         } catch (\Exception $exception) {
             // who care?
             $error = $exception->getMessage();
@@ -259,14 +264,14 @@ class LibMail
     }
 
     /**
-     * @param $filepath
+     * @param $filePath
      * @param string $name
      * @return LibMail
-     * @throws \sinri\smallphpmailer\library\phpmailerException
+     * @throws \PHPMailer\PHPMailer\Exception
      */
-    public function addAttachment($filepath, $name = '')
+    public function addAttachment($filePath, $name = '')
     {
-        $this->phpMailerInstance->addAttachment($filepath, $name);
+        $this->phpMailerInstance->addAttachment($filePath, $name);
         return $this;
     }
 

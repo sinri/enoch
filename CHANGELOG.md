@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.3.0
+
+Use `phpmailer/phpmailer` 6.x instead of `sinri/smallphpmailer`.
+
 ## 2.2.6
 
 Add allow email list function in LibMail.
