@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.3.1
+
+Class `FileCache` added initialization option for file mode (such as `0777`).
+
 ## 2.3.0
 
 Use `phpmailer/phpmailer` 6.x instead of `sinri/smallphpmailer`.

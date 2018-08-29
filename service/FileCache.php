@@ -12,10 +12,13 @@ namespace sinri\enoch\service;
 class FileCache implements CacheInterface
 {
     protected $cacheDir;
+    protected $fileMode = null;
 
-    public function __construct($cacheDir = null)
+    public function __construct($cacheDir = null, $fileMode = null)
     {
         $this->cacheDir = __DIR__ . '/cache';//should be overrode by setter
+        $this->fileMode = $fileMode;
+
         if (!empty($cacheDir)) {
             if (!file_exists($cacheDir)) {
                 @mkdir($cacheDir, 0777, true);
@@ -67,7 +70,9 @@ class FileCache implements CacheInterface
         $data = serialize($object);
         $this->removeObject($key);
         $file_name = $key . '.' . ($life <= 0 ? '0' : time() + $life);
-        $done = file_put_contents($this->cacheDir . '/' . $file_name, $data);
+        $path = $this->cacheDir . '/' . $file_name;
+        $done = file_put_contents($path, $data);
+        if ($this->fileMode !== null) @chmod($path, $this->fileMode);
         return $done ? true : false;
     }
 
