@@ -10,6 +10,12 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.3.2
+
+Fix Warning.
+
+> PHP Warning:  strpos(): Empty needle in /mnt/code/octet/octet/vendor/sinri/enoch/mvc/Lamech.php on line 189
+
 ## 2.3.1
 
 Class `FileCache` added initialization option for file mode (such as `0777`).

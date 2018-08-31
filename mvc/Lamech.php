@@ -185,11 +185,14 @@ class Lamech
     protected function getControllerIndex()
     {
         $prefix = $_SERVER['SCRIPT_NAME'];
+        if (strlen($prefix) == 0) {
+            return $_SERVER['REQUEST_URI'];
+        }
         if (
             (strpos($_SERVER['REQUEST_URI'], $prefix) !== 0)
-            && (strrpos($prefix, '/' . $this->gateway) + 10 == strlen($prefix))
+            && (strrpos($prefix, '/' . $this->gateway) + (1 + strlen($this->gateway)) == strlen($prefix))
         ) {
-            $prefix = substr($prefix, 0, strlen($prefix) - 10);
+            $prefix = substr($prefix, 0, strlen($prefix) - (1 + strlen($this->gateway)));
         }
 
         return substr($_SERVER['REQUEST_URI'], strlen($prefix));
