@@ -155,4 +155,31 @@ class LibSFTP
         closedir($handler);
         return $done;
     }
+	
+	public function renameSftpFiles($remoteDir, $oldname, $newname) {
+        $handler = null;
+        try {
+            $resConnection = ssh2_connect($this->strServer, $this->strServerPort);
+            if (!$resConnection) {
+                throw new \Exception("Could not connect: " . $this->strServer . ":" . $this->strServerPort);
+            }
+            if (ssh2_auth_password($resConnection, $this->strServerUsername, $this->strServerPassword)) {
+                $resSFTP = ssh2_sftp($resConnection);
+            } else {
+                throw new \Exception("ssh2_auth_password false");
+            }
+
+            $oldpath =  $remoteDir . '/' .$oldname;
+            $newpath =  $remoteDir . '/' .$newname;
+
+            $done = ssh2_sftp_rename($resSFTP, $oldpath, $newpath);
+        } catch (\Exception $e) {
+            $error = 'Method '.__METHOD__.' Exception: '. $e->getMessage();
+            var_dump($error);
+
+            $done=false;
+        }
+        closedir($handler);
+        return $done;
+    }
 }
