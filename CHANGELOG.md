@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.3.4
+
+Add `@` before file cache unlink method calls.
+
 ## 2.3.3
 
 Updated by STSUN for SFTP.

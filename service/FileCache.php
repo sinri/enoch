@@ -105,7 +105,7 @@ class FileCache implements CacheInterface
     public function removeObject($key)
     {
         if (!$this->validateObjectKey($key)) return false;
-        array_map('unlink', glob($this->cacheDir . '/' . $key . '.*'));
+        @array_map('unlink', glob($this->cacheDir . '/' . $key . '.*'));
         return true;
     }
 
@@ -120,7 +120,7 @@ class FileCache implements CacheInterface
         foreach ($list as $path) {
             $limit = $this->getTimeLimitFromObjectPath($path);
             if ($limit < time()) {
-                $deleted = unlink($path);
+                $deleted = @unlink($path);
                 if (!$deleted) {
                     $all_deleted = false;
                 }
