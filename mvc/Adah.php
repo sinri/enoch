@@ -200,6 +200,7 @@ class Adah extends RouterInterface
      * @param string $basePath controller/base/
      * @param string $controllerClass app/controller/controllerA
      * @param null|MiddlewareInterface $middleware as is
+     * @throws \ReflectionException
      */
     public function loadController($basePath, $controllerClass, $middleware = null)
     {
@@ -249,6 +250,7 @@ class Adah extends RouterInterface
      * @param string $urlBase "XX/"
      * @param string $controllerNamespaceBase '\leqee\yiranoc\controller\\'
      * @param string $middleware '\leqee\yiranoc\middleware\AuthMiddleware'
+     * @throws \ReflectionException
      */
     public function loadAllControllersInDirectoryAsCI($directory, $urlBase = '', $controllerNamespaceBase = '', $middleware = '')
     {
@@ -276,6 +278,7 @@ class Adah extends RouterInterface
                     if (is_dir($directory . '/' . $entry)) {
                         //DIR,
                         $this->loadAllControllersInDirectoryAsCI(
+                            $directory . '/' . $entry,
                             $urlBase . $entry . '/',
                             $controllerNamespaceBase . $entry . '\\',
                             $middleware

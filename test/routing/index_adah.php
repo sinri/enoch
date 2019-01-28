@@ -60,8 +60,8 @@ $lamech->getRouter()->loadController(
     '\sinri\enoch\test\routing\middleware\SampleMiddleware'
 );
 
-$lamech->setDefaultControllerName('SampleHandler');
-$lamech->loadAllControllersInDirectoryAsCI(
+$lamech->getRouter()->setDefaultControllerName('SampleHandler');
+$lamech->getRouter()->loadAllControllersInDirectoryAsCI(
     __DIR__ . '/controller',
     'ci/',
     '\sinri\enoch\test\routing\controller\\',

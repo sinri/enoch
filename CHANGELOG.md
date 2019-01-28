@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.4.0
+
+Fix a router nesting bug
+
 ## 2.3.4
 
 Add `@` before file cache unlink method calls.

@@ -370,6 +370,7 @@ class Lamech
      * @param string $controllerNamespaceBase '\leqee\yiranoc\controller\\'
      * @param string $middleware '\leqee\yiranoc\middleware\AuthMiddleware'
      * @deprecated moved to Adah
+     * @throws \ReflectionException
      */
     public function loadAllControllersInDirectoryAsCI($directory, $urlBase = '', $controllerNamespaceBase = '', $middleware = '')
     {
