@@ -10,6 +10,10 @@ Stable Release Version on Packagist:
 
 NOTE: `^2.0` NOT COMPATIBLE WITH `^1.0`!
 
+## 2.4.1
+
+Fix a Model Condition Implementation Bug
+
 ## 2.4.0
 
 Fix a router nesting bug

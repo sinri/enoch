@@ -92,7 +92,7 @@ class DataModelCondition
                     throw new \Exception("ERROR, YOU MUST GIVE AN ARRAY OF STRING FOR IN OPERATION!");
                 }
                 $group = [];
-                foreach ($group as $item) {
+                foreach ($this->value as $item) {
                     $group[] = LibPDO::dryQuote($item);
                 }
                 return "`{$this->field}` " . $this->operate . " (" . implode(",", $group) . ")";
