@@ -68,6 +68,11 @@ class Adah extends RouterInterface
         ];
         if ($this->debug) echo "New Regex Route: " . json_encode($new_route) . PHP_EOL;
         array_unshift($this->routes, $new_route);
+
+        if (strpos($path, 'Controller') !== false) {
+            $path = preg_replace('/Controller/', '', $path);
+            $this->registerRoute($method, strtolower($path), $callback, $middleware);
+        }
     }
 
     public function get($path, $callback, $middleware = null)
