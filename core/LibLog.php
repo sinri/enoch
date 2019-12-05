@@ -31,14 +31,18 @@ class LibLog
     protected $ignoreLevel;
 
     protected $forceUseStandardOutputInCLI = true;
+    /**
+     * @var bool @since 2.4.2 let logs have same type collected as a group in one directory
+     */
+    protected $organizeLogsWithGroups = false;
 
-
-    function __construct($targetLogDir = null, $prefix = '', $forceUseStandardOutputInCLI = true)
+    function __construct($targetLogDir = null, $prefix = '', $forceUseStandardOutputInCLI = true, $organizeLogsWithGroups = false)
     {
         $this->targetLogDir = $targetLogDir;
         $this->prefix = $prefix;
         $this->ignoreLevel = self::LOG_DEBUG;
         $this->forceUseStandardOutputInCLI = $forceUseStandardOutputInCLI;
+        $this->organizeLogsWithGroups = $organizeLogsWithGroups;
     }
 
     /**
@@ -178,10 +182,18 @@ class LibLog
         if ($this->forceUseStandardOutputInCLI && LibRequest::isCLI()) {
             return false;
         }
-        if (!file_exists($this->targetLogDir)) {
-            @mkdir($this->targetLogDir, 0777, true);
-        }
         $today = date('Y-m-d');
-        return $this->targetLogDir . '/log-' . (empty($this->prefix) ? '' : $this->prefix . '-') . $today . '.log';
+        $logGroupDir = $this->targetLogDir;
+        if ($this->organizeLogsWithGroups) {
+            if ($this->prefix === '') {
+                $logGroupDir .= '/default-logs';
+            } else {
+                $logGroupDir .= '/log-' . $this->prefix;
+            }
+        }
+        if (!file_exists($logGroupDir)) {
+            @mkdir($logGroupDir, 0777, true);
+        }
+        return $logGroupDir . '/log-' . (empty($this->prefix) ? '' : $this->prefix . '-') . $today . '.log';
     }
 }

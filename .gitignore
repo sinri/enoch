@@ -16,3 +16,5 @@
 /test/routing/benchmark/paths.json
 /test/FTP/config.php
 /test/mail/config.php
+
+/log
