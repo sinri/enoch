@@ -155,9 +155,8 @@ class LibSFTP
         closedir($handler);
         return $done;
     }
-	
-	public function renameSftpFiles($remoteDir, $oldname, $newname) {
-        $handler = null;
+
+    public function renameSftpFiles($remoteDir, $oldname, $newname, &$error='') {
         try {
             $resConnection = ssh2_connect($this->strServer, $this->strServerPort);
             if (!$resConnection) {
@@ -171,6 +170,12 @@ class LibSFTP
 
             $oldpath =  $remoteDir . '/' .$oldname;
             $newpath =  $remoteDir . '/' .$newname;
+            $statinfo = ssh2_sftp_stat($resSFTP, $oldpath);
+            if (!empty($statinfo['size'])) {
+                var_dump($statinfo['size']);
+            } else {
+                $error = '文件已经不存在';
+            }
 
             $done = ssh2_sftp_rename($resSFTP, $oldpath, $newpath);
         } catch (\Exception $e) {
@@ -179,7 +184,6 @@ class LibSFTP
 
             $done=false;
         }
-        closedir($handler);
         return $done;
     }
 }
